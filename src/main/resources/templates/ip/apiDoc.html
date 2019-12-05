@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common::niftyHeader('IP查询接口说明','')"/>
+
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+<body>
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+
+    <!--NAVBAR-->
+    <!--===================================================-->
+    <header id="navbar" th:replace="fragments/common::pageheader"/>
+    <!--===================================================-->
+    <!--END NAVBAR-->
+
+    <div class="boxed">
+
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div id="content-container">
+            <div id="page-head">
+            </div>
+
+
+            <!--Page content-->
+            <!--===================================================-->
+            <div id="page-content">
+
+                <div class="panel">
+                    <div class="panel-body">
+                        <!-- Comment form -->
+                        <!--===================================================-->
+                        <p class="text-lg text-main text-bold text-uppercase">IP地址查询</p>
+                        <p>1. 请求接口（GET）：</p>
+                        <p><a href ="https://www.qintingfm.com/ip/api.xml?ip=8.8.8.8">https://www.qintingfm.com/ip/api.xml?ip=8.8.8.8</a></p>
+                        <p><a href ="https://www.qintingfm.com/ip/api.json?ip=8.8.8.8">https://www.qintingfm.com/ip/api.json?ip=8.8.8.8</a></p>
+                        <p>2. 响应信息：</p>
+                        <p>（xml或json格式的）国家 、省（自治区或直辖市）、市（县）、运营商</p>
+                        <p>3. 返回数据格式：</p>
+
+                        <p>
+                            <pre>
+                                &lt;IpInfo&gt;&lt;ip/&gt;&lt;country/&gt;&lt;province/&gt;&lt;city/&gt;&lt;isp/&gt;&lt;provider/&gt;&lt;lastUpdate/&gt;&lt;/IpInfo&gt;
+                            </pre>
+                        </p>
+                        <p>{"ip":null,"country":null,"province":null,"city":null,"isp":null,"provider":null,"lastUpdate":null}</p>
+                        <p>其中code的值的含义为，ip：IP地址，country：国家，province：省，city:城市,isp:宽带提供商,provider：信息提供商,lastUpdate:最后更新时间。</p>
+                    </div>
+                </div>
+
+
+            </div>
+            <!--===================================================-->
+            <!--End page content-->
+
+        </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+
+
+
+        <!--ASIDE-->
+        <!--===================================================-->
+        <aside id="aside-container" th:replace="fragments/common::aside"/>
+        <!--===================================================-->
+        <!--END ASIDE-->
+
+
+        <!--MAIN NAVIGATION-->
+        <!--===================================================-->
+        <nav id="mainnav-container">
+            <div id="mainnav">
+
+
+                <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
+                <!--It will only appear on small screen devices.-->
+                <!--================================
+                <div class="mainnav-brand">
+                    <a href="index.html" class="brand">
+                        <img src="img/logo.png" alt="Nifty Logo" class="brand-icon">
+                        <span class="brand-text">Nifty</span>
+                    </a>
+                    <a href="#" class="mainnav-toggle"><i class="pci-cross pci-circle icon-lg"></i></a>
+                </div>
+                -->
+
+
+
+                <!--Menu-->
+                <!--================================-->
+                <div id="mainnav-menu-wrap">
+                    <div class="nano">
+                        <div class="nano-content">
+                            <ul id="mainnav-menu" class="list-group" th:include="fragments/common::menu('/ip/search')"/>
+                            <!--Widget-->
+                            <div class="mainnav-widget" th:replace="fragments/common::mainnavwidget2"/>
+                            <!--End widget-->
+                        </div>
+                    </div>
+                </div>
+                <!--================================-->
+                <!--End menu-->
+
+            </div>
+        </nav>
+        <!--===================================================-->
+        <!--END MAIN NAVIGATION-->
+
+    </div>
+    <footer id="footer" th:replace="fragments/common::contentFoot"/>
+</div>
+<div th:replace="fragments/common::footjs('')"></div>
+</body>
+</html>

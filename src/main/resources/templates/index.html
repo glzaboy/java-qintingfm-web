@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common::niftyHeader('钦听知天下','')"/>
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+<body>
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+
+    <!--NAVBAR-->
+    <!--===================================================-->
+    <header id="navbar" th:replace="fragments/common::pageheader"/>
+    <!--===================================================-->
+    <!--END NAVBAR-->
+
+    <div class="boxed">
+
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div id="content-container">
+            <div id="page-head">
+            </div>
+
+
+            <!--Page content-->
+            <!--===================================================-->
+            <div id="page-content">
+
+                <div class="row blog">
+                    <div class="grid">
+                        <div class="panel grid-item ">
+                            <div class="blog-header">
+                                <img class="img-responsive" src="http://static.qintingfm.com/nifty/v2.9/img/blog-img-1.jpg" alt="Image" th:src="${bg}"/>
+                            </div>
+                            <div class="blog-content">
+                                <div class="blog-title media-block">
+                                    <div class="media-body">
+                                        <a href="#" class="btn-link" th:href="${bglink}" target="_blank">
+                                            <h2 th:text="${bgdesc}">描述</h2>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="blog-body">
+                                    <p>每日更新图片</p>
+                                </div>
+                            </div>
+                            <div class="blog-footer">
+                                <div class="media-left">
+                                    <span class="label label-success">5 Days ago</span>
+                                </div>
+                                <div class="media-body text-right">
+                                    <span class="mar-rgt"><i class="demo-pli-heart-2 icon-fw"></i>519</span>
+                                    <i class="demo-pli-speech-bubble-5 icon-fw"></i>23
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel grid-item" th:each="blog:${blogList.getData()}">
+                            <div class="blog-content">
+                                <div class="blog-title media-block">
+                                    <a href="#" class="btn-link" th:href="@{/blog/view(id=${blog.id})}" target="_blank">
+                                        <h2 th:text="${blog.title}">标题</h2>
+                                    </a>
+                                </div>
+                                <div class="blog-body">
+                                    <p th:text="${blog.shortContent}">短介绍</p>
+                                </div>
+                            </div>
+                            <div class="blog-footer">
+                                <div class="media-left" th:text="${#dates.format(blog.getDateTime(),'YYYY-MM-dd')}">14 Days ago</div>
+                                <div class="media-body text-right">
+                                    <i class="demo-pli-clock icon-fw text-main"></i><span th:text="${#dates.format(blog.getDateTime(),'HH:mm')}">9:25</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--===================================================-->
+            <!--End page content-->
+
+        </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+
+
+
+        <!--ASIDE-->
+        <!--===================================================-->
+        <aside id="aside-container" th:replace="fragments/common::aside"/>
+        <!--===================================================-->
+        <!--END ASIDE-->
+
+
+        <!--MAIN NAVIGATION-->
+        <!--===================================================-->
+        <nav id="mainnav-container">
+            <div id="mainnav">
+
+
+                <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
+                <!--It will only appear on small screen devices.-->
+                <!--================================
+                <div class="mainnav-brand">
+                    <a href="index.html" class="brand">
+                        <img src="img/logo.png" alt="Nifty Logo" class="brand-icon"/>
+                        <span class="brand-text">Nifty</span>
+                    </a>
+                    <a href="#" class="mainnav-toggle"><i class="pci-cross pci-circle icon-lg"></i></a>
+                </div>
+                -->
+
+
+
+                <!--Menu-->
+                <!--================================-->
+                <div id="mainnav-menu-wrap">
+                    <div class="nano">
+                        <div class="nano-content">
+                            <ul id="mainnav-menu" class="list-group" th:include="fragments/common::menu('/')"/>
+                            <!--Widget-->
+                            <div class="mainnav-widget" th:replace="fragments/common::mainnavwidget2"/>
+                            <!--End widget-->
+                        </div>
+                    </div>
+                </div>
+                <!--================================-->
+                <!--End menu-->
+
+            </div>
+        </nav>
+        <!--===================================================-->
+        <!--END MAIN NAVIGATION-->
+
+    </div>
+    <footer id="footer" th:replace="fragments/common::contentFoot"/>
+</div>
+<!--===================================================-->
+<!-- END OF CONTAINER -->
+<style>
+    #content-container:before{
+        display:none;
+    }
+    /* clearfix */
+    .grid:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+
+    /* ---- grid-item ---- */
+    .grid-item {
+        width: 100%;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    @media (min-width: 768px) {
+        .grid-item {
+            width: 260px;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+    }
+</style>
+<div th:replace="fragments/common::footjs('//static.qintingfm.com/nifty/v2.9/plugins/masonry/masonry.pkgd.min.js,//static.qintingfm.com/plugins/imagesloaded.pkgd.min.js')"></div>
+<script>
+    $(document).on('nifty.ready', function () {
+        // init Masonry
+        var $grid = $('.grid').masonry({
+            itemSelector: '.grid-item',
+            columnWidth: '.grid-item',
+            gutter: 15
+            // options...
+        });
+// layout Masonry after each image loads
+        $grid.imagesLoaded().progress( function() {
+            $grid.masonry('layout');
+        });
+    });
+</script>
+</body>
+</html>

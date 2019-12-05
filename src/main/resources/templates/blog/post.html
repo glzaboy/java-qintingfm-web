@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/common::niftyHeader('文章编辑','//static.qintingfm.com/nifty/v2.9/plugins/summernote/summernote.min.css,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.css')"/>
+
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+<body>
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+
+    <!--NAVBAR-->
+    <!--===================================================-->
+    <header id="navbar" th:replace="fragments/common::pageheader"/>
+    <!--===================================================-->
+    <!--END NAVBAR-->
+
+    <div class="boxed">
+
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div id="content-container">
+            <div id="page-head">
+            </div>
+
+
+            <!--Page content-->
+            <!--===================================================-->
+            <div id="page-content">
+
+                <!-- Contact Toolbar -->
+                <div class="row pad-btm">
+                    <div class="col-sm-6 col-sm-offset-6 toolbar-right text-right">
+                        <button class="btn btn-primary">Save &amp; Publish</button>
+                    </div>
+                </div>
+
+                <div class="fixed-fluid">
+                    <div class="fixed-sm-300 pull-sm-right">
+                        <div class="panel">
+                            <div class="panel-body">
+
+                                <p class="text-main text-bold text-uppercase">Featured Image</p>
+                                <p>Featured images are images that represent an individual Post, Page, or Custom Post Type.</p>
+                                <!--Dropzonejs-->
+                                <!--===================================================-->
+                                <div class="dropzone-container">
+                                    <form id="demo-dropzone" action="#">
+                                        <div class="dz-default dz-message">
+                                            <div class="dz-icon">
+                                                <i class="demo-pli-upload-to-cloud icon-5x"></i>
+                                            </div>
+                                            <div>
+                                                <span class="dz-text">Drop files to upload</span>
+                                                <p class="text-sm text-muted">or click to pick manually</p>
+                                            </div>
+                                        </div>
+                                        <div class="fallback">
+                                            <form action="#" method="post" enctype="multipart/form-data">
+                                                <input name="file" type="file" multiple="multiple"/>
+                                            </form>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--===================================================-->
+                                <!-- End Dropzonejs -->
+
+
+                                <hr/>
+
+                                <p class="text-main text-bold text-uppercase">Publish</p>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Status</label>
+                                        <div class="col-sm-7">
+                                            <div class="select">
+                                                <select>
+                                                    <option value="push">Published</option>
+                                                    <option value="push">Unpublish</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Visibility</label>
+                                        <div class="col-sm-7">
+                                            <div class="select">
+                                                <select>
+                                                    <option value="none" selected="" disabled="disabled">Public</option>
+                                                    <option value="push">Private</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Categories</label>
+                                        <div class="col-sm-7">
+                                            <div class="select">
+                                                <select>
+                                                    <option value="none" selected="" disabled="disabled">UnCategorized</option>
+                                                    <option value="push">Internet</option>
+                                                    <option value="push">Movies</option>
+                                                    <option value="push">Musics</option>
+                                                    <option value="push">Entertainment</option>
+                                                    <option value="push">Sports</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr/>
+
+                                <p class="text-main text-sm text-uppercase text-bold">Public Settings</p>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Allow comments</label>
+                                        <div class="col-sm-7">
+                                            <input class="toggle-switch" id="demo-allow-comments" type="checkbox" checked="checked"/>
+                                            <label for="demo-allow-comments"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="fluid">
+                        <div class="form-group">
+                            <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blogPost.title}"/>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-body">
+                                <div id="demo-summernote" th:utext="${blogPost.content}">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--===================================================-->
+            <!--End page content-->
+
+        </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+
+
+
+        <!--ASIDE-->
+        <!--===================================================-->
+        <aside id="aside-container" th:replace="fragments/common::aside"/>
+        <!--===================================================-->
+        <!--END ASIDE-->
+
+
+        <!--MAIN NAVIGATION-->
+        <!--===================================================-->
+        <nav id="mainnav-container">
+            <div id="mainnav">
+
+
+                <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
+                <!--It will only appear on small screen devices.-->
+                <!--================================
+                <div class="mainnav-brand">
+                    <a href="index.html" class="brand">
+                        <img src="img/logo.png" alt="Nifty Logo" class="brand-icon">
+                        <span class="brand-text">Nifty</span>
+                    </a>
+                    <a href="#" class="mainnav-toggle"><i class="pci-cross pci-circle icon-lg"></i></a>
+                </div>
+                -->
+
+
+
+                <!--Menu-->
+                <!--================================-->
+                <div id="mainnav-menu-wrap">
+                    <div class="nano">
+                        <div class="nano-content">
+                            <ul id="mainnav-menu" class="list-group" th:include="fragments/common::menu('/blog/post')"/>
+                            <!--Widget-->
+                            <div class="mainnav-widget" th:replace="fragments/common::mainnavwidget2"/>
+                            <!--End widget-->
+                        </div>
+                    </div>
+                </div>
+                <!--================================-->
+                <!--End menu-->
+
+            </div>
+        </nav>
+        <!--===================================================-->
+        <!--END MAIN NAVIGATION-->
+
+    </div>
+    <footer id="footer" th:replace="fragments/common::contentFoot"/>
+</div>
+
+<div th:replace="fragments/common::footjs('//static.qintingfm.com/nifty/v2.9/plugins/summernote/summernote.min.js,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js')"></div>
+<script>
+    $(document).on('nifty.ready', function () {
+        $('#demo-dropzone').dropzone({
+            //url: '/file/post',
+            //autoProcessQueue: false,
+            addRemoveLinks: true,
+            maxFiles: 1,
+            init: function() {
+                var myDropzone = this;
+                myDropzone.on('maxfilesexceeded', function(file) {
+                    this.removeAllFiles();
+                    this.addFile(file);
+                });
+            }
+        });
+
+        $('#demo-summernote, #demo-summernote-full-width').summernote({
+            height : '600px'
+        });
+    });
+</script>
+</body>
+</html>
