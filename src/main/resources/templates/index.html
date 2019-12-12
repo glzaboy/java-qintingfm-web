@@ -53,24 +53,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel grid-item" th:each="blog:${blogList.getData()}">
-                            <div class="blog-content">
-                                <div class="blog-title media-block">
-                                    <a href="#" class="btn-link" th:href="@{/blog/view(id=${blog.id})}" target="_blank">
-                                        <h2 th:text="${blog.title}">标题</h2>
-                                    </a>
-                                </div>
-                                <div class="blog-body">
-                                    <p th:text="${blog.shortContent}">短介绍</p>
-                                </div>
-                            </div>
-                            <div class="blog-footer">
-                                <div class="media-left" th:text="${#dates.format(blog.getDateTime(),'YYYY-MM-dd')}">14 Days ago</div>
-                                <div class="media-body text-right">
-                                    <i class="demo-pli-clock icon-fw text-main"></i><span th:text="${#dates.format(blog.getDateTime(),'HH:mm')}">9:25</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

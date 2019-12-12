@@ -1,4 +1,4 @@
-package com.qintingfm.web;
+package com.qintingfm.web.config;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
