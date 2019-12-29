@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,15 +24,16 @@ public class AppUserDetailsService implements UserDetailsService {
     RoleJpa roleJpa;
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-
         if(userName==null || userName.isEmpty()){
             return null;
         }
         User user=new User();
         user.setUsername(userName);
-        Optional<User> one = userJpa.findOne(Example.of(user));
+        Optional<User> one = userJpa.findByUsername(userName);
+        //Optional<User> one = userJpa.findOne(Example.of(user));
         if(!one.isPresent()){
-            return null;
+            throw new UsernameNotFoundException("用户不存在");
+            //return null;
         }
         User user1 = one.get();
 
