@@ -1,21 +1,22 @@
 package com.qintingfm.web.service;
 
-import com.qintingfm.web.dao.Role;
-import com.qintingfm.web.dao.User;
+import com.qintingfm.web.jpa.entity.Role;
+import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.jpa.RoleJpa;
 import com.qintingfm.web.jpa.UserJpa;
+import com.qintingfm.web.pojo.WebUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
-public class UserDetailsServer implements UserDetailsService {
+public class AppUserDetailsService implements UserDetailsService {
     @Autowired
     UserJpa userJpa;
     @Autowired
@@ -33,9 +34,20 @@ public class UserDetailsServer implements UserDetailsService {
             return null;
         }
         User user1 = one.get();
+
+        WebUserDetails webUserDetails=new WebUserDetails();
+        webUserDetails.setUsername(user1.getUsername());
+        webUserDetails.setPassword(user1.getPassword());
+        webUserDetails.setAccountNonExpired(user1.isAccountNonExpired());
+        webUserDetails.setAccountNonLocked(user1.isAccountNonLocked());
+        webUserDetails.setCredentialsNonExpired(user1.isCredentialsNonExpired());
+        webUserDetails.setEnabled(user1.isEnabled());
         Role role = new Role();
         role.setUserId(user1.getId());
-        user1.setAuthorities(roleJpa.findAll(Example.of(role)));
-        return user1;
+        List<Role> all = roleJpa.findAll(Example.of(role));
+        Collection<GrantedAuthority> grantedAuthorities=new LinkedList<>();
+        all.forEach(item->{grantedAuthorities.add(item);});
+        webUserDetails.setAuthorities(grantedAuthorities);
+        return webUserDetails;
     }
 }

@@ -1,14 +1,16 @@
-package com.qintingfm.web.dao;
+package com.qintingfm.web.jpa.entity;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Data
 @Entity
 public class Role implements GrantedAuthority {
+    @Id
+    @SequenceGenerator(sequenceName="role_id",name = "genid",allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genid")
     private Long id;
     private String authority;
     private  Integer userId;

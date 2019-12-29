@@ -1,34 +1,24 @@
-package com.qintingfm.web.dao;
+package com.qintingfm.web.pojo;
 
-import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
-@Data
-@Entity
-public class User   implements Serializable,UserDetails {
-    @Id
-    private Integer id;
-    Collection<Role> authorities=new ArrayList<>();
-    String password;
-    String username;
-    boolean isAccountNonExpired;
-    boolean isAccountNonLocked;
-    boolean isCredentialsNonExpired;
-    boolean isEnabled;
-
+@Setter
+public class WebUserDetails implements UserDetails {
+    private String username;
+    private String password;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
+    Collection<GrantedAuthority> authorities=new ArrayList<>();
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        return authorities;
     }
 
     @Override

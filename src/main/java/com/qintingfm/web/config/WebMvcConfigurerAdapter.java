@@ -14,7 +14,6 @@ public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getThemeChangeInterceptor()).addPathPatterns("/misc/changeTheme");
-//        super.addInterceptors(registry);
     }
     @Bean
     public HandlerInterceptor getThemeChangeInterceptor(){
