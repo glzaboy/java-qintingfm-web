@@ -25,7 +25,7 @@ public class User {
 //            modelAndView.addObject("image",image);
 //        }
         BingBGImage image = bingImageService.getImage();
-        modelAndView.addObject("image",image);
+        modelAndView.addObject("image",image.getImageList().get(0));
         modelAndView.setViewName("user/login");
         return modelAndView;
     }

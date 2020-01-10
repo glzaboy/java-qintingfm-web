@@ -1,5 +1,6 @@
 package com.qintingfm.web.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 /**
  * Bing 背景图
  */
+@JsonIgnoreProperties({"startdate","fullstartdate","enddate"})
 public class BingBGImage {
 
     public static class Image{

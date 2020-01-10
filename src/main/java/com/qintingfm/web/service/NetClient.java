@@ -72,7 +72,7 @@ public class NetClient {
 
     public void setUrl(String url, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer();
-        if (queries.size() > 0) {
+        if (queries!=null && queries.size() > 0) {
             Iterator<Map.Entry<String, String>> iterator = queries.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String> next = iterator.next();
@@ -122,7 +122,6 @@ public class NetClient {
     public <T> T requestToOjbect(Class<T> classzz) {
         String s = requestToString();
         if(s!=null){
-            ObjectMapper objectMapper = new ObjectMapper();
             T t = null;
             try {
                 t = objectMapper.readValue(s, classzz);
