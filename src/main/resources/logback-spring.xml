@@ -12,25 +12,7 @@
             <pattern>${MY_PATTERN}</pattern>
         </encoder>
     </appender>
-    <!--&lt;!&ndash;&lt;!&ndash;测试，开发环境需要打印日志 jvm环境变量-Dlogback.env=dev &ndash;&gt;&ndash;&gt;-->
-    <!--<if condition='property("logback.env").contains("dev")'>-->
-    <!--<then>-->
-    <!--<appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-    <!--<file>${logger.root}/${app.name}-debug.log</file>-->
-    <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-    <!--<level>debug</level>-->
-    <!--</filter>-->
-    <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-    <!--<fileNamePattern>${logger.root:-/data/www/java/work/logs}/${app.name}-debug.%d{yyyy-MM-dd}.log.zip</fileNamePattern>-->
-    <!--<maxHistory>365</maxHistory>-->
-    <!--</rollingPolicy>-->
-    <!--<encoder>-->
-    <!--<pattern>${MY_PATTERN}</pattern>-->
-    <!--<charset>UTF-8</charset>-->
-    <!--</encoder>-->
-    <!--</appender>-->
-    <!--</then>-->
-    <!--</if>-->
+
 
     <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logger.root}/${app.name}-info.log</file>
@@ -60,11 +42,6 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    <!--<logger name="com.zbj.mail">-->
-    <!--<appender-ref ref="info"/>-->
-    <!--&lt;!&ndash;<appender-ref ref="error"/>&ndash;&gt;-->
-    <!--<appender-ref ref="STDOUT"/>-->
-    <!--</logger>-->
     <root level="info">
         <appender-ref ref="error"/>
         <appender-ref ref="info" />
