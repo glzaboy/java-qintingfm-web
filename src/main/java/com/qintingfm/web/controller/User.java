@@ -3,7 +3,6 @@ package com.qintingfm.web.controller;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.pojo.BingBGImage;
 import com.qintingfm.web.service.BingImageService;
-import com.sun.deploy.net.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
