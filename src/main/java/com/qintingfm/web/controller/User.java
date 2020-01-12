@@ -47,10 +47,7 @@ public class User {
 
     @RequestMapping(value = "/logout",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody
-    public AjaxDto logout(){
-        AjaxDto ajaxDto=new AjaxDto();
-        ajaxDto.setMessage("退出成功");
-        ajaxDto.setLink(MvcUriComponentsBuilder.fromMethodName(Index.class,"index").buildAndExpand().encode().toString());
-        return ajaxDto;
+    public ModelAndView logout(ModelAndView modelAndView){
+        return modelAndView;
     }
 }

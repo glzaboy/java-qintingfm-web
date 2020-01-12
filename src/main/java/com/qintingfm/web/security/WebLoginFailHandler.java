@@ -5,9 +5,12 @@ import com.qintingfm.web.common.AjaxDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,16 +18,16 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-public class WebLogoutSuccessHandler implements LogoutSuccessHandler {
+public class WebLoginFailHandler implements AuthenticationFailureHandler {
     @Autowired
     ObjectMapper objectMapper;
+
     @Override
-    public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        log.info("logout");
+    public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
+        log.info("loginFail");
         AjaxDto ajaxDto=new AjaxDto();
-        ajaxDto.setLink("/");
-        ajaxDto.setMessage(authentication.getName()+"您已经成功退出，再见。");
-        ajaxDto.setAutoJump(3);
+        ajaxDto.setMessage("登录失败"+e.getLocalizedMessage());
+        ajaxDto.setAutoHide("1");
         httpServletResponse.setCharacterEncoding("utf-8");
         httpServletResponse.getWriter().println(objectMapper.writeValueAsString(ajaxDto));
     }

@@ -1,5 +1,6 @@
 package com.qintingfm.web.config;
 
+import com.qintingfm.web.security.WebLoginFailHandler;
 import com.qintingfm.web.security.WebLoginSuccessHandler;
 import com.qintingfm.web.security.WebLogoutSuccessHandler;
 import com.qintingfm.web.service.AppUserDetailsService;
@@ -29,16 +30,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     WebLogoutSuccessHandler webLogoutSuccessHandler;
     @Autowired
     WebLoginSuccessHandler webLoginSuccessHandler;
+    @Autowired
+    WebLoginFailHandler webLoginFailHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/login", "/user/logout").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
-                .loginPage("/user/login").loginProcessingUrl("/login").
-                successHandler(webLoginSuccessHandler)
-                .permitAll();
-//        .and().logout().logoutUrl("/user/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll();
+                .loginPage("/user/login").loginProcessingUrl("/usa/login").loginProcessingUrl("/login").
+                successHandler(webLoginSuccessHandler).failureHandler(webLoginFailHandler)
+                .permitAll()
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll();
     }
 
     @Bean
