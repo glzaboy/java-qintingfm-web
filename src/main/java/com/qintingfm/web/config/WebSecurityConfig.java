@@ -1,5 +1,6 @@
 package com.qintingfm.web.config;
 
+import com.qintingfm.web.security.JpaTokenRepositoryImpl;
 import com.qintingfm.web.security.WebLoginFailHandler;
 import com.qintingfm.web.security.WebLoginSuccessHandler;
 import com.qintingfm.web.security.WebLogoutSuccessHandler;
@@ -15,15 +16,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    UUID key= UUID.randomUUID();
     @Autowired
     AppUserDetailsService appUserDetailsService;
     @Autowired
@@ -32,6 +39,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     WebLoginSuccessHandler webLoginSuccessHandler;
     @Autowired
     WebLoginFailHandler webLoginFailHandler;
+    @Autowired
+    JpaTokenRepositoryImpl jpaTokenRepository;
+    @Bean
+    RememberMeServices rememberMeServices(){
+        return new PersistentTokenBasedRememberMeServices(key.toString(),appUserDetailsService,jpaTokenRepository);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -41,7 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/user/login").loginProcessingUrl("/usa/login").loginProcessingUrl("/login").
                 successHandler(webLoginSuccessHandler).failureHandler(webLoginFailHandler)
                 .permitAll()
-                .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll();
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
+                .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString());
     }
 
     @Bean
