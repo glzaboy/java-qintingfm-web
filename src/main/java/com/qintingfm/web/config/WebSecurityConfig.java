@@ -1,13 +1,11 @@
 package com.qintingfm.web.config;
 
-import com.qintingfm.web.security.JpaTokenRepositoryImpl;
-import com.qintingfm.web.security.WebLoginFailHandler;
-import com.qintingfm.web.security.WebLoginSuccessHandler;
-import com.qintingfm.web.security.WebLogoutSuccessHandler;
+import com.qintingfm.web.security.*;
 import com.qintingfm.web.service.AppUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     WebLoginFailHandler webLoginFailHandler;
     @Autowired
     JpaTokenRepositoryImpl jpaTokenRepository;
+    @Autowired
+    CsrfSecurityRequestMatcher csrfSecurityRequestMatcher;
     @Bean
     RememberMeServices rememberMeServices(){
         return new PersistentTokenBasedRememberMeServices(key.toString(),appUserDetailsService,jpaTokenRepository);
@@ -48,14 +48,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/login", "/user/logout").permitAll()
+        http.authorizeRequests().antMatchers("/login", "/xmlrpc/xmlrpcserver","/").permitAll()
+                .antMatchers(HttpMethod.POST,"/xmlrpc/xmlrpcserver").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
-                .loginPage("/user/login").loginProcessingUrl("/usa/login").loginProcessingUrl("/login").
+                .loginPage("/user/login").loginProcessingUrl("/login").
                 successHandler(webLoginSuccessHandler).failureHandler(webLoginFailHandler)
                 .permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
-                .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString());
+                .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString())
+                .and().csrf(csrf->{csrf.requireCsrfProtectionMatcher(csrfSecurityRequestMatcher);});
+//                .and().csrf(csrf->{csrf.disable();});
     }
 
     @Bean
