@@ -1,37 +1,180 @@
 package com.qintingfm.web.controller;
 
+import com.qintingfm.web.jpa.BlogJpa;
+import com.qintingfm.web.jpa.CategoryJpa;
+import com.qintingfm.web.jpa.entity.Blog;
+import com.qintingfm.web.jpa.entity.BlogCont;
+import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.service.AppUserDetailsService;
+import com.qintingfm.web.service.XmlRpcServer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.xml.sax.SAXException;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.*;
 
 @Controller
 @RequestMapping("/xmlrpc")
 @Slf4j
 public class XmlRpc {
+    @Autowired
+    AppUserDetailsService appUserDetailsService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    CategoryJpa categoryJpa;
+    @Autowired
+    BlogJpa blogJpa;
     @RequestMapping(value = "/xmlrpcserver" ,method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = {"application/xml;charset=utf-8"})
     @ResponseBody
-    public String xmlRpcServer(@Autowired HttpServletRequest  request) throws IOException {
+    public String xmlRpcServer(@Autowired HttpServletRequest  request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
-        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        byte[] bytes=new byte[1024];
-        int readnum =0;
-        do {
-             readnum = inputStream.read(bytes, 0, 10);
-             if(readnum>0){
-                 byteArrayOutputStream.write(bytes,0,readnum);
-             }
+        response.setContentType("application/xml;charset=utf-8");
+        XmlRpcServer xmlRpcServer=new XmlRpcServer();
+        try {
+            ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+            byte[] bytes=new byte[1024];
+            int readnum =0;
+            do {
+                 readnum = inputStream.read(bytes, 0, 10);
+                 if(readnum>0){
+                     byteArrayOutputStream.write(bytes,0,readnum);
+                 }
 
-        }while (readnum>0);
+            }while (readnum>0);
+            log.info(byteArrayOutputStream.toString());
+            ByteArrayInputStream byteInputStream=new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            XmlRpcRequestParser xmlRequestParser = xmlRpcServer.getXmlRequestParser(byteInputStream);
+            if(!login(xmlRequestParser.getParams().get(1).toString(),xmlRequestParser.getParams().get(2).toString())){
+                xmlRpcServer.ResponseError(response.getOutputStream(),1001,"登录出错");
+                return "";
+            }
+            log.info(xmlRequestParser.getMethodName().toString());
+            switch (xmlRequestParser.getMethodName()){
+                case "blogger.getUsersBlogs":
+                    xmlRpcServer.Response(response.getOutputStream(),getUserBlog());
+                    break;
+                case "metaWeblog.getCategories":
+                    xmlRpcServer.Response(response.getOutputStream(),getCaterory());
+                    break;
+                case "metaWeblog.getRecentPosts":
+                    xmlRpcServer.Response(response.getOutputStream(),getRecentPosts(xmlRequestParser));
+                    break;
+                case "metaWeblog.newPost":
+                    xmlRpcServer.Response(response.getOutputStream(),newPost(xmlRequestParser));
+                    break;
+                case "metaWeblog.editPost":
+                    xmlRpcServer.Response(response.getOutputStream(),editPost(xmlRequestParser));
+            }
+        } catch (XmlRpcException e) {
+            try {
+                xmlRpcServer.ResponseError(response.getOutputStream(),e.code,e.getMessage());
+            } catch (SAXException ex) {
+                log.error(ex.getMessage());
+            }
+        } catch (SAXException e) {
+            try {
+                xmlRpcServer.ResponseError(response.getOutputStream(),1001,e.getMessage());
+            } catch (SAXException ex) {
+                log.error(ex.getMessage());
+            }
+        }
+        return "";
+    }
 
-        log.info(byteArrayOutputStream.toString());
-        return "xmlrpc";
+    private Vector<Map<String,Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser) {
+        Vector<Map<String,Object>> mapVector=new Vector<>();
+
+        List<Blog> post_id_desc = blogJpa.findAll(Sort.by(new Sort.Order(Sort.Direction.DESC,"postId")));
+        post_id_desc.stream().forEach(item->{
+            Map<String,Object>post=new HashMap<>();
+            post.put("dateCreated",item.getDateCreated());
+            post.put("title",item.getTitle());
+            post.put("postid",item.getPostId());
+            BlogCont blogCont = item.getBlogCont();
+            if(blogCont!=null){
+                post.put("description",blogCont.getCont());
+            }else{
+                post.put("description","");
+            }
+
+            mapVector.add(post);
+        });
+        return mapVector;
+
+    }
+
+    private String editPost(XmlRpcRequestParser xmlRequestParser) {
+        HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
+        Optional<Blog> byId = blogJpa.findById(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
+        if(!byId.isPresent()){
+            Blog blog=new Blog();
+            blog.setTitle(stringObjectHashMap.get("title").toString());
+            BlogCont blogCont=new BlogCont();
+            blogCont.setCont(stringObjectHashMap.get("description").toString());
+            blog.setBlogCont(blogCont);
+            blogJpa.save(blog);
+        }else {
+            Blog blog=byId.get();
+            blog.setTitle(stringObjectHashMap.get("title").toString());
+            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
+            blogJpa.save(blog);
+        }
+        return "";
+    }
+
+    private String newPost(XmlRpcRequestParser xmlRequestParser) {
+        HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
+        Blog blog=new Blog();
+        blog.setTitle(stringObjectHashMap.get("title").toString());
+        BlogCont blogCont=new BlogCont();
+        blogCont.setCont(stringObjectHashMap.get("description").toString());
+        blog.setBlogCont(blogCont);
+//        blog.setDateCreated(stringObjectHashMap.get("dateCreated"));
+        blogJpa.save(blog);
+        return blog.getPostId().toString();
+    }
+
+    private Vector<Map<String,String>> getCaterory() {
+        Vector<Map<String,String>> mapVector=new Vector<>();
+
+        List<Category> all = categoryJpa.findAll();
+        all.forEach((item)->{
+            Map<String,String> caterories=new HashMap<>();
+            caterories.put("title",item.getTitle());
+            caterories.put("categoryid",item.getCatId().toString());
+            caterories.put("description",item.getDescription());
+            caterories.put("rssUrl","");
+            caterories.put("htmlUrl","");
+            mapVector.add(caterories);
+        });
+
+        return mapVector;
+    }
+    private Vector<Map<String,String>> getUserBlog(){
+        Vector<Map<String,String>> mapVector=new Vector<>();
+        Map<String,String>userBlog=new HashMap<>();
+        userBlog.put("blogid","1");
+        userBlog.put("blogName","qintingfm");
+        userBlog.put("url",ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString());
+        userBlog.put("xmlrpc",ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString());
+        userBlog.put("isAdmin","1");
+        mapVector.add(userBlog);
+        return mapVector;
     }
     @RequestMapping(value = "/xmlrpcserver" ,method = {RequestMethod.GET},produces = {"application/xml;charset=utf-8"})
     @ResponseBody
@@ -48,4 +191,16 @@ public class XmlRpc {
                 "\t</service>\n" +
                 "</rsd>";
     }
+    boolean login(String username,String password){
+        UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
+        if(userDetails==null){
+            return false;
+        }
+        boolean matches = passwordEncoder.matches( password,userDetails.getPassword());
+        if(matches){
+            return true;
+        }
+        return false;
+    }
+
 }
