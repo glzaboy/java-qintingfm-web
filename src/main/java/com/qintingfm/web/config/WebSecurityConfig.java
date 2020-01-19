@@ -39,8 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     WebLoginFailHandler webLoginFailHandler;
     @Autowired
     JpaTokenRepositoryImpl jpaTokenRepository;
-    @Autowired
-    CsrfSecurityRequestMatcher csrfSecurityRequestMatcher;
     @Bean
     RememberMeServices rememberMeServices(){
         return new PersistentTokenBasedRememberMeServices(key.toString(),appUserDetailsService,jpaTokenRepository);
