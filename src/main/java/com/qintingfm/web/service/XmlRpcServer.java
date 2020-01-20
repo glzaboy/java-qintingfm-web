@@ -1,11 +1,8 @@
 package com.qintingfm.web.service;
 
 import org.apache.xmlrpc.XmlRpcConfig;
-import org.apache.xmlrpc.XmlRpcConfigImpl;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.TypeFactoryImpl;
-import org.apache.xmlrpc.common.XmlRpcController;
-import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
@@ -39,18 +36,22 @@ public class XmlRpcServer {
     }
 
     public void ResponseError(OutputStream outputStream, int pCode, String pMessage) throws XmlRpcException, SAXException {
+        XmlRpcController xmlRpcController=new XmlRpcController();
         XmlRpcStreamConfig x = new XmlRpcStreamConfig();
+        xmlRpcController.setXmlRpcConfig(x);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
-        TypeFactoryImpl typeFactory = new TypeFactoryImpl(null);
+        TypeFactoryImpl typeFactory = new TypeFactoryImpl(xmlRpcController);
         ContentHandler w = writerFactory.getXmlWriter(x, outputStream);
         XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(x, w, typeFactory);
         xmlRpcWriter.write(x, pCode, pMessage);
     }
 
     public void Response(OutputStream outputStream, Object pResult) throws XmlRpcException, SAXException {
+        XmlRpcController xmlRpcController=new XmlRpcController();
         XmlRpcStreamConfig x = new XmlRpcStreamConfig();
+        xmlRpcController.setXmlRpcConfig(x);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
-        TypeFactoryImpl typeFactory = new TypeFactoryImpl(null);
+        TypeFactoryImpl typeFactory = new TypeFactoryImpl(xmlRpcController);
         ContentHandler w = writerFactory.getXmlWriter(x, outputStream);
         XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(x, w, typeFactory);
         xmlRpcWriter.write(x, pResult);
@@ -69,7 +70,7 @@ public class XmlRpcServer {
         }
 
         public boolean isEnabledForExceptions() {
-            return false;
+            return true;
         }
 
         public String getEncoding() {
