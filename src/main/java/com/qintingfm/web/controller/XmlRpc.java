@@ -281,11 +281,11 @@ public class XmlRpc {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<rsd version=\"1.0\" xmlns=\"http://archipelago.phrasewise.com/rsd\">\n" +
                 "\t<service>\n" +
-                "\t\t<engineName>MetaWeblog</engineName>\n" +
+                "\t\t<engineName>qintingfm</engineName>\n" +
                 "\t\t<engineLink>http://qintingfm.com/</engineLink>\n" +
                 "\t\t<homePageLink>http://qintingfm.com/</homePageLink>\n" +
                 "\t\t<apis>\n" +
-                "\t\t\t<api name=\"MetaWeblog\" blogID=\"1\" preferred=\"false\" apiLink=\""+ ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replace("/xmlrpc/xmlrpcserver","") +"\" />\n" +
+                "\t\t\t<api name=\"MetaWeblog\" blogID=\"1\" preferred=\"false\" apiLink=\""+ ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString()+"\" />\n" +
                 "\t\t</apis>\n" +
                 "\t</service>\n" +
                 "</rsd>";
