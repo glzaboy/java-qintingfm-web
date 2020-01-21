@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh_CN">
 <head th:replace="fragments/common::niftyHeader(${blogPost.title},'')"/>
-
-
 <!--TIPS-->
 <!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
 <body>
@@ -43,11 +41,11 @@
                         </div>
                         <div class="blog-content">
 
-                            <div class="blog-body" th:utext="${blogPost.content}"/>
+                            <div class="blog-body" th:utext="${blogPost.blogCont.cont}"/>
                         </div>
                         <div class="blog-footer">
                             <div class="media-left">
-                                <span class="label label-success" th:text="${#dates.format(blogPost.dateTime,'YYYY-MM-dd')}">5 Days ago</span>
+                                <span class="label label-success" th:text="${#dates.format(blogPost.dateCreated,'yyyy-MM-dd HH:mm:ss')}">5 Days ago</span>
                                 <small>Posted by : <a href="#" class="btn-link">Admin</a></small>
                             </div>
                             <div class="media-body text-right">
