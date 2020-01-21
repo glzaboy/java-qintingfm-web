@@ -1,5 +1,6 @@
 package com.qintingfm.web.controller;
 
+import com.qiniu.util.StringUtils;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.CategoryJpa;
 import com.qintingfm.web.jpa.entity.Blog;
@@ -7,6 +8,9 @@ import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.AppUserDetailsService;
 import com.qintingfm.web.service.XmlRpcServer;
+import com.qintingfm.web.storage.Manager;
+import com.qintingfm.web.storage.ManagerException;
+import com.qintingfm.web.storage.StorageObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.parser.XmlRpcRequestParser;
@@ -15,8 +19,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
@@ -28,6 +34,7 @@ import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.*;
 
 @Controller
@@ -43,6 +50,8 @@ public class XmlRpc {
     CategoryJpa categoryJpa;
     @Autowired
     BlogJpa blogJpa;
+    @Autowired
+    Manager manager;
     @RequestMapping(value = "/xmlrpcserver" ,method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = {"application/xml;charset=utf-8"})
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest  request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
@@ -96,6 +105,9 @@ public class XmlRpc {
                 case "blogger.deletePost":
                     xmlRpcServer.Response(response.getOutputStream(),deletePost(xmlRequestParser));
                     break;
+                case "metaWeblog.newMediaObject":
+                    xmlRpcServer.Response(response.getOutputStream(),newMediaObject(xmlRequestParser));
+                    break;
             }
         } catch (XmlRpcException e) {
             try {
@@ -109,9 +121,27 @@ public class XmlRpc {
             } catch (SAXException ex) {
                 log.error(ex.getMessage());
             }
+        } catch (ManagerException e) {
+            try {
+                xmlRpcServer.ResponseError(response.getOutputStream(),1001,e.getMessage());
+            } catch (SAXException ex) {
+                log.error(ex.getMessage());
+            }
         }
         return "";
     }
+
+    private Object newMediaObject(XmlRpcRequestParser xmlRequestParser) throws ManagerException{
+        Map<String, Object> stringObjectMap = (Map<String, Object>) xmlRequestParser.getParams().get(3);
+        Map<String,String> mediaObject=new HashMap<>();
+        byte[] bits = (byte[])stringObjectMap.get("bits");
+        String name = (String)stringObjectMap.get("name");
+        String s = DigestUtils.md5DigestAsHex(bits);
+        StorageObject put =  manager.put(bits, s);
+        mediaObject.put("url",put.getUrl());
+        return mediaObject;
+    }
+
 
     private Boolean deletePost(XmlRpcRequestParser xmlRequestParser) {
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(1).toString());
@@ -261,13 +291,17 @@ public class XmlRpc {
                 "</rsd>";
     }
     boolean login(String username,String password){
-        UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
-        if(userDetails==null){
+        try{
+            UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
+            if(userDetails==null){
+                return false;
+            }
+            boolean matches = passwordEncoder.matches( password,userDetails.getPassword());
+            if(matches){
+                return true;
+            }
+        }catch(UsernameNotFoundException exception){
             return false;
-        }
-        boolean matches = passwordEncoder.matches( password,userDetails.getPassword());
-        if(matches){
-            return true;
         }
         return false;
     }
