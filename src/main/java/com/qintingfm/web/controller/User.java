@@ -23,22 +23,10 @@ import java.util.function.Function;
 public class User {
     @Autowired
     BingImageService bingImageService;
-    private Function<HttpServletRequest, Map<String, String>> resolveHiddenInputs = request -> Collections
-            .emptyMap();
-
     @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public ModelAndView loginPage(ModelAndView modelAndView, @Autowired HttpServletRequest request){
-//        ApiOutDto<BingBGImage> bingBGImage = bingService.getBingBGImage();
-//        if(bingBGImage.isSuccess()){
-//            BingBGImage.Image image = bingBGImage.getData().getImageList().get(0);
-//            modelAndView.addObject("image",image);
-//        }
+    public ModelAndView loginPage(ModelAndView modelAndView){
         BingBGImage image = bingImageService.getImage();
         modelAndView.addObject("image",image.getImageList().get(0));
-        for (Map.Entry<String, String> input : this.resolveHiddenInputs.apply(request).entrySet()) {
-            log.info(input.getKey()+input.getValue());
-//            sb.append("<input name=\"").append(input.getKey()).append("\" type=\"hidden\" value=\"").append(input.getValue()).append("\" />\n");
-        }
         modelAndView.setViewName("user/login");
         return modelAndView;
     }

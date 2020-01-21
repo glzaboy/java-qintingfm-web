@@ -207,8 +207,6 @@
         </div>
         <!--================================-->
         <!--End brand logo & name-->
-
-
         <!--Navbar Dropdown-->
         <!--================================-->
         <div class="navbar-content">
@@ -223,9 +221,6 @@
                 </li>
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <!--End Navigation toogle button-->
-
-
-
                 <!--Search-->
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <li>
@@ -245,11 +240,6 @@
 
             </ul>
             <ul class="nav navbar-top-links">
-
-
-
-
-
                 <!--User dropdown-->
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <li id="dropdown-user" class="dropdown">
@@ -283,7 +273,6 @@
                 </li>
                 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                 <!--End user dropdown-->
-
                 <li>
                     <a href="#" class="aside-toggle">
                         <i class="demo-pli-layout-grid"></i>
@@ -293,7 +282,6 @@
         </div>
         <!--================================-->
         <!--End Navbar Dropdown-->
-
     </div>
 </header>
 <aside id="aside-container" th:fragment="aside">
@@ -389,12 +377,6 @@
     </div>
 </div>
 <!-- 分页 -->
-<!--<ul class="pagination" th:fragment="pager( pageInfo )">-->
-<!--    <li th:class="${pageInfo.getPaged().getPage()==1}?'disabled':''"><a href="#" class="demo-pli-arrow-left" th:href="${#strings.replace(pageInfo.getPaged().getRequestUrl(),'{}',1)}"></a></li>-->
-<!--    <li th:class="${pageInfo.getPaged().getPage()==index}?'active':''" th:each="index:${#numbers.sequence(1, pageInfo.getPaged().getTotalPage())}"><a href="#" th:href="${#strings.replace(pageInfo.getPaged().getRequestUrl(),'{}',index)}" th:text="${index}">1</a></li>-->
-<!--    <li th:class="${pageInfo.getPaged().getPage()==pageInfo.getPaged().getTotalPage()}?'disabled':''"><a href="#" class="demo-pli-arrow-right" th:href="${#strings.replace(pageInfo.getPaged().getRequestUrl(),'{}',pageInfo.getPaged().getTotalPage())}"></a></li>-->
-<!--</ul>-->
-<!-- 分页 -->
 <ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )">
     <li th:class="${pageIndex==1}?'disabled':''"><a href="#" class="demo-pli-arrow-left" th:href="${#strings.replace(urlPrefix,'{}',1)}"></a></li>
     <li th:class="${pageIndex==index}?'active':''" th:each="index:${#numbers.sequence(1, pageTotal)}"><a href="#" th:href="${#strings.replace(urlPrefix,'{}',index)}" th:text="${index}">1</a></li>
@@ -407,24 +389,14 @@
     <div class="show-fixed pad-rgt pull-right">
         You have <a href="#" class="text-main"><span class="badge badge-danger">0</span> pending action.</a>
     </div>
-
-
-
     <!-- Visible when footer positions are static -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <div class="hide-fixed pull-right pad-rgt">
         14GB of <strong>512GB</strong> Free.
     </div>
-
-
-
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-
     <p class="pad-lft">&#0169; 2020 qintingfm.com</p>
-
-
-
 </footer>
 </html>
