@@ -1,9 +1,9 @@
 package com.qintingfm.web.service;
 
-import org.apache.xmlrpc.XmlRpcConfig;
+import com.qintingfm.web.service.xmlrpcconfig.RpcController;
+import com.qintingfm.web.service.xmlrpcconfig.StreamConfig;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.TypeFactoryImpl;
-import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;
@@ -17,16 +17,36 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.TimeZone;
 
+/**
+ * xml rpc简易服务端需要依赖xml-prc-common
+ * 本类配置比较奇特不适合使用spring配置。
+ */
 public class XmlRpcServer {
+    StreamConfig streamConfig;
+    RpcController rpcController;
+
+    public StreamConfig getStreamConfig() {
+        return streamConfig;
+    }
+
+    public void setStreamConfig(StreamConfig streamConfig) {
+        this.streamConfig = streamConfig;
+    }
+
+    public RpcController getRpcController() {
+        return rpcController;
+    }
+
+    public void setRpcController(RpcController rpcController) {
+        this.rpcController = rpcController;
+    }
+
     public XmlRpcRequestParser getXmlRequestParser(InputStream inputStream) throws XmlRpcException, IOException, SAXException {
 
-        XmlRpcStreamConfig x = new XmlRpcStreamConfig();
-        XmlRpcController wXmlRpcConfig=new XmlRpcController();
-        wXmlRpcConfig.setXmlRpcConfig(x);
-        TypeFactoryImpl typeFactory = new TypeFactoryImpl(wXmlRpcConfig);
-        final XmlRpcRequestParser parser = new XmlRpcRequestParser(x, typeFactory);
+        rpcController.setXmlRpcConfig(streamConfig);
+        TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
+        final XmlRpcRequestParser parser = new XmlRpcRequestParser(streamConfig, typeFactory);
         XMLReader xr = SAXParsers.newXMLReader();
         xr.setContentHandler(parser);
         InputSource inputSource = new InputSource(inputStream);
@@ -36,69 +56,20 @@ public class XmlRpcServer {
     }
 
     public void ResponseError(OutputStream outputStream, int pCode, String pMessage) throws XmlRpcException, SAXException {
-        XmlRpcController xmlRpcController=new XmlRpcController();
-        XmlRpcStreamConfig x = new XmlRpcStreamConfig();
-        xmlRpcController.setXmlRpcConfig(x);
+        rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
-        TypeFactoryImpl typeFactory = new TypeFactoryImpl(xmlRpcController);
-        ContentHandler w = writerFactory.getXmlWriter(x, outputStream);
-        XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(x, w, typeFactory);
-        xmlRpcWriter.write(x, pCode, pMessage);
+        TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
+        ContentHandler w = writerFactory.getXmlWriter(streamConfig, outputStream);
+        XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(streamConfig, w, typeFactory);
+        xmlRpcWriter.write(streamConfig, pCode, pMessage);
     }
 
     public void Response(OutputStream outputStream, Object pResult) throws XmlRpcException, SAXException {
-        XmlRpcController xmlRpcController=new XmlRpcController();
-        XmlRpcStreamConfig x = new XmlRpcStreamConfig();
-        xmlRpcController.setXmlRpcConfig(x);
+        rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
-        TypeFactoryImpl typeFactory = new TypeFactoryImpl(xmlRpcController);
-        ContentHandler w = writerFactory.getXmlWriter(x, outputStream);
-        XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(x, w, typeFactory);
-        xmlRpcWriter.write(x, pResult);
-    }
-
-    static class XmlRpcStreamConfig implements org.apache.xmlrpc.common.XmlRpcStreamRequestConfig {
-        public XmlRpcStreamConfig() {
-        }
-
-        public boolean isGzipCompressing() {
-            return false;
-        }
-
-        public boolean isGzipRequesting() {
-            return false;
-        }
-
-        public boolean isEnabledForExceptions() {
-            return true;
-        }
-
-        public String getEncoding() {
-            return null;
-        }
-
-        public boolean isEnabledForExtensions() {
-            return false;
-        }
-
-        public TimeZone getTimeZone() {
-            return TimeZone.getDefault();
-        }
-    }
-    static  class XmlRpcController extends org.apache.xmlrpc.common.XmlRpcController {
-        XmlRpcConfig xmlRpcConfig;
-        @Override
-        protected XmlRpcWorkerFactory getDefaultXmlRpcWorkerFactory() {
-            return null;
-        }
-
-        @Override
-        public XmlRpcConfig getConfig() {
-            return this.xmlRpcConfig;
-        }
-
-        public void setXmlRpcConfig(XmlRpcConfig xmlRpcConfig) {
-            this.xmlRpcConfig = xmlRpcConfig;
-        }
+        TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
+        ContentHandler w = writerFactory.getXmlWriter(streamConfig, outputStream);
+        XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(streamConfig, w, typeFactory);
+        xmlRpcWriter.write(streamConfig, pResult);
     }
 }

@@ -7,6 +7,8 @@ import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.AppUserDetailsService;
 import com.qintingfm.web.service.XmlRpcServer;
+import com.qintingfm.web.service.xmlrpcconfig.RpcController;
+import com.qintingfm.web.service.xmlrpcconfig.StreamConfig;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
@@ -58,6 +60,8 @@ public class XmlRpc {
         ServletInputStream inputStream = request.getInputStream();
         response.setContentType("application/xml;charset=utf-8");
         XmlRpcServer xmlRpcServer=new XmlRpcServer();
+        xmlRpcServer.setRpcController(new RpcController());
+        xmlRpcServer.setStreamConfig(new StreamConfig());
         try {
             ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
             byte[] bytes=new byte[1024];
