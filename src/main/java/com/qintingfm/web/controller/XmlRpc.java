@@ -1,6 +1,5 @@
 package com.qintingfm.web.controller;
 
-import com.qiniu.util.StringUtils;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.CategoryJpa;
 import com.qintingfm.web.jpa.entity.Blog;
@@ -23,7 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
@@ -34,7 +35,6 @@ import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.*;
 
 @Controller
