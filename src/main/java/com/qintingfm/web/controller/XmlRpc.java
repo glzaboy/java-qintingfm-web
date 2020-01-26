@@ -134,8 +134,8 @@ public class XmlRpc {
         }
         return "";
     }
-
-    private Object newMediaObject(XmlRpcRequestParser xmlRequestParser) throws ManagerException{
+    private Map<String,String> newMediaObject(XmlRpcRequestParser xmlRequestParser) throws ManagerException{
+        @SuppressWarnings("unchecked")
         Map<String, Object> stringObjectMap = (Map<String, Object>) xmlRequestParser.getParams().get(3);
         Map<String,String> mediaObject=new HashMap<>();
         byte[] bits = (byte[])stringObjectMap.get("bits");
@@ -203,8 +203,8 @@ public class XmlRpc {
         return mapVector;
 
     }
-
     private String editPost(XmlRpcRequestParser xmlRequestParser) {
+        @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Optional<Blog> byId = blogJpa.findById(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
         if(!byId.isPresent()){
@@ -234,8 +234,8 @@ public class XmlRpc {
         }
         return "";
     }
-
     private String newPost(XmlRpcRequestParser xmlRequestParser) {
+        @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Blog blog=new Blog();
         blog.setTitle(stringObjectHashMap.get("title").toString());
