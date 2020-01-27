@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/user/login", "/xmlrpc/xmlrpcserver","/","/page/*","/blog/**").permitAll()
+        http.authorizeRequests().antMatchers("/user/login", "/xmlrpc/server","/xmlrpc.php","/","/page/*","/blog/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/xmlrpc/xmlrpcserver").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
                 .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString())
-                .and().csrf(cs->{cs.ignoringAntMatchers("/xmlrpc/xmlrpcserver");});
+                .and().csrf(cs->{cs.ignoringAntMatchers("/xmlrpc/server","/xmlrpc.php");});
     }
 
     @Bean
