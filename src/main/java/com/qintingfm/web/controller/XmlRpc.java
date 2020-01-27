@@ -54,7 +54,7 @@ public class XmlRpc {
     BlogJpa blogJpa;
     @Autowired
     Manager manager;
-    @RequestMapping(value = "/xmlrpcserver" ,method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = {"application/xml;charset=utf-8"})
+    @RequestMapping(value = {"/xmlrpcserver",".php"} ,method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = {"application/xml;charset=utf-8"})
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest  request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
@@ -171,7 +171,7 @@ public class XmlRpc {
             }else{
                 postMap.put("description","");
             }
-            postMap.put("link",ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replace("/xmlrpc/xmlrpcserver","/blog/")+blog.getPostId());
+            postMap.put("link",ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("^/xmlrpc\\.*","/")+"/blog/view/"+blog.getPostId());
         }
         return postMap;
     }
@@ -197,7 +197,7 @@ public class XmlRpc {
             }else{
                 post.put("description","");
             }
-            post.put("link",ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replace("/xmlrpc/xmlrpcserver","/blog/")+item.getPostId());
+            post.put("link",ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("^/xmlrpc\\.*","/")+"/blog/view/"+item.getPostId());
             mapVector.add(post);
         });
         return mapVector;
@@ -279,7 +279,7 @@ public class XmlRpc {
         mapVector.add(userBlog);
         return mapVector;
     }
-    @RequestMapping(value = "/xmlrpcserver" ,method = {RequestMethod.GET},produces = {"application/xml;charset=utf-8"})
+    @RequestMapping(value = {"/xmlrpcserver",".php"} ,method = {RequestMethod.GET},produces = {"application/xml;charset=utf-8"})
     @ResponseBody
     public String xmlRpcServer( ) {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
