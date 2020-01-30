@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/user")
 @Slf4j
-public class User {
+public class UserController {
     @Autowired
     BingImageService bingImageService;
     @RequestMapping(value = "/login",method = RequestMethod.GET)

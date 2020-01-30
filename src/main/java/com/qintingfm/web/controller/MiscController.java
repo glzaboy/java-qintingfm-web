@@ -8,7 +8,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/misc")
-public class Misc {
+public class MiscController {
     @RequestMapping(value = "/changeTheme")
     @ResponseBody
     public Map<String, String> Home()

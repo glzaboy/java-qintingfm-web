@@ -42,7 +42,7 @@ import java.util.*;
 @Controller
 @Slf4j
 @Transactional
-public class XmlRpc {
+public class XmlRpcController {
     @Autowired
     AppUserDetailsService appUserDetailsService;
     @Autowired

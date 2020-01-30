@@ -1,7 +1,5 @@
 package com.qintingfm.web.controller;
 
-import com.qiniu.util.Auth;
-import com.qintingfm.web.config.StorageConfig;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.awt.print.Pageable;
 
 @Controller
 @Slf4j
-public class Index {
+public class IndexController {
     @Autowired
     BlogJpa blogJpa;
     @RequestMapping(value = {"/page/{pageIndex}","/"})
@@ -32,7 +27,7 @@ public class Index {
         view.addObject("pageIndex",all.getPageable().getPageNumber()+1);
         view.addObject("totalPages",all.getTotalPages());
         view.addObject("total",all.getTotalElements());
-        view.setViewName("index");
+        view.setViewName("indexController");
         return view;
     }
 }
