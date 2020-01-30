@@ -109,7 +109,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:if="${allCategory.size()>0}" th:each="item:${allCategory}">
-                                    <td><a class="btn-link" href="#" th:text="${item.getTitle()}" th:href="@{/blog/category(catId=${item.getCatId()})}">title</a></td>
+                                    <td><a class="btn-link" href="#" th:text="${item.getTitle()}" th:href="@{/blog/category/{catId}(catId=${item.getCatId()})}">title</a></td>
                                     <td><span class="text-muted" th:text="${#dates.format(#dates.createNow(),'YYYY-MM-dd HH:mm')}">Oct 22, 2014</span></td>
                                     <td>Internet</td>
                                     <td><a href="#" class="btn-link">Betty Murphy</a></td>
@@ -118,9 +118,7 @@
                                     </td>
                                     <td class="min-width">
                                         <div class="btn-groups">
-                                            <a href="#" class="btn btn-icon demo-pli-gear icon-lg add-tooltip" data-original-title="Settings" data-container="body"></a>
-                                            <a href="#" class="btn btn-icon demo-pli-file-text-image icon-lg add-tooltip" data-original-title="View post" data-container="body"></a>
-                                            <a href="#" class="btn btn-icon demo-pli-pen-5 icon-lg add-tooltip" data-original-title="Edit Post" data-container="body" th:href="@{/blog/post(id=${item.getCatId()})}"></a>
+                                            <a href="#" class="btn btn-icon demo-pli-pen-5 icon-lg add-tooltip" data-original-title="Edit" data-container="body" th:href="@{/blog/category/{catId}/edit(catId=${item.getCatId()})}"></a>
                                             <a href="#" class="btn btn-icon demo-pli-trash icon-lg add-tooltip" data-original-title="Remove" data-container="body"></a>
                                         </div>
                                     </td>

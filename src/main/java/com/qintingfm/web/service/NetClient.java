@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class NetClient {
+    public static final String URL_START = "?";
+    private static final String URL_SPLIT = "&";
     ObjectMapper objectMapper;
     Request.Builder builder = new Request.Builder();
     private OkHttpClient okHttpClient;
@@ -96,10 +98,10 @@ public class NetClient {
             }
         }
         if (sb.length() > 0) {
-            if (url.contains("?")) {
-                url = url + "&" + sb.toString().substring(0, sb.length() - 1);
+            if (url.contains(URL_START)) {
+                url = url + URL_SPLIT + sb.toString().substring(0, sb.length() - 1);
             } else {
-                url = url + "?" + sb.toString().substring(0, sb.length() - 1);
+                url = url + URL_START + sb.toString().substring(0, sb.length() - 1);
             }
         }
         builder.url(url);

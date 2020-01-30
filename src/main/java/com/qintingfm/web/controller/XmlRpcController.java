@@ -45,6 +45,14 @@ import java.util.*;
 @Controller
 @Slf4j
 public class XmlRpcController {
+    public static final String BLOGGER_GET_USERS_BLOGS = "blogger.getUsersBlogs";
+    public static final String META_WEBLOG_GET_CATEGORIES = "metaWeblog.getCategories";
+    public static final String META_WEBLOG_GET_RECENT_POSTS = "metaWeblog.getRecentPosts";
+    public static final String META_WEBLOG_NEW_POST = "metaWeblog.newPost";
+    public static final String META_WEBLOG_EDIT_POST = "metaWeblog.editPost";
+    public static final String META_WEBLOG_GET_POST = "metaWeblog.getPost";
+    public static final String BLOGGER_DELETE_POST = "blogger.deletePost";
+    public static final String META_WEBLOG_NEW_MEDIA_OBJECT = "metaWeblog.newMediaObject";
     AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
     CategoryJpa categoryJpa;
@@ -80,58 +88,57 @@ public class XmlRpcController {
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
-        response.setContentType("application/xml;charset=utf-8");
         XmlRpcServer xmlRpcServer = new XmlRpcServer();
         xmlRpcServer.setRpcController(new RpcController());
         xmlRpcServer.setStreamConfig(new StreamConfig());
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             byte[] bytes = new byte[1024];
-            int readnum;
+            int readNum;
             do {
-                readnum = inputStream.read(bytes, 0, 10);
-                if (readnum > 0) {
-                    byteArrayOutputStream.write(bytes, 0, readnum);
+                readNum = inputStream.read(bytes, 0, 1024);
+                if (readNum > 0) {
+                    byteArrayOutputStream.write(bytes, 0, readNum);
                 }
-
-            } while (readnum > 0);
+            } while (readNum > 0);
             log.info(byteArrayOutputStream.toString());
             ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             XmlRpcRequestParser xmlRequestParser = xmlRpcServer.getXmlRequestParser(byteInputStream);
             String username = xmlRequestParser.getParams().get(1).toString();
             String password = xmlRequestParser.getParams().get(2).toString();
-            if (xmlRequestParser.getMethodName() != null && "blogger.deletePost".equals(xmlRequestParser.getMethodName())) {
+            if (xmlRequestParser.getMethodName() != null && BLOGGER_GET_USERS_BLOGS.equals(xmlRequestParser.getMethodName())) {
                 username = xmlRequestParser.getParams().get(2).toString();
                 password = xmlRequestParser.getParams().get(3).toString();
             }
-            if (!login(username, password)) {
+            Optional<UserDetails> login = login(username, password);
+            if (login.isPresent()) {
                 xmlRpcServer.responseError(response.getOutputStream(), 1001, "登录出错");
                 return "";
             }
             log.info(xmlRequestParser.getMethodName());
             switch (xmlRequestParser.getMethodName()) {
-                case "blogger.getUsersBlogs":
+                case BLOGGER_GET_USERS_BLOGS:
                     xmlRpcServer.response(response.getOutputStream(), getUserBlog());
                     break;
-                case "metaWeblog.getCategories":
+                case META_WEBLOG_GET_CATEGORIES:
                     xmlRpcServer.response(response.getOutputStream(), getCaterory());
                     break;
-                case "metaWeblog.getRecentPosts":
+                case META_WEBLOG_GET_RECENT_POSTS:
                     xmlRpcServer.response(response.getOutputStream(), getRecentPosts(xmlRequestParser));
                     break;
-                case "metaWeblog.newPost":
+                case META_WEBLOG_NEW_POST:
                     xmlRpcServer.response(response.getOutputStream(), newPost(xmlRequestParser));
                     break;
-                case "metaWeblog.editPost":
+                case META_WEBLOG_EDIT_POST:
                     xmlRpcServer.response(response.getOutputStream(), editPost(xmlRequestParser));
                     break;
-                case "metaWeblog.getPost":
+                case META_WEBLOG_GET_POST:
                     xmlRpcServer.response(response.getOutputStream(), getPost(xmlRequestParser));
                     break;
-                case "blogger.deletePost":
+                case BLOGGER_DELETE_POST:
                     xmlRpcServer.response(response.getOutputStream(), deletePost(xmlRequestParser));
                     break;
-                case "metaWeblog.newMediaObject":
+                case META_WEBLOG_NEW_MEDIA_OBJECT:
                     xmlRpcServer.response(response.getOutputStream(), newMediaObject(xmlRequestParser));
                     break;
                 default:
@@ -287,7 +294,7 @@ public class XmlRpcController {
             caterories.put("categoryid", item.getCatId().toString());
             caterories.put("description", item.getDescription());
             caterories.put("rssUrl", "");
-            caterories.put("htmlUrl", "");
+            caterories.put("htmlUrl", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("/xmlrpc[\\S]{0,}[\\.]{0,}", "/") + "blog/category/" + item.getCatId());
             mapVector.add(caterories);
         });
 
@@ -322,20 +329,24 @@ public class XmlRpcController {
                 "</rsd>";
     }
 
-    boolean login(String username, String password) {
+    private Optional<UserDetails> login(String username, String password) {
         try {
             UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
             if (userDetails == null) {
-                return false;
+                return Optional.empty();
+//                return false;
             }
             boolean matches = passwordEncoder.matches(password, userDetails.getPassword());
             if (matches) {
-                return true;
+                return Optional.of(userDetails);
+//                return true;
             }
         } catch (UsernameNotFoundException exception) {
-            return false;
+            return Optional.empty();
+//            return false;
         }
-        return false;
+//        return false;
+        return Optional.empty();
     }
 
 }

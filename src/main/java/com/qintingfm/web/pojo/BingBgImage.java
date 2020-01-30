@@ -7,20 +7,35 @@ import java.util.List;
 
 /**
  * Bing 背景图
+ *
  * @author guliuzhong
  */
-@JsonIgnoreProperties({"startdate","fullstartdate","enddate"})
+@JsonIgnoreProperties({"startdate", "fullstartdate", "enddate"})
 public class BingBgImage {
 
-    public static class Image{
+    @JsonProperty("images")
+    private List<Image> imageList;
+
+    public BingBgImage() {
+    }
+
+    public List<Image> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(List<Image> imageList) {
+        this.imageList = imageList;
+    }
+
+    public static class Image {
+        public static final String HTTP = "http://";
+        public static final String HTTPS = "https://";
+        public static final String BINGHOST = "https://cn.bing.com/";
         private String url;
         @JsonProperty("copyright")
         private String desc;
         @JsonProperty("copyrightlink")
         private String link;
-
-        final private String bingHost="https://cn.bing.com/";
-
 
         public Image() {
         }
@@ -49,28 +64,14 @@ public class BingBgImage {
             this.link = link;
         }
 
-        public String getImageUrl(){
-            if(url==null){
+        public String getImageUrl() {
+            if (url == null) {
                 return null;
             }
-            if(url.startsWith("http://") || url.startsWith("https://")){
+            if (url.startsWith(HTTP) || url.startsWith(HTTPS)) {
                 return url;
             }
-            return bingHost+url;
+            return BINGHOST + url;
         }
-    }
-    @JsonProperty("images")
-    private List<Image> imageList;
-
-
-    public BingBgImage() {
-    }
-
-    public List<Image> getImageList() {
-        return imageList;
-    }
-
-    public void setImageList(List<Image> imageList) {
-        this.imageList = imageList;
     }
 }

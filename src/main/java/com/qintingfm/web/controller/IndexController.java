@@ -2,6 +2,8 @@ package com.qintingfm.web.controller;
 
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
+import com.qintingfm.web.jpa.entity.BlogCont;
+import com.qintingfm.web.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,7 +33,12 @@ public class IndexController {
         view.addObject("title", "钦听知天下");
         PageRequest postId = PageRequest.of(pageIndex - 1, 10, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")));
         Page<Blog> all = blogJpa.findAll(postId);
-        view.addObject("blogList", all.toList());
+        view.addObject("blogList", all.map(item->{
+            BlogCont blogCont = item.getBlogCont();
+            blogCont.setCont(HtmlUtil.delHtmlTags(blogCont.getCont()));
+            item.setBlogCont(blogCont);
+            return item;
+        }).toList());
         view.addObject("pageIndex", all.getPageable().getPageNumber() + 1);
         view.addObject("totalPages", all.getTotalPages());
         view.addObject("total", all.getTotalElements());

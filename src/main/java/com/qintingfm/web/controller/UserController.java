@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
+ * 用户登录和退出
  * @author guliuzhong
  */
 @Controller
@@ -28,6 +29,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView loginPage(ModelAndView modelAndView) {
         BingBgImage image = bingImageService.getImage();
+        image.getImageList();
         modelAndView.addObject("image", image.getImageList().get(0));
         modelAndView.setViewName("user/login");
         return modelAndView;
