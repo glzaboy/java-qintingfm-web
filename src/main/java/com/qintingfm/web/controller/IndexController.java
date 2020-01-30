@@ -30,7 +30,7 @@ public class IndexController {
         view.addObject("pageIndex",all.getPageable().getPageNumber()+1);
         view.addObject("totalPages",all.getTotalPages());
         view.addObject("total",all.getTotalElements());
-        view.setViewName("indexController");
+        view.setViewName("index");
         return view;
     }
 }
