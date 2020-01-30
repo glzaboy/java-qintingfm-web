@@ -20,16 +20,19 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class NetClient {
-    @Autowired
+    ObjectMapper objectMapper;
+    Request.Builder builder = new Request.Builder();
     private OkHttpClient okHttpClient;
-    @Autowired
-    ObjectMapper  objectMapper;
 
-    public NetClient() {
-//        this.okHttpClient = okHttpClient;
+    @Autowired
+    public void setOkHttpClient(OkHttpClient okHttpClient) {
+        this.okHttpClient = okHttpClient;
     }
 
-    Request.Builder builder = new Request.Builder();
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public void setPostMap(Map<String, String> postMap) {
         if (postMap.size() > 0) {
@@ -75,14 +78,14 @@ public class NetClient {
 
     public void setUrl(String url, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer();
-        if (queries!=null && queries.size() > 0) {
+        if (queries != null && queries.size() > 0) {
             Iterator<Map.Entry<String, String>> iterator = queries.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String> next = iterator.next();
                 String key = next.getKey();
                 Pattern pattern = Pattern.compile("\\{" + key + "\\}");
                 if (pattern.matcher(url).find()) {
-                    url=url.replaceAll(pattern.toString(), urlEncode(next.getValue()));
+                    url = url.replaceAll(pattern.toString(), urlEncode(next.getValue()));
                 } else {
                     sb.append(next.getKey());
                     sb.append("=");
@@ -109,9 +112,9 @@ public class NetClient {
         } catch (IOException e) {
             log.error("request http error {}", e.getMessage());
         }
-        log.info("http return httpCode {}",execute.code());
+        log.info("http return httpCode {}", execute.code());
         if (execute.isSuccessful()) {
-            String resp= null;
+            String resp = null;
             try {
                 resp = execute.body().string();
             } catch (IOException e) {
@@ -124,7 +127,7 @@ public class NetClient {
 
     public <T> T requestToOjbect(Class<T> classzz) {
         String s = requestToString();
-        if(s!=null){
+        if (s != null) {
             T t = null;
             try {
                 t = objectMapper.readValue(s, classzz);

@@ -18,18 +18,23 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Slf4j
 public class IndexController {
-    @Autowired
     BlogJpa blogJpa;
-    @RequestMapping(value = {"/page/{pageIndex}","/"})
-    public ModelAndView index(ModelAndView view, @PathVariable(value = "pageIndex",required = false) Integer pageIndex){
-        pageIndex=pageIndex==null?pageIndex=1:(int)pageIndex;
-        view.addObject("title","钦听知天下");
-        PageRequest postId = PageRequest.of(pageIndex-1, 10, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")));
+
+    @Autowired
+    public void setBlogJpa(BlogJpa blogJpa) {
+        this.blogJpa = blogJpa;
+    }
+
+    @RequestMapping(value = {"/page/{pageIndex}", "/"})
+    public ModelAndView index(ModelAndView view, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
+        pageIndex = pageIndex == null ? 1 : pageIndex;
+        view.addObject("title", "钦听知天下");
+        PageRequest postId = PageRequest.of(pageIndex - 1, 10, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")));
         Page<Blog> all = blogJpa.findAll(postId);
-        view.addObject("blogList",all.toList());
-        view.addObject("pageIndex",all.getPageable().getPageNumber()+1);
-        view.addObject("totalPages",all.getTotalPages());
-        view.addObject("total",all.getTotalElements());
+        view.addObject("blogList", all.toList());
+        view.addObject("pageIndex", all.getPageable().getPageNumber() + 1);
+        view.addObject("totalPages", all.getTotalPages());
+        view.addObject("total", all.getTotalElements());
         view.setViewName("index");
         return view;
     }

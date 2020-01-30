@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * 网页版本ajax请求带数据
+ * @author guliuzhong
  * @param <T>
  */
 public class AjaxDataDto<T extends Serializable> extends AjaxDto{

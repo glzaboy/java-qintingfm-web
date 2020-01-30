@@ -6,6 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * http客户端
+ * @author guliuzhong
+ */
 @Configuration
 public class Config {
     @Bean

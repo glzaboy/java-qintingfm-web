@@ -3,7 +3,7 @@ package com.qintingfm.web.service.xmlrpcconfig;
 import java.util.TimeZone;
 
 /**
- * xmlrpc 输出配置
+ * xmlRpc 输出配置
  * @author guliuzhong
  */
 public class StreamConfig implements org.apache.xmlrpc.common.XmlRpcStreamRequestConfig {

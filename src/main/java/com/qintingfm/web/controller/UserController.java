@@ -17,18 +17,25 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
-    @Autowired
+
     BingImageService bingImageService;
-    @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public ModelAndView loginPage(ModelAndView modelAndView){
+
+    @Autowired
+    public void setBingImageService(BingImageService bingImageService) {
+        this.bingImageService = bingImageService;
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public ModelAndView loginPage(ModelAndView modelAndView) {
         BingBgImage image = bingImageService.getImage();
-        modelAndView.addObject("image",image.getImageList().get(0));
+        modelAndView.addObject("image", image.getImageList().get(0));
         modelAndView.setViewName("user/login");
         return modelAndView;
     }
-    @RequestMapping(value = "/logout",method = RequestMethod.GET,produces = "application/json")
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ModelAndView logout(ModelAndView modelAndView){
+    public ModelAndView logout(ModelAndView modelAndView) {
         return modelAndView;
     }
 }

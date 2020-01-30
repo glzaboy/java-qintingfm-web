@@ -4,7 +4,7 @@ import org.apache.xmlrpc.XmlRpcConfig;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;
 
 /**
- * xmlrpc配置
+ * xmlRpc配置
  * @author guliuzhong
  */
 public class RpcController extends org.apache.xmlrpc.common.XmlRpcController {

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 /**
+ * 博客分类
  * @author guliuzhong
  */
 @Component
