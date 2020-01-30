@@ -53,7 +53,7 @@ public class XmlRpc {
     BlogJpa blogJpa;
     @Autowired
     Manager manager;
-    @RequestMapping(value = {"/xmlrpc/server","xmlrpc.php"} ,method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = {"application/xml;charset=utf-8"})
+    @RequestMapping(value = {"/xmlrpc/server","xmlrpc.php"} ,method = {RequestMethod.POST,RequestMethod.OPTIONS},produces = {"application/xml;charset=utf-8","text/xml"},consumes = {"application/xml","text/xml"})
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest  request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
@@ -111,6 +111,8 @@ public class XmlRpc {
                 case "metaWeblog.newMediaObject":
                     xmlRpcServer.Response(response.getOutputStream(),newMediaObject(xmlRequestParser));
                     break;
+                default:
+                    xmlRpcServer.ResponseError(response.getOutputStream(),1001,"服务未实现");
             }
         } catch (XmlRpcException e) {
             try {
