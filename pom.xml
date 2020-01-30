@@ -119,18 +119,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <finalName>java-qintingfm-web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
             </plugin>
             <!--速度慢不建议线上编译-->
 <!--            <plugin>-->
