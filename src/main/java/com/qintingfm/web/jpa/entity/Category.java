@@ -10,8 +10,8 @@ import java.io.Serializable;
 @Table(name = "qt_categoryies")
 public class Category implements Serializable {
     @Id
-    @SequenceGenerator(sequenceName="qt_categories_cat_id_seq",name = "genid",allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genid")
+    @SequenceGenerator(sequenceName="qt_categories_cat_id_seq",name = "genCatId",allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genCatId")
     private Integer catId;
     private String title;
     private  String description;

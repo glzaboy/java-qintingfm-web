@@ -9,7 +9,6 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "qt_blog")
-
 public class Blog implements Serializable {
     @Id
     @SequenceGenerator(sequenceName="qt_blog_cat_id_seq",name = "genBlogid",allocationSize = 1)
@@ -17,7 +16,7 @@ public class Blog implements Serializable {
     private Integer postId;
     String title;
     @OneToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
-    @JoinColumn(name = "cont_id",nullable = false)
+    @JoinColumn(name = "contId",nullable = false)
     private BlogCont blogCont;
     private Date dateCreated;
 }

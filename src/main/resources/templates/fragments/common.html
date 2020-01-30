@@ -102,7 +102,7 @@
         <!--Submenu-->
         <ul class="collapse">
             <li th:class="${tpl}=='/blog/post'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a></li>
-            <li th:class="${tpl}=='/blog/postList'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/postList}">文章列表</a></li>
+            <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
         </ul>
     </li>
     <li>
@@ -115,8 +115,6 @@
         <!--Submenu-->
         <ul class="collapse">
             <li th:class="${tpl}=='/blank'?'active-link':''"><a href="#" th:href="@{/blank}">Blank Page</a></li>
-            <li th:class="${tpl}=='/config/form'?'active-link':''"><a href="#" th:href="@{/config/form}">Blank Page</a></li>
-            <li th:class="${tpl}=='/ip/search'?'active-link':''"><a href="#" th:href="@{/ip/search}">IP查询</a></li>
         </ul>
     </li>
 </ul>
