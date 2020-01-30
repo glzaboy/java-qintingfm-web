@@ -7,6 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author guliuzhong
+ */
 @Service
 public class Category {
     private CategoryJpa categoryJpa;

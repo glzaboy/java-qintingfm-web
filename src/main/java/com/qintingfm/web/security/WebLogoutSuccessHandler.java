@@ -13,6 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 退出登录成功后的操作
+ *
+ * 本应用因为自定义了页面并且使用了ajax因此 主要修改向客户端输出json。
+ * @author guliuzhong
+ */
 @Component
 @Slf4j
 public class WebLogoutSuccessHandler implements LogoutSuccessHandler {

@@ -14,20 +14,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 登录成功后的操作
+ *
+ * 本应用因为自定义了页面并且使用了ajax因此 主要修改向客户端输出json。
+ * @author guliuzhong
+ */
 @Component
 @Slf4j
 public class WebLoginSuccessHandler implements AuthenticationSuccessHandler {
-    @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException{
         log.info("loginSuccess");
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setLink("/");
-//        ajaxDto.setMessage("登录成功");
         ajaxDto.setAutoJump(3);
-//        ajaxDto.setAutoHide("1");
-//        ObjectMapper objectMapper = new ObjectMapper();
         response.setCharacterEncoding("utf-8");
         response.getWriter().println(objectMapper.writeValueAsString(ajaxDto));
     }
@@ -37,9 +44,7 @@ public class WebLoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("loginSuccess");
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setLink("/");
-//        ajaxDto.setMessage("登录成功");
         ajaxDto.setAutoJump(3);
-//        ajaxDto.setAutoHide("1");
         response.getWriter().println(objectMapper.writeValueAsString(ajaxDto));
         chain.doFilter(request,response);
     }

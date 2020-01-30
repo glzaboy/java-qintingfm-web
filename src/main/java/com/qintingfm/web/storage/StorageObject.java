@@ -1,22 +1,25 @@
 package com.qintingfm.web.storage;
 
+/**
+ * @author guliuzhong
+ */
 public class StorageObject {
-    private String ObjectName;
-    private String Url;
+    private String objectName;
+    private String url;
 
     public String getObjectName() {
-        return ObjectName;
+        return objectName;
     }
 
     public void setObjectName(String objectName) {
-        ObjectName = objectName;
+        this.objectName = objectName;
     }
 
     public String getUrl() {
-        return Url;
+        return url;
     }
 
     public void setUrl(String url) {
-        Url = url;
+        this.url = url;
     }
 }

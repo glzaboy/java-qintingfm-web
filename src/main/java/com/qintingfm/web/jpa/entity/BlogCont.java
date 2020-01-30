@@ -4,6 +4,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+/**
+ * @author guliuzhong
+ */
 @Data
 @Entity
 @Table(name = "qt_blog_cont")

@@ -4,6 +4,7 @@ import java.util.Map;
 
 /**
  * 网页版本ajax请求
+ * @author guliuzhong
  */
 public class AjaxDto {
     public String message;

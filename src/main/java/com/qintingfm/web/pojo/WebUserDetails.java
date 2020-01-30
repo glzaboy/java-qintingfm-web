@@ -7,6 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * 应用的用户鉴权服务对象
+ * @author guliuzhong
+ */
 @Setter
 public class WebUserDetails implements UserDetails {
     private String username;

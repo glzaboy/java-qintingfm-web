@@ -18,8 +18,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author guliuzhong
+ */
 @Service
-public class AppUserDetailsService implements UserDetailsService {
+public class AppUserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     UserJpa userJpa;
     @Autowired
@@ -30,9 +33,7 @@ public class AppUserDetailsService implements UserDetailsService {
             return null;
         }
         User user=new User();
-        user.setUsername(userName);
         Optional<User> one = userJpa.findByUsername(userName);
-        //Optional<User> one = userJpa.findOne(Example.of(user));
         if(!one.isPresent()){
             throw new UsernameNotFoundException("用户不存在");
             //return null;

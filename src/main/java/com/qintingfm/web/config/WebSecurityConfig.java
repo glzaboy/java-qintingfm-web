@@ -4,7 +4,7 @@ import com.qintingfm.web.security.JpaTokenRepositoryImpl;
 import com.qintingfm.web.security.WebLoginFailHandler;
 import com.qintingfm.web.security.WebLoginSuccessHandler;
 import com.qintingfm.web.security.WebLogoutSuccessHandler;
-import com.qintingfm.web.service.AppUserDetailsService;
+import com.qintingfm.web.service.AppUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,20 +20,38 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import java.util.UUID;
 
+/**
+ * @author guliuzhong
+ */
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     UUID key= UUID.randomUUID();
+    AppUserDetailsServiceImpl appUserDetailsService;
     @Autowired
-    AppUserDetailsService appUserDetailsService;
-    @Autowired
+    public void setAppUserDetailsService(AppUserDetailsServiceImpl appUserDetailsService) {
+        this.appUserDetailsService = appUserDetailsService;
+    }
     WebLogoutSuccessHandler webLogoutSuccessHandler;
     @Autowired
+    public void setWebLogoutSuccessHandler(WebLogoutSuccessHandler webLogoutSuccessHandler) {
+        this.webLogoutSuccessHandler = webLogoutSuccessHandler;
+    }
     WebLoginSuccessHandler webLoginSuccessHandler;
     @Autowired
+    public void setWebLoginSuccessHandler(WebLoginSuccessHandler webLoginSuccessHandler) {
+        this.webLoginSuccessHandler = webLoginSuccessHandler;
+    }
     WebLoginFailHandler webLoginFailHandler;
     @Autowired
+    public void setWebLoginFailHandler(WebLoginFailHandler webLoginFailHandler) {
+        this.webLoginFailHandler = webLoginFailHandler;
+    }
     JpaTokenRepositoryImpl jpaTokenRepository;
+    @Autowired
+    public void setJpaTokenRepository(JpaTokenRepositoryImpl jpaTokenRepository) {
+        this.jpaTokenRepository = jpaTokenRepository;
+    }
     @Bean
     RememberMeServices rememberMeServices(){
         return new PersistentTokenBasedRememberMeServices(key.toString(),appUserDetailsService,jpaTokenRepository);
@@ -55,8 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     PasswordEncoder loginPasswordEncoder() {
-        PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        return delegatingPasswordEncoder;
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override

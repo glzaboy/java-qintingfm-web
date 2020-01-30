@@ -5,6 +5,9 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * @author guliuzhong
+ */
 @Data
 @Entity
 @Table(name = "qt_categoryies")

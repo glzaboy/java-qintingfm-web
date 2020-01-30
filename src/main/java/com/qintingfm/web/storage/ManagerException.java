@@ -1,5 +1,8 @@
 package com.qintingfm.web.storage;
 
+/**
+ * @author guliuzhong
+ */
 public class ManagerException extends Exception {
     public ManagerException() {
     }

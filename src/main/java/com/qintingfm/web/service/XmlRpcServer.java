@@ -21,6 +21,7 @@ import java.io.OutputStream;
 /**
  * xml rpc简易服务端需要依赖xml-prc-common
  * 本类配置比较奇特不适合使用spring配置。
+ * @author guliuzhong
  */
 public class XmlRpcServer {
     StreamConfig streamConfig;
@@ -55,7 +56,7 @@ public class XmlRpcServer {
         return parser;
     }
 
-    public void ResponseError(OutputStream outputStream, int pCode, String pMessage) throws XmlRpcException, SAXException {
+    public void responseError(OutputStream outputStream, int pCode, String pMessage) throws XmlRpcException, SAXException {
         rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
         TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
@@ -64,7 +65,7 @@ public class XmlRpcServer {
         xmlRpcWriter.write(streamConfig, pCode, pMessage);
     }
 
-    public void Response(OutputStream outputStream, Object pResult) throws XmlRpcException, SAXException {
+    public void response(OutputStream outputStream, Object pResult) throws XmlRpcException, SAXException {
         rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
         TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);

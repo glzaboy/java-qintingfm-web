@@ -9,6 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.theme.CookieThemeResolver;
 import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 
+/**
+ * @author guliuzhong
+ */
 @Configuration
 public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
     @Override

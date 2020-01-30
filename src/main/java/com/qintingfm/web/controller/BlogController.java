@@ -12,18 +12,20 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+/**
+ * @author guliuzhong
+ */
 @Controller
 @Transactional
 @RequestMapping("/blog")
 public class BlogController {
-    @Autowired
     BlogJpa blogJpa;
     Category category;
 
     public BlogJpa getBlogJpa() {
         return blogJpa;
     }
-
+    @Autowired
     public void setBlogJpa(BlogJpa blogJpa) {
         this.blogJpa = blogJpa;
     }

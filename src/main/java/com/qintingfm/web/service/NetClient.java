@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * @author guliuzhong
+ */
 @Slf4j
 @Component
 public class NetClient {

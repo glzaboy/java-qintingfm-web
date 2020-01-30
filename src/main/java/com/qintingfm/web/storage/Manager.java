@@ -3,6 +3,9 @@ package com.qintingfm.web.storage;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * @author guliuzhong
+ */
 public class Manager {
     Oss oss;
 

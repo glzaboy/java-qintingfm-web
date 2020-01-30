@@ -1,6 +1,7 @@
 package com.qintingfm.web.common;
 /**
  * 分页参数
+ * @author guliuzhong
  */
 public class Paged {
     /**

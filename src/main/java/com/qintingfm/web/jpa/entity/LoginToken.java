@@ -7,6 +7,9 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author guliuzhong
+ */
 @Entity
 @Data
 public class LoginToken implements Serializable {

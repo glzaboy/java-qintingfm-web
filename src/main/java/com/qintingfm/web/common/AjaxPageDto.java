@@ -5,6 +5,7 @@ import java.util.Collection;
 
 /**
  * 网页版本ajax请求列表带分页
+ * @author guliuzhong
  * @param <T>
  */
 public class AjaxPageDto<T extends Serializable> extends AjaxDto {

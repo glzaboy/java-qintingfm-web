@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * @author guliuzhong
+ */
 public class QiniuOssImpl implements Oss{
     Config config;
 
@@ -66,7 +69,7 @@ public class QiniuOssImpl implements Oss{
         try {
             ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
             byte[] bytes=new byte[1000];
-            int readnum=0;
+            int readnum;
             do{
                 readnum = inputStream.read(bytes, 0, 1000);
                 if(readnum>0){

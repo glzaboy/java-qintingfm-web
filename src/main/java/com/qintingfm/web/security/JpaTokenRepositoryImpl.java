@@ -39,6 +39,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
     @Autowired
     LoginTokenJpa loginTokenJpa;
 
+    @Override
     public void createNewToken(PersistentRememberMeToken token) {
         LoginToken loginToken = new LoginToken();
         loginToken.setLastUsed(token.getDate());
@@ -48,6 +49,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
         loginTokenJpa.save(loginToken);
     }
 
+    @Override
     public void updateToken(String series, String tokenValue, Date lastUsed) {
         Optional<LoginToken> byId = loginTokenJpa.findById(series);
         if (byId.isPresent()) {
@@ -70,6 +72,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
      * @return the token matching the series, or null if no match found or an exception
      * occurred.
      */
+    @Override
     public PersistentRememberMeToken getTokenForSeries(String seriesId) {
         Optional<LoginToken> byId = loginTokenJpa.findById(seriesId);
         if (byId.isPresent()) {
@@ -80,6 +83,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
                 + "' returned no results.");
         return null;
     }
+    @Override
     @Transactional
     public void removeUserTokens(String username) {
         loginTokenJpa.deleteByUsername(username);
