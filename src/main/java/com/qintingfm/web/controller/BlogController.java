@@ -16,7 +16,6 @@ import java.util.Optional;
  * @author guliuzhong
  */
 @Controller
-@Transactional
 @RequestMapping("/blog")
 public class BlogController {
     BlogJpa blogJpa;

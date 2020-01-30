@@ -44,7 +44,6 @@ import java.util.*;
  */
 @Controller
 @Slf4j
-@Transactional(rollbackOn = {Exception.class})
 public class XmlRpcController {
     AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
@@ -172,8 +171,8 @@ public class XmlRpcController {
         return mediaObject;
     }
 
-
-    private Boolean deletePost(XmlRpcRequestParser xmlRequestParser) {
+    @Transactional(rollbackOn = {Exception.class})
+    Boolean deletePost(XmlRpcRequestParser xmlRequestParser) {
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(1).toString());
         Optional<Blog> byId = blogJpa.findById(postId);
         byId.ifPresent(blog -> blogJpa.delete(blog));
@@ -227,8 +226,8 @@ public class XmlRpcController {
         return mapVector;
 
     }
-
-    private String editPost(XmlRpcRequestParser xmlRequestParser) {
+    @Transactional(rollbackOn = {Exception.class})
+    String editPost(XmlRpcRequestParser xmlRequestParser) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Optional<Blog> byId = blogJpa.findById(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
@@ -259,8 +258,8 @@ public class XmlRpcController {
         }
         return "";
     }
-
-    private String newPost(XmlRpcRequestParser xmlRequestParser) {
+    @Transactional(rollbackOn = {Exception.class})
+    String newPost(XmlRpcRequestParser xmlRequestParser) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Blog blog = new Blog();
