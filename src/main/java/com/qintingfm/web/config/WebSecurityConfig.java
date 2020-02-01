@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
                 .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString())
-                .and().csrf(cs->{cs.ignoringAntMatchers("/xmlrpc/server","/xmlrpc.php");});
+                .and().csrf(cs->cs.ignoringAntMatchers("/xmlrpc/server","/xmlrpc.php"));
     }
 
     @Bean
