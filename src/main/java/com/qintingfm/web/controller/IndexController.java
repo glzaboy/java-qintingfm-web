@@ -3,6 +3,7 @@ package com.qintingfm.web.controller;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
+import com.qintingfm.web.service.BlogServer;
 import com.qintingfm.web.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Slf4j
 public class IndexController {
+    BlogServer blogServer;
+
+    @Autowired
+    public void setBlogServer(BlogServer blogServer) {
+        this.blogServer = blogServer;
+    }
+
     BlogJpa blogJpa;
 
     @Autowired
@@ -29,19 +37,17 @@ public class IndexController {
 
     @RequestMapping(value = {"/page/{pageIndex}", "/"})
     public ModelAndView index(ModelAndView view, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
-        pageIndex = pageIndex == null ? 1 : pageIndex;
         view.addObject("title", "钦听知天下");
-        PageRequest postId = PageRequest.of(pageIndex - 1, 10, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")));
-        Page<Blog> all = blogJpa.findAll(postId);
-        view.addObject("blogList", all.map(item->{
+        Page<Blog> blogList = blogServer.getBlogList(0, pageIndex, null, 10);
+        view.addObject("blogList", blogList.map(item->{
             BlogCont blogCont = item.getBlogCont();
             blogCont.setCont(HtmlUtil.delHtmlTags(blogCont.getCont()));
             item.setBlogCont(blogCont);
             return item;
         }).toList());
-        view.addObject("pageIndex", all.getPageable().getPageNumber() + 1);
-        view.addObject("totalPages", all.getTotalPages());
-        view.addObject("total", all.getTotalElements());
+        view.addObject("pageIndex", blogList.getPageable().getPageNumber() + 1);
+        view.addObject("totalPages", blogList.getTotalPages());
+        view.addObject("total", blogList.getTotalElements());
         view.setViewName("index");
         return view;
     }
