@@ -40,6 +40,12 @@
                             </div>
                         </div>
                         <div class="blog-content">
+                            <span>分类：</span>
+                            <span th:each="item:${blogPost.getBlogCategory()}">
+                                <a th:utext="${item.getTitle()}" th:href="@{/blog/category/{catId}/article(catId=${item.getCatId()})}" href="#" class="badge"> 分类></a>
+                            </span>
+                        </div>
+                        <div class="blog-content">
 
                             <div class="blog-body" th:utext="${blogPost.blogCont.cont}"/>
                         </div>
