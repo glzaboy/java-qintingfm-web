@@ -3,13 +3,11 @@ package com.qintingfm.web.controller;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
-import com.qintingfm.web.service.BlogServer;
+import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @Slf4j
 public class IndexController {
-    BlogServer blogServer;
+    BlogService blogServer;
 
     @Autowired
-    public void setBlogServer(BlogServer blogServer) {
+    public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
     }
 

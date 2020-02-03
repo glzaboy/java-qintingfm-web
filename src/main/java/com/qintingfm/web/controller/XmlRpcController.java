@@ -1,11 +1,11 @@
 package com.qintingfm.web.controller;
 
-import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.CategoryJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.AppUserDetailsServiceImpl;
+import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.XmlRpcServer;
 import com.qintingfm.web.service.xmlrpcconfig.RpcController;
 import com.qintingfm.web.service.xmlrpcconfig.StreamConfig;
@@ -17,7 +17,6 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -56,8 +55,13 @@ public class XmlRpcController {
     AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
     CategoryJpa categoryJpa;
-    BlogJpa blogJpa;
     Manager manager;
+
+    BlogService blogServer;
+    @Autowired
+    public void setBlogServer(BlogService blogServer) {
+        this.blogServer = blogServer;
+    }
 
     @Autowired
     public void setAppUserDetailsService(AppUserDetailsServiceImpl appUserDetailsService) {
@@ -72,11 +76,6 @@ public class XmlRpcController {
     @Autowired
     public void setCategoryJpa(CategoryJpa categoryJpa) {
         this.categoryJpa = categoryJpa;
-    }
-
-    @Autowired
-    public void setBlogJpa(BlogJpa blogJpa) {
-        this.blogJpa = blogJpa;
     }
 
     @Autowired
@@ -182,41 +181,34 @@ public class XmlRpcController {
     @Transactional(rollbackOn = {Exception.class})
     Boolean deletePost(XmlRpcRequestParser xmlRequestParser) {
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(1).toString());
-        Optional<Blog> byId = blogJpa.findById(postId);
-        byId.ifPresent(blog -> blogJpa.delete(blog));
+        blogServer.deleteBlog(postId);
         return true;
     }
 
     private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser) {
         Map<String, Object> postMap = new HashMap<>(10);
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(0).toString());
-        Optional<Blog> byId = blogJpa.findById(postId);
-        if (byId.isPresent()) {
-            Blog blog = byId.get();
-            postMap.put("dateCreated", blog.getDateCreated() == null ? new Date() : blog.getDateCreated());
-            postMap.put("title", blog.getTitle());
-            postMap.put("postid", blog.getPostId());
-            BlogCont blogCont = blog.getBlogCont();
-            if (blogCont != null) {
-                postMap.put("description", blogCont.getCont());
-            } else {
-                postMap.put("description", "");
-            }
-            postMap.put("link", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("/xmlrpc[\\S]{0,}[\\.]{0,}", "/") + "blog/view/" + blog.getPostId());
-        }
+        Optional<Blog> blog = blogServer.getBlog(postId);
+        blog.ifPresent(blog1 -> {
+            postMap.put("dateCreated", blog1.getDateCreated() == null ? new Date() : blog1.getDateCreated());
+            postMap.put("title", blog1.getTitle());
+            postMap.put("postid", blog1.getPostId());
+            postMap.put("description", blog1.getBlogCont().getCont());
+            postMap.put("link", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("/xmlrpc[\\S]{0,}[\\.]{0,}", "/") + "blog/view/" + blog1.getPostId());
+        });
         return postMap;
     }
 
     Vector<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser) {
         Vector<Map<String, Object>> mapVector = new Vector<>();
-        Integer integer = Integer.valueOf(xmlRequestParser.getParams().get(3).toString());
-        if (integer >= 100) {
-            integer = 100;
+        Integer pageSize = Integer.valueOf(xmlRequestParser.getParams().get(3).toString());
+        if (pageSize >= 100) {
+            pageSize = 100;
         }
-        if (integer <= 100) {
-            integer = 50;
+        if (pageSize <= 0) {
+            pageSize = 50;
         }
-        Page<Blog> postId = blogJpa.findAll(PageRequest.of(0, integer, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId"))));
+        Page<Blog> postId = blogServer.getBlogList(null, 0, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")), pageSize);
         postId.get().forEach(item -> {
             Map<String, Object> post = new HashMap<>(10);
             post.put("dateCreated", item.getDateCreated() == null ? new Date() : item.getDateCreated());
@@ -238,8 +230,17 @@ public class XmlRpcController {
     String editPost(XmlRpcRequestParser xmlRequestParser) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
-        Optional<Blog> byId = blogJpa.findById(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
-        if (!byId.isPresent()) {
+        Optional<Blog> blog1 = blogServer.getBlog(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
+        blog1.ifPresent(blog -> {
+            blog.setTitle(stringObjectHashMap.get("title").toString());
+            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
+            if (stringObjectHashMap.get("dateCreated") != null) {
+                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
+                blog.setDateCreated(dateCreated);
+            }
+            blogServer.save(blog);
+        });
+        if (!blog1.isPresent()) {
             Blog blog = new Blog();
             blog.setTitle(stringObjectHashMap.get("title").toString());
             BlogCont blogCont = new BlogCont();
@@ -248,21 +249,8 @@ public class XmlRpcController {
             if (stringObjectHashMap.get("dateCreated") != null) {
                 Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
                 blog.setDateCreated(dateCreated);
-            } else {
-                blog.setDateCreated(new Date());
             }
-            blogJpa.save(blog);
-        } else {
-            Blog blog = byId.get();
-            blog.setTitle(stringObjectHashMap.get("title").toString());
-            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
-            if (stringObjectHashMap.get("dateCreated") != null) {
-                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-                blog.setDateCreated(dateCreated);
-            } else {
-                blog.setDateCreated(new Date());
-            }
-            blogJpa.save(blog);
+            blogServer.save(blog);
         }
         return "";
     }
@@ -278,11 +266,9 @@ public class XmlRpcController {
         if (stringObjectHashMap.get("dateCreated") != null) {
             Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
             blog.setDateCreated(dateCreated);
-        } else {
-            blog.setDateCreated(new Date());
         }
-        blogJpa.save(blog);
-        return blog.getPostId().toString();
+        Blog save = blogServer.save(blog);
+        return save.getPostId().toString();
     }
 
     private Vector<Map<String, String>> getCaterory() {

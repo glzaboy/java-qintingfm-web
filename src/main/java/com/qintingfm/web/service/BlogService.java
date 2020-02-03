@@ -16,21 +16,12 @@ import java.util.Optional;
  * @author guliuzhong
  */
 @Service
-public class BlogServer {
+public class BlogService {
     BlogJpa blogJpa;
 
     @Autowired
     public void setBlogJpa(BlogJpa blogJpa) {
         this.blogJpa = blogJpa;
-    }
-
-    public Blog saveBlog(Blog blog){
-        if(blog.getDateCreated()==null){
-            blog.setDateCreated(new Date());
-        }
-        String cont = blog.getBlogCont().getCont();
-        blog.setShotCont(HtmlUtil.delHtmlTags(cont).trim().substring(0,300));
-        return blogJpa.save(blog);
     }
 
     public Page<Blog> getBlogList(Integer catId, Integer pageIndex, Sort sort,Integer pageSize){
@@ -42,8 +33,19 @@ public class BlogServer {
         Page<Blog> all = blogJpa.findAll(request);
         return all;
     }
-
+    public boolean deleteBlog(Integer postId){
+        Optional<Blog> byId = blogJpa.findById(postId);
+        byId.ifPresent(blog -> blogJpa.delete(blog));
+        return true;
+    }
     public Optional<Blog> getBlog(Integer postId){
         return blogJpa.findById(postId);
+    }
+    public Blog save(Blog blog){
+        blog.setShotCont(HtmlUtil.delHtmlTags(blog.getBlogCont().getCont()).substring(0,100));
+        if(blog.getDateCreated()==null){
+            blog.setDateCreated(new Date());
+        }
+        return blogJpa.save(blog);
     }
 }
