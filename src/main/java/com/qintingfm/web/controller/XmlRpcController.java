@@ -106,7 +106,7 @@ public class XmlRpcController {
             XmlRpcRequestParser xmlRequestParser = xmlRpcServer.getXmlRequestParser(byteInputStream);
             String username = xmlRequestParser.getParams().get(1).toString();
             String password = xmlRequestParser.getParams().get(2).toString();
-            if (xmlRequestParser.getMethodName() != null && BLOGGER_GET_USERS_BLOGS.equals(xmlRequestParser.getMethodName())) {
+            if (xmlRequestParser.getMethodName() != null && BLOGGER_DELETE_POST.equals(xmlRequestParser.getMethodName())) {
                 username = xmlRequestParser.getParams().get(2).toString();
                 password = xmlRequestParser.getParams().get(3).toString();
             }
