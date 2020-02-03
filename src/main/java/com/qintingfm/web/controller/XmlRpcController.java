@@ -110,8 +110,9 @@ public class XmlRpcController {
                 username = xmlRequestParser.getParams().get(2).toString();
                 password = xmlRequestParser.getParams().get(3).toString();
             }
+            log.info("用户名{}密码{}",username,password);
             Optional<UserDetails> login = login(username, password);
-            if (login.isPresent()) {
+            if (!login.isPresent()) {
                 xmlRpcServer.responseError(response.getOutputStream(), 1001, "登录出错");
                 return "";
             }
