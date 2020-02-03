@@ -30,19 +30,24 @@ public class BlogService {
             sort=Sort.by(new Sort.Order(Sort.Direction.DESC, "postId"));
         }
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
-        Page<Blog> all = blogJpa.findAll(request);
-        return all;
+        return blogJpa.findAll(request);
     }
-    public boolean deleteBlog(Integer postId){
+    public void deleteBlog(Integer postId){
         Optional<Blog> byId = blogJpa.findById(postId);
         byId.ifPresent(blog -> blogJpa.delete(blog));
-        return true;
     }
     public Optional<Blog> getBlog(Integer postId){
         return blogJpa.findById(postId);
     }
     public Blog save(Blog blog){
-        blog.setShotCont(HtmlUtil.delHtmlTags(blog.getBlogCont().getCont()).substring(0,100));
+        String contentText = HtmlUtil.delHtmlTags(blog.getBlogCont().getCont());
+        if(contentText!=null){
+            if(contentText.length()>100){
+                blog.setShotCont(contentText.substring(0,100));
+            }else {
+                blog.setShotCont(contentText);
+            }
+        }
         if(blog.getDateCreated()==null){
             blog.setDateCreated(new Date());
         }

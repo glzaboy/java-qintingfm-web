@@ -208,7 +208,7 @@ public class XmlRpcController {
         if (pageSize <= 0) {
             pageSize = 50;
         }
-        Page<Blog> postId = blogServer.getBlogList(null, 0, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")), pageSize);
+        Page<Blog> postId = blogServer.getBlogList(null, 1, Sort.by(new Sort.Order(Sort.Direction.DESC, "postId")), pageSize);
         postId.get().forEach(item -> {
             Map<String, Object> post = new HashMap<>(10);
             post.put("dateCreated", item.getDateCreated() == null ? new Date() : item.getDateCreated());

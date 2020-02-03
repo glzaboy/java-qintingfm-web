@@ -35,7 +35,7 @@
                                     </a>
                                 </div>
                                 <div class="blog-body">
-                                    <p th:text="${#strings.substring(blog.blogCont.cont,0,T(java.lang.Math).min(100,blog.blogCont.cont.length()-1))}">短介绍</p>
+                                    <p th:if="${blog.shotCont!=null and blog.shotCont.length()>0}" th:text="${#strings.substring(blog.shotCont,0,T(java.lang.Math).min(100,blog.shotCont.length()-1))}">短介绍</p>
                                 </div>
                             </div>
                             <div class="blog-footer">
