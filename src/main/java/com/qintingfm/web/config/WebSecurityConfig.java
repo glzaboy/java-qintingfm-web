@@ -60,7 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/user/login", "/xmlrpc/server","/misc/changeTheme","/xmlrpc.php","/","/page/*","/blog/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/xmlrpc/xmlrpcserver").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/user/login").loginProcessingUrl("/login").
