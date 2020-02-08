@@ -47,6 +47,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class XmlRpcController {
     public static final String BLOGGER_GET_USERS_BLOGS = "blogger.getUsersBlogs";
+    public static final String WP_GET_USERS_BLOGS = "wp.getUsersBlogs";
     public static final String META_WEBLOG_GET_CATEGORIES = "metaWeblog.getCategories";
     public static final String META_WEBLOG_GET_RECENT_POSTS = "metaWeblog.getRecentPosts";
     public static final String META_WEBLOG_NEW_POST = "metaWeblog.newPost";
@@ -136,6 +137,7 @@ public class XmlRpcController {
             }
             switch (methodName) {
                 case BLOGGER_GET_USERS_BLOGS:
+                case WP_GET_USERS_BLOGS:
                     xmlRpcServer.response(response.getOutputStream(), getUserBlog());
                     break;
                 case META_WEBLOG_GET_CATEGORIES:
@@ -185,7 +187,7 @@ public class XmlRpcController {
     }
 
     private List<String> listMethods() {
-        List<String> strings = Arrays.asList(META_WEBLOG_NEW_MEDIA_OBJECT, BLOGGER_DELETE_POST, META_WEBLOG_GET_POST, META_WEBLOG_EDIT_POST, META_WEBLOG_NEW_POST, META_WEBLOG_GET_RECENT_POSTS, META_WEBLOG_GET_CATEGORIES, BLOGGER_GET_USERS_BLOGS);
+        List<String> strings = Arrays.asList(WP_GET_USERS_BLOGS,META_WEBLOG_NEW_MEDIA_OBJECT, BLOGGER_DELETE_POST, META_WEBLOG_GET_POST, META_WEBLOG_EDIT_POST, META_WEBLOG_NEW_POST, META_WEBLOG_GET_RECENT_POSTS, META_WEBLOG_GET_CATEGORIES, BLOGGER_GET_USERS_BLOGS);
         return strings;
     }
 
