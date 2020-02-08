@@ -37,6 +37,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author guliuzhong
@@ -52,12 +54,14 @@ public class XmlRpcController {
     public static final String META_WEBLOG_GET_POST = "metaWeblog.getPost";
     public static final String BLOGGER_DELETE_POST = "blogger.deletePost";
     public static final String META_WEBLOG_NEW_MEDIA_OBJECT = "metaWeblog.newMediaObject";
+    public static final List<String> noLoginMethod=Stream.of("system.listMethods").collect(Collectors.toList());
     AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
     CategoryJpa categoryJpa;
     Manager manager;
 
     BlogService blogServer;
+
     @Autowired
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
@@ -103,20 +107,34 @@ public class XmlRpcController {
             log.info(byteArrayOutputStream.toString());
             ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             XmlRpcRequestParser xmlRequestParser = xmlRpcServer.getXmlRequestParser(byteInputStream);
-            String username = xmlRequestParser.getParams().get(1).toString();
-            String password = xmlRequestParser.getParams().get(2).toString();
-            if (xmlRequestParser.getMethodName() != null && BLOGGER_DELETE_POST.equals(xmlRequestParser.getMethodName())) {
-                username = xmlRequestParser.getParams().get(2).toString();
-                password = xmlRequestParser.getParams().get(3).toString();
+            String methodName = xmlRequestParser.getMethodName();
+            List params = xmlRequestParser.getParams();
+            Optional<UserDetails> login=Optional.empty();
+            if (params != null) {
+                String username = xmlRequestParser.getParams().get(1).toString();
+                String password = xmlRequestParser.getParams().get(2).toString();
+                if (BLOGGER_DELETE_POST.equals(methodName)) {
+                    username = xmlRequestParser.getParams().get(2).toString();
+                    password = xmlRequestParser.getParams().get(3).toString();
+                }
+                log.info("用户名{}密码{}", username, password);
+                login = login(username, password);
             }
-            log.info("用户名{}密码{}",username,password);
-            Optional<UserDetails> login = login(username, password);
-            if (!login.isPresent()) {
+            if(noLoginMethod.contains(methodName)){
+                switch (methodName){
+                    case "system.listMethods":
+                        xmlRpcServer.response(response.getOutputStream(), listMethods());
+                        break;
+                }
+                return "";
+            }
+
+
+            if(!login.isPresent()){
                 xmlRpcServer.responseError(response.getOutputStream(), 1001, "登录出错");
                 return "";
             }
-            log.info(xmlRequestParser.getMethodName());
-            switch (xmlRequestParser.getMethodName()) {
+            switch (methodName) {
                 case BLOGGER_GET_USERS_BLOGS:
                     xmlRpcServer.response(response.getOutputStream(), getUserBlog());
                     break;
@@ -164,6 +182,11 @@ public class XmlRpcController {
             }
         }
         return "";
+    }
+
+    private List<String> listMethods() {
+        List<String> strings = Arrays.asList(META_WEBLOG_NEW_MEDIA_OBJECT, BLOGGER_DELETE_POST, META_WEBLOG_GET_POST, META_WEBLOG_EDIT_POST, META_WEBLOG_NEW_POST, META_WEBLOG_GET_RECENT_POSTS, META_WEBLOG_GET_CATEGORIES, BLOGGER_GET_USERS_BLOGS);
+        return strings;
     }
 
     private Map<String, String> newMediaObject(XmlRpcRequestParser xmlRequestParser) throws ManagerException {
@@ -226,6 +249,7 @@ public class XmlRpcController {
         return mapVector;
 
     }
+
     @Transactional(rollbackOn = {Exception.class})
     String editPost(XmlRpcRequestParser xmlRequestParser) {
         @SuppressWarnings("unchecked")
@@ -254,6 +278,7 @@ public class XmlRpcController {
         }
         return "";
     }
+
     @Transactional(rollbackOn = {Exception.class})
     String newPost(XmlRpcRequestParser xmlRequestParser) {
         @SuppressWarnings("unchecked")
