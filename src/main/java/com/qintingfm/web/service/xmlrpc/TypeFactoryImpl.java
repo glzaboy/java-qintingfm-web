@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+/**
+ * @author guliuzhong
+ */
 public class TypeFactoryImpl extends org.apache.xmlrpc.common.TypeFactoryImpl {
     private static final TypeSerializer STRING_SERIALIZER = new StringSerializer();
     private static final TypeSerializer NULL_SERIALIZER = new NullSerializer();
@@ -92,6 +95,7 @@ public class TypeFactoryImpl extends org.apache.xmlrpc.common.TypeFactoryImpl {
             if (dateSerializer == null) {
                 dateSerializer = new DateSerializer(new XmlRpcDateTimeDateFormat(){
                     private static final long serialVersionUID = 24345909123324234L;
+                    @Override
                     protected TimeZone getTimeZone() {
                         return controller.getConfig().getTimeZone();
                     }

@@ -30,4 +30,8 @@ public class CategoryService {
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
         return categoryJpa.findAll(request);
     }
+    public Page<com.qintingfm.web.jpa.entity.Category> getAllCategory(int page, int size) {
+        PageRequest postId = PageRequest.of(page-1, size, Sort.by(new Sort.Order(Sort.Direction.DESC, "catId")));
+        return categoryJpa.findAll(postId);
+    }
 }

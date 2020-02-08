@@ -2,7 +2,6 @@ package com.qintingfm.web.controller;
 
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.service.BlogService;
-import com.qintingfm.web.service.Category;
 import com.qintingfm.web.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/blog")
 public class BlogController {
-    Category category;
+    CategoryService category;
 
     BlogService blogServer;
     @Autowired
@@ -34,7 +33,7 @@ public class BlogController {
     }
 
     @Autowired
-    public void setCategory(Category category) {
+    public void setCategory(CategoryService category) {
         this.category = category;
     }
 

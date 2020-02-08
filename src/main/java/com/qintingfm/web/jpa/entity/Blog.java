@@ -1,6 +1,7 @@
 package com.qintingfm.web.jpa.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "qt_blog")
+@EqualsAndHashCode
 public class Blog implements Serializable {
     @Id
     @SequenceGenerator(sequenceName="qt_blog_cat_id_seq",name = "genBlogid",allocationSize = 1)
@@ -23,7 +25,7 @@ public class Blog implements Serializable {
     @JoinColumn(name = "contId",nullable = false)
     private BlogCont blogCont;
     private String shotCont;
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name = "qt_blog2cat",joinColumns = {@JoinColumn(name = "postId")},inverseJoinColumns = {@JoinColumn(name = "catId")})
     private Collection<Category> blogCategory;
     private Date dateCreated;
