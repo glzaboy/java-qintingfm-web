@@ -27,4 +27,7 @@ public class Blog implements Serializable {
     @JoinTable(name = "qt_blog2cat",joinColumns = {@JoinColumn(name = "postId")},inverseJoinColumns = {@JoinColumn(name = "catId")})
     private Collection<Category> blogCategory;
     private Date dateCreated;
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "authorId",nullable = false)
+    private User author;
 }

@@ -36,7 +36,7 @@
                                 <a href="#" class="btn-link">
                                     <h1 th:text="${blogPost.title}">title</h1>
                                 </a>
-                                <p>By <a href="#" class="btn-link">Aaron Chavez</a></p>
+                                <p>作者<a href="#" class="btn-link" th:utext="${blogPost.author.getUsername()}" th:if="${blogPost.author}" th:href="@{/user/view/{id}(id=${blogPost.author.getId()})}">author</a></p>
                             </div>
                         </div>
                         <div class="blog-content">
