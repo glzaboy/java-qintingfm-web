@@ -36,7 +36,6 @@
                                 <a href="#" class="btn-link">
                                     <h1 th:text="${blogPost.title}">title</h1>
                                 </a>
-                                <p>作者<a href="#" class="btn-link" th:utext="${blogPost.author.getUsername()}" th:if="${blogPost.author}" th:href="@{/user/view/{id}(id=${blogPost.author.getId()})}">author</a></p>
                             </div>
                         </div>
                         <div class="blog-content">
@@ -52,7 +51,7 @@
                         <div class="blog-footer">
                             <div class="media-left">
                                 <span class="label label-success" th:text="${#dates.format(blogPost.dateCreated,'yyyy-MM-dd HH:mm:ss')}">5 Days ago</span>
-                                <small>Posted by : <a href="#" class="btn-link">Admin</a></small>
+                                <small>Posted by : <a href="#" class="btn-link" th:utext="${blogPost.author.getUsername()}" th:if="${blogPost.author}" th:href="@{/user/view/{id}(id=${blogPost.author.getId()})}">author</a></small>
                             </div>
                             <div class="media-body text-right">
                                 <span class="mar-rgt"><i class="demo-pli-heart-2 icon-fw"></i>519</span>
