@@ -1,4 +1,4 @@
-package com.qintingfm.web.service.xmlrpcconfig;
+package com.qintingfm.web.service.xmlrpc;
 
 import org.apache.xmlrpc.XmlRpcConfig;
 import org.apache.xmlrpc.common.XmlRpcWorkerFactory;

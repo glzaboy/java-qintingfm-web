@@ -1,9 +1,9 @@
 package com.qintingfm.web.service;
 
-import com.qintingfm.web.service.xmlrpcconfig.RpcController;
-import com.qintingfm.web.service.xmlrpcconfig.StreamConfig;
+import com.qintingfm.web.service.xmlrpc.RpcController;
+import com.qintingfm.web.service.xmlrpc.StreamConfig;
+import com.qintingfm.web.service.xmlrpc.TypeFactoryImpl;
 import org.apache.xmlrpc.XmlRpcException;
-import org.apache.xmlrpc.common.TypeFactoryImpl;
 import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;

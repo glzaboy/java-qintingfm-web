@@ -1,4 +1,4 @@
-package com.qintingfm.web.service.xmlrpcconfig;
+package com.qintingfm.web.service.xmlrpc;
 
 import java.util.TimeZone;
 
