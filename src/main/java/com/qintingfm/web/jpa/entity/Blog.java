@@ -14,7 +14,6 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "qt_blog")
-@EqualsAndHashCode
 public class Blog implements Serializable {
     @Id
     @SequenceGenerator(sequenceName="qt_blog_cat_id_seq",name = "genBlogid",allocationSize = 1)
@@ -30,6 +29,6 @@ public class Blog implements Serializable {
     private Collection<Category> blogCategory;
     private Date dateCreated;
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "authorId",nullable = false)
+    @JoinColumn(name = "authorId",nullable = true)
     private User author;
 }
