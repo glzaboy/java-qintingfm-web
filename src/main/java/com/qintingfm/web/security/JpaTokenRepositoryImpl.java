@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 
@@ -36,8 +36,12 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
-    @Autowired
+
     LoginTokenJpa loginTokenJpa;
+    @Autowired
+    public void setLoginTokenJpa(LoginTokenJpa loginTokenJpa) {
+        this.loginTokenJpa = loginTokenJpa;
+    }
 
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
@@ -68,7 +72,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
      * If an error occurs, it will be reported and null will be returned (since the result
      * should just be a failed persistent login).
      *
-     * @param seriesId
+     * @param seriesId ID
      * @return the token matching the series, or null if no match found or an exception
      * occurred.
      */
@@ -84,7 +88,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
         return null;
     }
     @Override
-    @Transactional
+    @Transactional(rollbackFor = {Exception.class})
     public void removeUserTokens(String username) {
         loginTokenJpa.deleteByUsername(username);
     }

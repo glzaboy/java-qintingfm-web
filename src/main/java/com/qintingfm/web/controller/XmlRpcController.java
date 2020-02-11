@@ -73,102 +73,21 @@ public class XmlRpcController {
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
         response.setContentType("application/xml");
-        try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            byte[] bytes = new byte[1024];
-            int readNum;
-            do {
-                readNum = inputStream.read(bytes, 0, 1024);
-                if (readNum > 0) {
-                    byteArrayOutputStream.write(bytes, 0, readNum);
-                }
-            } while (readNum > 0);
-            log.info(byteArrayOutputStream.toString());
-            ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            try {
-                metaWebLogServer.invoke(byteInputStream, response.getOutputStream());
-            } catch (SAXException e) {
-                e.printStackTrace();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] bytes = new byte[1024];
+        int readNum;
+        do {
+            readNum = inputStream.read(bytes, 0, 1024);
+            if (readNum > 0) {
+                byteArrayOutputStream.write(bytes, 0, readNum);
             }
-
-
-//            String methodName = xmlRequestParser.getMethodName();
-//            List params = xmlRequestParser.getParams();
-//            Optional<UserDetails> login=Optional.empty();
-//            if (params != null) {
-//                String username = xmlRequestParser.getParams().get(1).toString();
-//                String password = xmlRequestParser.getParams().get(2).toString();
-//                if (BLOGGER_DELETE_POST.equals(methodName)) {
-//                    username = xmlRequestParser.getParams().get(2).toString();
-//                    password = xmlRequestParser.getParams().get(3).toString();
-//                }
-//                log.info("用户名{}密码{}", username, password);
-//                login = login(username, password);
-//            }
-//            if(noLoginMethod.contains(methodName)){
-//                switch (methodName){
-//                    case "system.listMethods":
-//                        xmlRpcServer.response(response.getOutputStream(), listMethods());
-//                        break;
-//                    default:
-//                }
-//                return "";
-//            }
-//
-//
-//            if(!login.isPresent()){
-//                xmlRpcServer.responseError(response.getOutputStream(), 1001, "登录出错");
-//                return "";
-//            }
-//            switch (methodName) {
-//                case BLOGGER_GET_USERS_BLOGS:
-//                case WP_GET_USERS_BLOGS:
-//                    xmlRpcServer.response(response.getOutputStream(), getUserBlog());
-//                    break;
-//                case META_WEBLOG_GET_CATEGORIES:
-//                    xmlRpcServer.response(response.getOutputStream(), getCaterory());
-//                    break;
-//                case META_WEBLOG_GET_RECENT_POSTS:
-//                    xmlRpcServer.response(response.getOutputStream(), getRecentPosts(xmlRequestParser));
-//                    break;
-//                case META_WEBLOG_NEW_POST:
-//                    xmlRpcServer.response(response.getOutputStream(), newPost(xmlRequestParser));
-//                    break;
-//                case META_WEBLOG_EDIT_POST:
-//                    xmlRpcServer.response(response.getOutputStream(), editPost(xmlRequestParser));
-//                    break;
-//                case META_WEBLOG_GET_POST:
-//                    xmlRpcServer.response(response.getOutputStream(), getPost(xmlRequestParser));
-//                    break;
-//                case BLOGGER_DELETE_POST:
-//                    xmlRpcServer.response(response.getOutputStream(), deletePost(xmlRequestParser));
-//                    break;
-//                case META_WEBLOG_NEW_MEDIA_OBJECT:
-//                    xmlRpcServer.response(response.getOutputStream(), newMediaObject(xmlRequestParser));
-//                    break;
-//                default:
-//                    xmlRpcServer.responseError(response.getOutputStream(), 1001, "服务未实现");
-//            }
-//        } catch (XmlRpcException e) {
-//            try {
-//                xmlRpcServer.responseError(response.getOutputStream(), e.code, e.getMessage());
-//            } catch (SAXException ex) {
-//                log.error(ex.getMessage());
-//            }
-//        } catch (SAXException e) {
-//            try {
-//                xmlRpcServer.responseError(response.getOutputStream(), 1001, e.getMessage());
-//            } catch (SAXException ex) {
-//                log.error(ex.getMessage());
-//            }
-//        } catch (ManagerException e) {
-//            try {
-//                xmlRpcServer.responseError(response.getOutputStream(), 1001, e.getMessage());
-//            } catch (SAXException ex) {
-//                log.error(ex.getMessage());
-//            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } while (readNum > 0);
+        log.info(byteArrayOutputStream.toString());
+        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        try {
+            metaWebLogServer.invoke(byteInputStream, response.getOutputStream());
+        } catch (SAXException e) {
+            log.error("MetaWebLog invoke ERROR{}", e.getMessage());
         }
         return "";
     }
