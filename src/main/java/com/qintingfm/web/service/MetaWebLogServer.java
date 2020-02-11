@@ -237,12 +237,12 @@ public class MetaWebLogServer extends XmlRpcServer {
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Optional<Blog> blog1 = blogServer.getBlog(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
         blog1.ifPresent(blog -> {
-//            blog.setTitle(stringObjectHashMap.get("title").toString());
-//            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
-//            if (stringObjectHashMap.get("dateCreated") != null) {
-//                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-//                blog.setDateCreated(dateCreated);
-//            }
+            blog.setTitle(stringObjectHashMap.get("title").toString());
+            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
+            if (stringObjectHashMap.get("dateCreated") != null) {
+                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
+                blog.setDateCreated(dateCreated);
+            }
             blogServer.save(blog);
         });
         if (!blog1.isPresent()) {
