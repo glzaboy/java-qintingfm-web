@@ -40,7 +40,7 @@ public class QiniuOssImpl implements Oss{
             StringMap stringMap = r.jsonToMap();
             String key = (String)stringMap.get("key");
             storageObject.setObjectName(key);
-            storageObject.setUrl(config.getRootpath()+key);
+            storageObject.setUrl(config.getRootPath()+key);
         } catch (QiniuException e) {
             throw new ManagerException(e.getMessage(),e.getCause());
         }
@@ -55,7 +55,7 @@ public class QiniuOssImpl implements Oss{
         try {
             FetchRet fetch = bucketManager.fetch(url.toString(), config.getBucket(), objName);
             storageObject.setObjectName(fetch.key);
-            storageObject.setUrl(config.getRootpath()+fetch.key);
+            storageObject.setUrl(config.getRootPath()+fetch.key);
         } catch (QiniuException e) {
             throw new ManagerException(e.getMessage(),e.getCause());
         }
@@ -80,7 +80,7 @@ public class QiniuOssImpl implements Oss{
             StringMap stringMap = r.jsonToMap();
             String key = (String)stringMap.get("key");
             storageObject.setObjectName(key);
-            storageObject.setUrl(config.getRootpath()+key);
+            storageObject.setUrl(config.getRootPath()+key);
         } catch (QiniuException e) {
             throw new ManagerException(e.getMessage(),e.getCause());
         } catch (IOException e) {

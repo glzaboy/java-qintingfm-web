@@ -10,6 +10,6 @@ import lombok.Data;
 public class Config {
     String accesskey;
     String secretKey;
-    String rootpath;
+    String rootPath;
     String bucket;
 }
