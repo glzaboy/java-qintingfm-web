@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh_CN" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
-<head th:fragment="niftyHeader( pageTitle ,csslist)">
+<head th:fragment="niftyHeader">
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="Keywords" content="keywords" th:content="|${keywords} ,资讯,博客,时事要闻,qintingfm,microtf|">
+    <meta name="description" content="资讯，博客，时事要闻" th:content="|${description},资讯,博客,时事要闻|">
 
-    <title th:text="|${pageTitle} qintingfm|">title</title>
+
+    <title th:text="|${title} qintingfm|">title</title>
     <!--Open Sans Font [ OPTIONAL ]-->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'/>
     <link type="application/rsd+xml" rel="EditURI" href="/xmlrpc.php" />

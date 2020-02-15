@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh_CN">
-<head th:replace="fragments/common::niftyHeader(${blogPost.title},'')"/>
-<!--TIPS-->
-<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+<head th:replace="fragments/common::niftyHeader(title=${blogPost.title},keywords=${blogPost.title},description=${blogPost.title},csslist='')"/>
 <body>
 <div id="container" class="effect aside-float aside-bright mainnav-lg">
 
@@ -19,12 +17,9 @@
         <div id="content-container">
             <div id="page-head">
             </div>
-
-
             <!--Page content-->
             <!--===================================================-->
             <div id="page-content">
-
                 <div class="panel blog blog-details">
                     <div class="panel-body">
                         <div class="blog-title media-block">
@@ -58,12 +53,10 @@
                                 <i class="demo-pli-speech-bubble-5 icon-fw"></i>23
                             </div>
                         </div>
-
-
                         <!-- Comment form -->
                         <!--===================================================-->
                         <hr class="new-section-sm bord-no"/>
-                        <p class="text-lg text-main text-bold text-uppercase">Leave a comment</p>
+                        <p class="text-lg text-main text-bold text-uppercase">评论</p>
                         <form role="form">
                             <div class="row">
                                 <div class="col-md-4">

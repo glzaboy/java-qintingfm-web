@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="fragments/common::niftyHeader('文章列表','')"/>
-<!--TIPS-->
-<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+    <head th:replace="fragments/common::niftyHeader(title='文章列表')"/>
 <body>
 <div id="container" class="effect aside-float aside-bright mainnav-lg">
 
@@ -35,10 +33,6 @@
                     </div>
                     <!--===================================================-->
                     <!--End Posts Table-->
-
-
-
-
                 </div>
                 <!--===================================================-->
                 <!--End page content-->
