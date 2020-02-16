@@ -42,10 +42,21 @@
             <span class="menu-title">博客</span>
             <i class="arrow"></i>
         </a>
-
         <!--Submenu-->
         <ul class="collapse">
             <li th:class="${tpl}=='/blog/post'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a></li>
+            <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#">
+            <i class="demo-pli-file-html"></i>
+            <span class="menu-title">系统设置</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse">
+            <li th:class="${tpl}=='/admin/blog/setting/pushbaidu'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a></li>
             <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
         </ul>
     </li>

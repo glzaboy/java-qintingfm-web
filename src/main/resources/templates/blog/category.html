@@ -15,15 +15,12 @@
         <!--CONTENT CONTAINER-->
         <!--===================================================-->
         <div id="content-container">
-
-
-
-
+            <div id="page-head">
+            </div>
             <!--Page content-->
             <!--===================================================-->
             <div id="page-content">
                 <div class="panel">
-
                     <!--Posts Table-->
                     <!--===================================================-->
                     <div class="panel-body">
@@ -31,33 +28,18 @@
                             <a th:text="${item.getTitle()}" th:href="@{/blog/category/{catId}/article(catId=${item.getCatId()})}">分类</a>
                         </span>
                     </div>
-                    <!--===================================================-->
                     <!--End Posts Table-->
                 </div>
-                <!--===================================================-->
                 <!--End page content-->
-
             </div>
-            <!--===================================================-->
             <!--END CONTENT CONTAINER-->
-
-
-
             <!--ASIDE-->
-            <!--===================================================-->
             <aside id="aside-container" th:replace="fragments/common::aside"/>
-            <!--===================================================-->
             <!--END ASIDE-->
-
-
             <!--MAIN NAVIGATION-->
-            <!--===================================================-->
             <nav id="mainnav-container">
                 <div id="mainnav">
-
-
                     <!--Menu-->
-                    <!--================================-->
                     <div id="mainnav-menu-wrap">
                         <div class="nano">
                             <div class="nano-content">
@@ -68,12 +50,10 @@
                             </div>
                         </div>
                     </div>
-                    <!--================================-->
                     <!--End menu-->
 
                 </div>
             </nav>
-            <!--===================================================-->
             <!--END MAIN NAVIGATION-->
 
         </div>

@@ -63,6 +63,9 @@ public class NetClient {
 //        ObjectMapper objectMapper = new ObjectMapper();
         setJson(objectMapper.writeValueAsString(jsonObject));
     }
+    public void setBin(String contextType,byte[] bytes) {
+        builder.post(RequestBody.create(MediaType.parse(contextType), bytes));
+    }
 
 
     public void setUrl(String url) {
