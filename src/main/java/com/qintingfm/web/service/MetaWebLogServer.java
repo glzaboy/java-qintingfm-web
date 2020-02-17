@@ -3,7 +3,6 @@ package com.qintingfm.web.service;
 import com.qintingfm.web.jpa.CategoryJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
-import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.xmlrpc.RpcController;
 import com.qintingfm.web.service.xmlrpc.StreamConfig;
 import com.qintingfm.web.storage.Manager;
@@ -37,7 +36,7 @@ import java.util.stream.Stream;
  */
 @Service
 public class MetaWebLogServer extends XmlRpcServer {
-    public static final List<String> noLoginMethod = Stream.of("system.listMethods").collect(Collectors.toList());
+    public static final List<String> NO_LOGIN_METHOD = Stream.of("system.listMethods").collect(Collectors.toList());
     final Map<String, String> methodMap = new HashMap<>();
     AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
@@ -95,7 +94,7 @@ public class MetaWebLogServer extends XmlRpcServer {
 
         first.ifPresent(findMethod -> {
             try {
-                if (noLoginMethod.stream().filter(item -> {
+                if (NO_LOGIN_METHOD.stream().filter(item -> {
                     return item.equals(findMethod.getKey());
                 }).count() == 0) {
                     //需要登录
@@ -110,7 +109,6 @@ public class MetaWebLogServer extends XmlRpcServer {
                             username = xmlRequestParser.getParams().get(2).toString();
                             password = xmlRequestParser.getParams().get(3).toString();
                         }
-//                        log.info("用户名{}密码{}", username, password);
                         Optional<UserDetails> login = login(username, password);
                         if (!login.isPresent()) {
                             responseError(outputStream, 403, "无权限执行");
@@ -156,7 +154,8 @@ public class MetaWebLogServer extends XmlRpcServer {
         mapVector.add(userBlog);
         return mapVector;
     }
-    private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) {
+
+    private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Vector<Map<String, String>> mapVector = new Vector<>();
         categoryJpa.findAll().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
@@ -170,12 +169,13 @@ public class MetaWebLogServer extends XmlRpcServer {
 
         return mapVector;
     }
-    private Map<String, String> newMediaObject(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) throws ManagerException {
+
+    private Map<String, String> newMediaObject(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) throws ManagerException {
         @SuppressWarnings("unchecked")
         Map<String, Object> stringObjectMap = (Map<String, Object>) xmlRequestParser.getParams().get(3);
         Map<String, String> mediaObject = new HashMap<>(10);
         byte[] bits = (byte[]) stringObjectMap.get("bits");
-//        String name = (String) stringObjectMap.get("name");
+        //String name = (String) stringObjectMap.get("name");
         String s = DigestUtils.md5DigestAsHex(bits);
         StorageObject put = manager.put(bits, s);
         mediaObject.put("url", put.getUrl());
@@ -183,13 +183,13 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    Boolean deletePost(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) {
+    Boolean deletePost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(1).toString());
         blogServer.deleteBlog(postId);
         return true;
     }
 
-    private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) {
+    private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Map<String, Object> postMap = new HashMap<>(10);
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(0).toString());
         Optional<Blog> blog = blogServer.getBlog(postId);
@@ -203,7 +203,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         return postMap;
     }
 
-    Vector<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) {
+    Vector<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Vector<Map<String, Object>> mapVector = new Vector<>();
         Integer pageSize = Integer.valueOf(xmlRequestParser.getParams().get(3).toString());
         if (pageSize >= 100) {
@@ -232,7 +232,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    String editPost(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) {
+    String editPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Optional<Blog> blog1 = blogServer.getBlog(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
@@ -261,7 +261,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     @Transactional(rollbackFor = {Exception.class})
-    String newPost(XmlRpcRequestParser xmlRequestParser,UserDetails userDetails) {
+    String newPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         Blog blog = new Blog();

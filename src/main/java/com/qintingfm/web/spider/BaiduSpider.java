@@ -45,7 +45,7 @@ public class BaiduSpider extends BaseSpider {
             url.stream().forEach(item -> {
                 postData.append(item).append("\n");
             });
-            Map<String, String> headerMap = new HashMap<>();
+            Map<String, String> headerMap = new HashMap<>(4);
             headerMap.put("Content-Type", "text/plain");
             netClient.setHeaderMap(headerMap);
             netClient.setBin("text/plain", postData.toString().getBytes());

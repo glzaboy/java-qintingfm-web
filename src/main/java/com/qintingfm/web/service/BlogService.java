@@ -26,6 +26,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class BlogService {
+    final int shortContLen=100;
     BlogJpa blogJpa;
 
     BaiduSpider baiduSpider;
@@ -60,12 +61,10 @@ public class BlogService {
 
     public Blog save(Blog blog) {
         String contentText = HtmlUtil.delHtmlTags(blog.getBlogCont().getCont());
-        if (contentText != null) {
-            if (contentText.length() > 100) {
-                blog.setShotCont(contentText.substring(0, 100));
-            } else {
-                blog.setShotCont(contentText);
-            }
+        if (contentText.length() > shortContLen) {
+            blog.setShotCont(contentText.substring(0, shortContLen));
+        } else {
+            blog.setShotCont(contentText);
         }
         if (blog.getDateCreated() == null) {
             blog.setDateCreated(new Date());
@@ -76,7 +75,7 @@ public class BlogService {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class);
             String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId())).build().toString();
             pushUrl.add(s);
-            String s1 = baiduSpider.pushUrlToSpider(pushUrl);
+            baiduSpider.pushUrlToSpider(pushUrl);
         } catch (NoSuchMethodException e) {
             log.error("找不到博客文档的url");
         }

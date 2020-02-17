@@ -10,6 +10,11 @@ import java.util.stream.Stream;
  * @author guliuzhong
  */
 public interface Spider {
+    /**
+     * 获取设置
+     * @param spiderName
+     * @return
+     */
     Stream<SettingItem> getSpiderSettings(String spiderName);
 
     /**

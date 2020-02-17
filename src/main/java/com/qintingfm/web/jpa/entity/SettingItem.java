@@ -15,7 +15,7 @@ public class SettingItem {
     @Id
     @SequenceGenerator(sequenceName="setting_id",name = "genSettingId",allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genSettingId")
-    Integer Id;
+    Integer id;
     String name;
     String fields;
     String tip;
