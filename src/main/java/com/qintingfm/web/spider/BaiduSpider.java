@@ -28,7 +28,7 @@ public class BaiduSpider extends BaseSpider {
 
     @Override
     @Transactional(readOnly = true)
-    public void pushUrlToSpider(Collection<String> url) {
+    public String pushUrlToSpider(Collection<String> url) {
         Stream<SettingItem> spiderSettings = getSpiderSettings(SpiderName);
         Map<String, String> collect1 = spiderSettings.collect(Collectors.toMap(SettingItem::getKey, SettingItem::getValue));
         boolean enable = settingService.isEnable(collect1);
@@ -40,7 +40,6 @@ public class BaiduSpider extends BaseSpider {
             }, stringStringEntry -> {
                 return stringStringEntry.getValue();
             }));
-
             netClient.setUrl("http://data.zz.baidu.com/urls", collect);
             StringBuffer postData = new StringBuffer();
             url.stream().forEach(item -> {
@@ -52,8 +51,10 @@ public class BaiduSpider extends BaseSpider {
             netClient.setBin("text/plain", postData.toString().getBytes());
             String s = netClient.requestToString();
             log.info("baidu推送结果{}", s);
+            return "baidu推送结果"+s;
         } else {
             log.info("baidu不推送");
+            return "baidu不推送";
         }
     }
 }

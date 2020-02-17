@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -36,13 +38,20 @@ public class SettingService {
     }
     public boolean isEnable(Map<String, String> settingItems) {
         Assert.notEmpty(settingItems);
-        String s = settingItems.get(ENABLE);
-        if(s==null){
+        Optional<Map.Entry<String, String>> first = settingItems.entrySet().stream().filter(settingItem -> {
+            if (settingItem.getKey().equalsIgnoreCase(ENABLE)) {
+                return true;
+            }
             return false;
-        }
-        if (NUM_Y.equals(s) || TRUE.equalsIgnoreCase(s)|| Y.equalsIgnoreCase(s)|| YES.equalsIgnoreCase(s)) {
-            return true;
-        }
-        return false;
+        }).findFirst();
+        AtomicBoolean ret= new AtomicBoolean(false);
+        ret.set(false);
+        first.ifPresent(item->{
+            if (NUM_Y.equals(item.getValue()) || TRUE.equalsIgnoreCase(item.getValue())|| Y.equalsIgnoreCase(item.getValue())|| YES.equalsIgnoreCase(item.getValue())) {
+                ret.set(true);
+            }
+        });
+
+        return ret.get();
     }
 }
