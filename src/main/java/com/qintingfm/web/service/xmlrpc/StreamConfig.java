@@ -1,5 +1,6 @@
 package com.qintingfm.web.service.xmlrpc;
 
+import java.util.Arrays;
 import java.util.TimeZone;
 
 /**
@@ -30,13 +31,19 @@ public class StreamConfig implements org.apache.xmlrpc.common.XmlRpcStreamReques
         return null;
     }
 
+
     @Override
     public boolean isEnabledForExtensions() {
-        return false;
+        return true;
     }
 
     @Override
     public TimeZone getTimeZone() {
-        return TimeZone.getDefault();
+        return TimeZone.getTimeZone("Etc/UTC");
     }
+//
+//    public static void main(String[] args) {
+//        String[] availableIDs = TimeZone.getAvailableIDs();
+//        Arrays.asList(availableIDs).stream().forEach(System.out::println);
+//    }
 }
