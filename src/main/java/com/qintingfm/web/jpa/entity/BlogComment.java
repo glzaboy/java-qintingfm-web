@@ -22,4 +22,6 @@ public class BlogComment {
     @Column(length = 1048576,nullable = false)
     private String cont;
     private Date createDate;
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
+    private Blog blog;
 }

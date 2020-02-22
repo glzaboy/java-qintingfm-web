@@ -1,8 +1,10 @@
 package com.qintingfm.web.service;
 
 import com.qintingfm.web.controller.BlogController;
+import com.qintingfm.web.jpa.BlogCommentJpa;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
+import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.spider.BaiduSpider;
 import com.qintingfm.web.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +28,12 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class BlogService {
-    final int shortContLen=100;
+    final int shortContLen = 100;
     BlogJpa blogJpa;
 
     BaiduSpider baiduSpider;
+
+    BlogCommentJpa blogCommentJpa;
 
     @Autowired
     public void setBaiduSpider(BaiduSpider baiduSpider) {
@@ -39,6 +43,11 @@ public class BlogService {
     @Autowired
     public void setBlogJpa(BlogJpa blogJpa) {
         this.blogJpa = blogJpa;
+    }
+
+    @Autowired
+    public void setBlogCommentJpa(BlogCommentJpa blogCommentJpa) {
+        this.blogCommentJpa = blogCommentJpa;
     }
 
     public Page<Blog> getBlogList(Integer catId, Integer pageIndex, Sort sort, Integer pageSize) {
@@ -80,5 +89,31 @@ public class BlogService {
             log.error("找不到博客文档的url");
         }
         return save;
+    }
+
+    public Page<BlogComment> getBlogComment(Blog blog, Integer pageIndex, Sort sort, Integer pageSize) {
+        pageIndex = (pageIndex == null) ? 1 : pageIndex;
+        if (sort == null) {
+            sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "id"));
+        }
+        PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
+        return blogCommentJpa.findByBlog(blog, request);
+    }
+    public BlogComment saveComment(BlogComment blogComment) {
+        String contentText = HtmlUtil.delHtmlTags(blogComment.getCont());
+        blogComment.setCont(contentText);
+        if (blogComment.getCreateDate() == null) {
+            blogComment.setCreateDate(new Date());
+        }
+        return blogCommentJpa.save(blogComment);
+    }
+    public BlogComment saveComment(BlogComment blogComment,Blog blog) {
+        String contentText = HtmlUtil.delHtmlTags(blogComment.getCont());
+        blogComment.setCont(contentText);
+        blogComment.setBlog(blog);
+        if (blogComment.getCreateDate() == null) {
+            blogComment.setCreateDate(new Date());
+        }
+        return blogCommentJpa.save(blogComment);
     }
 }
