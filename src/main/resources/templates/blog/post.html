@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/common::niftyHeader('文章编辑','//static.qintingfm.com/nifty/v2.9/plugins/summernote/summernote.min.css,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.css')"/>
+<head th:replace="fragments/common::niftyHeader(title='文章编辑',csslist='//static.qintingfm.com/nifty/v2.9/plugins/summernote/summernote.min.css,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.css')"/>
 <!--TIPS-->
 <!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
 <body>
@@ -104,10 +104,10 @@
                                 <p class="text-main text-sm text-uppercase text-bold">Public Settings</p>
                                 <div class="form-horizontal">
                                     <div class="form-group">
-                                        <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Allow comments</label>
+                                        <label class="col-sm-5 control-label text-left" for="allow-comments">Allow comments</label>
                                         <div class="col-sm-7">
-                                            <input class="toggle-switch" id="demo-allow-comments" type="checkbox" checked="checked"/>
-                                            <label for="demo-allow-comments"></label>
+                                            <input class="toggle-switch" id="allow-comments" type="checkbox" checked="checked"/>
+                                            <label for="allow-comments"></label>
                                         </div>
                                     </div>
                                 </div>
@@ -118,12 +118,12 @@
                     </div>
                     <div class="fluid">
                         <div class="form-group">
-                            <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blogPost.title}"/>
+                            <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}"/>
                         </div>
 
                         <div class="panel">
                             <div class="panel-body">
-                                <div id="demo-summernote" th:utext="${blogPost.content}">
+                                <div id="demo-summernote" th:utext="${blog.blogCont.cont}">
                                 </div>
                             </div>
 

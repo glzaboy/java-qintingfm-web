@@ -98,4 +98,13 @@ public class BlogController {
         modelAndView.setViewName("blog/category");
         return modelAndView;
     }
+    @RequestMapping(value = {"/post/{postId}"})
+    public ModelAndView post(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
+        Optional<Blog> blog = blogServer.getBlog(postId);
+        blog.ifPresent(item->{
+            modelAndView.addObject("blog", item);
+        });
+        modelAndView.setViewName("blog/post");
+        return modelAndView;
+    }
 }
