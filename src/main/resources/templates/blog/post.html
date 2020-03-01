@@ -123,7 +123,7 @@
 
                         <div class="panel">
                             <div class="panel-body">
-                                <div id="demo-summernote" th:utext="${blog.blogCont.cont}">
+                                <div id="demo-summernote" th:utext="${blog.blogCont.cont}" class="editor">
                                 </div>
                             </div>
 
@@ -192,7 +192,7 @@
     <footer id="footer" th:replace="fragments/common::contentFoot"/>
 </div>
 
-<div th:replace="fragments/common::footjs('//static.qintingfm.com/nifty/v2.9/plugins/summernote/summernote.min.js,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js')"></div>
+<div th:replace="fragments/common::footjs('//static.qintingfm.com/ckeditor5/build/ckeditor.js,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js')"></div>
 <script>
     $(document).on('nifty.ready', function () {
         $('#demo-dropzone').dropzone({
@@ -208,10 +208,70 @@
                 });
             }
         });
+        ClassicEditor
+            .create( document.querySelector( '.editor' ), {
 
-        $('#demo-summernote, #demo-summernote-full-width').summernote({
-            height : '600px'
-        });
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strikethrough',
+                        'fontColor',
+                        'fontBackgroundColor',
+                        'highlight',
+                        '|',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'indent',
+                        'outdent',
+                        'alignment',
+                        '|',
+                        'link',
+                        'imageUpload',
+                        'blockQuote',
+                        'undo',
+                        'redo',
+                        'insertTable',
+                        'codeBlock',
+                        'specialCharacters',
+                        'removeFormat',
+                        'code'
+                    ]
+                },
+                language: 'zh_CN',
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:full',
+                        'imageStyle:side'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells',
+                        'tableCellProperties',
+                        'tableProperties'
+                    ]
+                },
+                licenseKey: '',
+
+            } )
+            .then( editor => {
+                window.editor = editor;
+
+
+
+
+            } )
+            .catch( error => {
+                console.error( error );
+            } );
     });
 </script>
 </body>
