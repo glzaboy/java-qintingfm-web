@@ -22,7 +22,7 @@
                 <!-- Contact Toolbar -->
                 <div class="row pad-btm">
                     <div class="col-sm-6 col-sm-offset-6 toolbar-right text-right">
-                        <button class="btn btn-primary">Save &amp; Publish</button>
+                        <button class="btn btn-primary">保存</button>
                     </div>
                 </div>
                 <div class="fixed-fluid">
@@ -72,17 +72,6 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Visibility</label>
-                                        <div class="col-sm-7">
-                                            <div class="select">
-                                                <select>
-                                                    <option value="none" selected="" disabled="disabled">Public</option>
-                                                    <option value="push">Private</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Categories</label>
                                         <div class="col-sm-7">
                                             <div class="select">
@@ -104,7 +93,7 @@
                                 <p class="text-main text-sm text-uppercase text-bold">Public Settings</p>
                                 <div class="form-horizontal">
                                     <div class="form-group">
-                                        <label class="col-sm-5 control-label text-left" for="allow-comments">Allow comments</label>
+                                        <label class="col-sm-5 control-label text-left" for="allow-comments">开启评论</label>
                                         <div class="col-sm-7">
                                             <input class="toggle-switch" id="allow-comments" type="checkbox" checked="checked"/>
                                             <label for="allow-comments"></label>
@@ -120,17 +109,14 @@
                         <div class="form-group">
                             <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}"/>
                         </div>
-
                         <div class="panel">
                             <div class="panel-body">
-                                <div id="demo-summernote" th:utext="${blog.blogCont.cont}" class="editor">
-                                </div>
+                                <div th:utext="${blog.blogCont.cont}" class="editor"></div>
                             </div>
 
                         </div>
                     </div>
                 </div>
-
             </div>
             <!--===================================================-->
             <!--End page content-->
@@ -152,22 +138,6 @@
         <!--===================================================-->
         <nav id="mainnav-container">
             <div id="mainnav">
-
-
-                <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
-                <!--It will only appear on small screen devices.-->
-                <!--================================
-                <div class="mainnav-brand">
-                    <a href="index.html" class="brand">
-                        <img src="img/logo.png" alt="Nifty Logo" class="brand-icon">
-                        <span class="brand-text">Nifty</span>
-                    </a>
-                    <a href="#" class="mainnav-toggle"><i class="pci-cross pci-circle icon-lg"></i></a>
-                </div>
-                -->
-
-
-
                 <!--Menu-->
                 <!--================================-->
                 <div id="mainnav-menu-wrap">
@@ -182,7 +152,6 @@
                 </div>
                 <!--================================-->
                 <!--End menu-->
-
             </div>
         </nav>
         <!--===================================================-->
@@ -192,7 +161,7 @@
     <footer id="footer" th:replace="fragments/common::contentFoot"/>
 </div>
 
-<div th:replace="fragments/common::footjs('//static.qintingfm.com/ckeditor5/build/ckeditor.js,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js')"></div>
+<div th:replace="fragments/common::footjs('//static.qintingfm.com/ckeditor5/build/ckeditor.js,//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js,//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js')"></div>
 <script>
     $(document).on('nifty.ready', function () {
         $('#demo-dropzone').dropzone({
@@ -210,7 +179,7 @@
         });
         ClassicEditor
             .create( document.querySelector( '.editor' ), {
-
+                plugins: [ SimpleUploadAdapter],
                 toolbar: {
                     items: [
                         'heading',
@@ -221,7 +190,6 @@
                         'strikethrough',
                         'fontColor',
                         'fontBackgroundColor',
-                        'highlight',
                         '|',
                         'bulletedList',
                         'numberedList',
@@ -232,21 +200,24 @@
                         '|',
                         'link',
                         'imageUpload',
+                        'mediaEmbed',
                         'blockQuote',
+                        'codeBlock',
+                        'insertTable',
                         'undo',
                         'redo',
-                        'insertTable',
-                        'codeBlock',
-                        'specialCharacters',
+                        '|',
                         'removeFormat',
                         'code'
                     ]
                 },
-                language: 'zh_CN',
+                language: 'zh-cn',
                 image: {
                     toolbar: [
                         'imageTextAlternative',
                         'imageStyle:full',
+                        'imageStyle:alignLeft',
+                        'imageStyle:alignRight',
                         'imageStyle:side'
                     ]
                 },
@@ -258,6 +229,9 @@
                         'tableCellProperties',
                         'tableProperties'
                     ]
+                },
+                simpleUpload:{
+                    uploadUrl: ':/uploadImage'
                 },
                 licenseKey: '',
 
