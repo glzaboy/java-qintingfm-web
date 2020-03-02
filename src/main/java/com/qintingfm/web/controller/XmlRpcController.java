@@ -1,14 +1,9 @@
 package com.qintingfm.web.controller;
 
-import com.qintingfm.web.jpa.CategoryJpa;
-import com.qintingfm.web.service.AppUserDetailsServiceImpl;
-import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.MetaWebLogServer;
-import com.qintingfm.web.storage.Manager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.xmlrpc.XmlRpcException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,39 +24,8 @@ import java.io.IOException;
 @Controller
 @Slf4j
 public class XmlRpcController {
-    AppUserDetailsServiceImpl appUserDetailsService;
-    PasswordEncoder passwordEncoder;
-    CategoryJpa categoryJpa;
-    Manager manager;
-
-    BlogService blogServer;
 
     MetaWebLogServer metaWebLogServer;
-
-    @Autowired
-    public void setBlogServer(BlogService blogServer) {
-        this.blogServer = blogServer;
-    }
-
-    @Autowired
-    public void setAppUserDetailsService(AppUserDetailsServiceImpl appUserDetailsService) {
-        this.appUserDetailsService = appUserDetailsService;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Autowired
-    public void setCategoryJpa(CategoryJpa categoryJpa) {
-        this.categoryJpa = categoryJpa;
-    }
-
-    @Autowired
-    public void setManager(Manager manager) {
-        this.manager = manager;
-    }
 
     @Autowired
     public void setMetaWebLogServer(MetaWebLogServer metaWebLogServer) {
@@ -102,7 +66,7 @@ public class XmlRpcController {
                 "\t\t<engineLink>http://qintingfm.com/</engineLink>\n" +
                 "\t\t<homePageLink>http://qintingfm.com/</homePageLink>\n" +
                 "\t\t<apis>\n" +
-                "\t\t\t<api name=\"MetaWeblog\" blogID=\"1\" preferred=\"false\" apiLink=\"" + ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString() + "\" />\n" +
+                "\t\t\t<api name=\"MetaWeblog\" blogID=\"1\" preferred=\"true\" apiLink=\"" + ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString() + "\" />\n" +
                 "\t\t</apis>\n" +
                 "\t</service>\n" +
                 "</rsd>";

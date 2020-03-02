@@ -3,6 +3,7 @@ package com.qintingfm.web.service;
 import com.qintingfm.web.jpa.CategoryJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
+import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.xmlrpc.RpcController;
 import com.qintingfm.web.service.xmlrpc.StreamConfig;
 import com.qintingfm.web.storage.Manager;
@@ -40,7 +41,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     final Map<String, String> methodMap = new HashMap<>();
     AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
-    CategoryJpa categoryJpa;
+    CategoryService categoryService;
     Manager manager;
     BlogService blogServer;
 
@@ -57,6 +58,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         methodMap.put("metaWeblog.editPost", "editPost");
         methodMap.put("metaWeblog.getPost", "getPost");
         methodMap.put("metaWeblog.newMediaObject", "newMediaObject");
+        methodMap.put("wp.newCategory", "newCategory");
         methodMap.put("system.listMethods", "listMethods");
 
     }
@@ -71,10 +73,6 @@ public class MetaWebLogServer extends XmlRpcServer {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Autowired
-    public void setCategoryJpa(CategoryJpa categoryJpa) {
-        this.categoryJpa = categoryJpa;
-    }
 
     @Autowired
     public void setManager(Manager manager) {
@@ -84,6 +82,10 @@ public class MetaWebLogServer extends XmlRpcServer {
     @Autowired
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
+    }
+    @Autowired
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     public void invoke(InputStream inputStream, OutputStream outputStream) throws XmlRpcException, SAXException, IOException {
@@ -157,7 +159,7 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Vector<Map<String, String>> mapVector = new Vector<>();
-        categoryJpa.findAll().forEach((item) -> {
+        categoryService.getAllCategory(1,10000).stream().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
             caterories.put("title", item.getTitle());
             caterories.put("categoryid", item.getCatId().toString());
@@ -230,7 +232,6 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mapVector;
 
     }
-
     @Transactional(rollbackFor = {Exception.class})
     String editPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
@@ -243,6 +244,12 @@ public class MetaWebLogServer extends XmlRpcServer {
                 Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
                 blog.setDateCreated(dateCreated);
             }
+            if(stringObjectHashMap.get("categories")!=null){
+                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
+                List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
+                Collection<Category> category = categoryService.getCategory(collect);
+                blog.setBlogCategory(category);
+            }
             blogServer.save(blog);
         });
         if (!blog1.isPresent()) {
@@ -254,6 +261,12 @@ public class MetaWebLogServer extends XmlRpcServer {
             if (stringObjectHashMap.get("dateCreated") != null) {
                 Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
                 blog.setDateCreated(dateCreated);
+            }
+            if(stringObjectHashMap.get("categories")!=null){
+                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
+                List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
+                Collection<Category> category = categoryService.getCategory(collect);
+                blog.setBlogCategory(category);
             }
             blogServer.save(blog);
         }
@@ -283,18 +296,14 @@ public class MetaWebLogServer extends XmlRpcServer {
             UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
             if (userDetails == null) {
                 return Optional.empty();
-//                return false;
             }
             boolean matches = passwordEncoder.matches(password, userDetails.getPassword());
             if (matches) {
                 return Optional.of(userDetails);
-//                return true;
             }
         } catch (UsernameNotFoundException exception) {
             return Optional.empty();
-//            return false;
         }
-//        return false;
         return Optional.empty();
     }
 }

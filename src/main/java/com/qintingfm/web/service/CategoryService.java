@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 分类
@@ -33,5 +35,9 @@ public class CategoryService {
     public Page<com.qintingfm.web.jpa.entity.Category> getAllCategory(int page, int size) {
         PageRequest postId = PageRequest.of(page-1, size, Sort.by(new Sort.Order(Sort.Direction.DESC, "catId")));
         return categoryJpa.findAll(postId);
+    }
+
+    public Collection<Category> getCategory(Collection<String> categoryNameList){
+        return categoryJpa.findAllByTitleIn(categoryNameList.stream().collect(Collectors.toList()));
     }
 }
