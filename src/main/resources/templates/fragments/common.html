@@ -320,8 +320,9 @@
     </div>
 </div>
 <!-- 分页 -->
-<ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )">
+<ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
     <li th:class="${pageIndex==1}?'disabled':''"><a href="#" class="demo-pli-arrow-left" th:href="${#strings.replace(urlPrefix,'{}',1)}"></a></li>
+
     <li th:class="${pageIndex==index}?'active':''" th:each="index:${#numbers.sequence(1, pageTotal)}"><a href="#" th:href="${#strings.replace(urlPrefix,'{}',index)}" th:text="${index}">1</a></li>
     <li th:class="${pageIndex==pageTotal}?'disabled':''"><a href="#" class="demo-pli-arrow-right" th:href="${#strings.replace(urlPrefix,'{}',pageTotal)}"></a></li>
 </ul>
