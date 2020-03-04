@@ -2,10 +2,166 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <head>
-        <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Task List</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    </head>
-    <body>
-        <div layout:fragment=""/>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <title layout:title-pattern="$CONTENT_TITLE-$LAYOUT_TITLE">钦听知天下</title>
+        <link type="application/rsd+xml" rel="EditURI" href="/xmlrpc.php" />
+        <!--Bootstrap Stylesheet [ REQUIRED ]-->
+        <link href="//static.qintingfm.com/nifty/v2.9/css/bootstrap.min.css" rel="stylesheet"/>
+        <!--Nifty Stylesheet [ REQUIRED ]-->
+        <link href="//static.qintingfm.com/nifty/v2.9/css/nifty.min.css" rel="stylesheet"/>
+        <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+        <link href="//static.qintingfm.com/nifty/v2.9/css/demo/nifty-demo-icons.min.css" rel="stylesheet"/>
+        <!--Pace - Page Load Progress Par [OPTIONAL]-->
+        <link href="//static.qintingfm.com/nifty/v2.9/plugins/pace/pace.min.css" rel="stylesheet"/>
+        <script href="//static.qintingfm.com/nifty/v2.9/plugins/pace/pace.min.js"></script>
+        <!--Demo [ DEMONSTRATION ]-->
+        <link href="//static.qintingfm.com/nifty/v2.9/css/theme-select.min.css" rel="stylesheet"/>
+        <link id="theme" th:href="${#themes.code('skinCss')}" rel="stylesheet" th:if="${#themes.code('skinCss')}"/>
+</head>
+<body>
+        <div id="container" class="effect aside-float aside-bright mainnav-lg">
+            <!--NAVBAR-->
+            <header id="navbar" th:replace="fragments/common::pageheader"/>
+            <!--END NAVBAR-->
+            <div class="boxed">
+                <!--CONTENT CONTAINER-->
+                <div id="content-container">
+                    <div id="page-head">
+                    </div>
+                    <!--Page content-->
+                    <!--===================================================-->
+                    <div id="page-content" layout:fragment="content">
+
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div th:text="|展现${pageIndex}页 ,共计${totalPages}页,合计${total}条|"></div>
+                            </div>
+                            <div class="col-sm-7 text-right">
+                                <ul class="pagination" th:replace="fragments/common::pager(${pageIndex},${totalPages},'/page/{}')"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!--===================================================-->
+                    <!--End page content-->
+
+                </div>
+                <!--===================================================-->
+                <!--END CONTENT CONTAINER-->
+                <!--ASIDE-->
+                <!--===================================================-->
+                <aside id="aside-container" th:replace="fragments/common::aside"/>
+                <!--===================================================-->
+                <!--END ASIDE-->
+
+
+                <!--MAIN NAVIGATION-->
+                <!--===================================================-->
+                <nav id="mainnav-container">
+                    <div id="mainnav">
+
+
+                        <!--Menu-->
+                        <!--================================-->
+                        <div id="mainnav-menu-wrap">
+                            <div class="nano">
+                                <div class="nano-content">
+                                    <ul id="mainnav-menu" class="list-group" th:include="fragments/common::menu('/')"/>
+                                    <!--Widget-->
+                                    <div class="mainnav-widget" th:replace="fragments/common::mainnavwidget2"/>
+                                    <!--End widget-->
+                                </div>
+                            </div>
+                        </div>
+                        <!--================================-->
+                        <!--End menu-->
+
+                    </div>
+                </nav>
+                <!--===================================================-->
+                <!--END MAIN NAVIGATION-->
+
+            </div>
+            <footer id="footer" th:fragment="contentFoot">
+                <div class="hide-fixed pull-right pad-rgt">
+                    版权所有 &copy; qintingfm.com &nbsp; Microtf.com
+                </div>
+                <p class="pad-lft">&#0169; 2020 qintingfm.com</p>
+            </footer>
+        </div>
+        <!--===================================================-->
+        <!-- END OF CONTAINER -->
+        <div>
+            <!-- SCROLL PAGE BUTTON -->
+            <button class="scroll-top btn">
+                <i class="pci-chevron chevron-up"></i>
+            </button>
+            <!--JAVASCRIPT-->
+            <!--jQuery [ REQUIRED ]-->
+            <script src="//static.qintingfm.com/nifty/v2.9/js/jquery.min.js"></script>
+            <!--BootstrapJS [ RECOMMENDED ]-->
+            <script src="//static.qintingfm.com/nifty/v2.9/js/bootstrap.min.js"></script>
+            <!--NiftyJS [ RECOMMENDED ]-->
+            <script src="//static.qintingfm.com/nifty/v2.9/js/nifty.min.js"></script>
+            <script src="//static.qintingfm.com/plugins/jquery.dialog.min.js"></script>
+            <script src="//static.qintingfm.com/plugins/jquery.ajaxform.min.js"></script>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                $(document).ready(function (){
+                    var activelink=$('li.active-link');
+                    if(activelink.length){
+                        activelink.parents().each(function (){
+                            if($(this).get(0).tagName=='UL' && $(this).hasClass('list-group')){
+                                return;
+                            }
+                            if($(this).get(0).tagName=="UL"){
+                                $(this).addClass("in");
+                            }
+                            if($(this).get(0).tagName=="LI"){
+                                $(this).addClass("active active-sub");
+                            }
+                        });
+                    }
+                    var themeBtn = $('.demo-theme');
+                    var skincss=[[${#themes.code('skinCss')}]];
+                    $(".demo-theme[data-css= '"+skincss+"' ").addClass('active').tooltip('hide');
+                    changeTheme = function (themeName, cssfile) {
+                        var themeCSS = $('#theme');
+                        if (themeCSS.length) {
+                            themeCSS.prop('href', cssfile);
+                        } else {
+                            themeCSS = '<link id="theme" href="' + cssfile + '" rel="stylesheet">';
+                            $('head').append(themeCSS);
+                        }
+                        $.get('/misc/changeTheme?theme='+themeName);
+                    };
+
+                    themeBtn.on('click', function (e) {
+                        e.preventDefault();
+                        console.log(e);
+                        var el = $(this);
+                        if (el.hasClass('disabled') || el.hasClass('active')) {
+                            return false;
+                        }
+                        changeTheme(el.attr('data-theme'), el.attr('data-css'));
+                        themeBtn.removeClass('active');
+                        el.addClass('active').tooltip('hide');
+                        return false;
+                    });
+                });
+                /*]]>*/
+            </script>
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                    var hm = document.createElement("script");
+                    hm.src = "https://hm.baidu.com/hm.js?16375d9784eb2d2366a8debc9bd11403";
+                    var s = document.getElementsByTagName("script")[0];
+                    s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+        </div>
+        <div layout:fragment="footjs"></div>
     </body>
-    </html>
+</html>

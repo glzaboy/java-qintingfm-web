@@ -1,181 +1,105 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="zh_CN">
-<head th:replace="fragments/common::niftyHeader(title=${blogPost.title},keywords=${blogPost.title},description=${blogPost.title},csslist='')"/>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh_CN"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<head>
+    <title th:text="${blogPost.title}">首页</title>
+    <meta name="Keywords" content="keywords" th:content="|,资讯,博客,时事要闻,qintingfm,microtf|">
+    <meta name="description" content="资讯，博客，时事要闻" th:content="|资讯,博客,时事要闻|">
+</head>
 <body>
-<div id="container" class="effect aside-float aside-bright mainnav-lg">
-
-    <!--NAVBAR-->
-    <!--===================================================-->
-    <header id="navbar" th:replace="fragments/common::pageheader"/>
-    <!--===================================================-->
-    <!--END NAVBAR-->
-
-    <div class="boxed">
-
-        <!--CONTENT CONTAINER-->
-        <!--===================================================-->
-        <div id="content-container">
-            <div id="page-head">
+    <div id="page-content" layout:fragment="content">
+        <div class="row blog blog-details">
+            <div class="blog-title media-block">
+                <div class="media-right textright">
+                    <a href="#" class="btn btn-icon demo-psi-twitter icon-lg add-tooltip" data-original-title="Twitter" data-container="body"></a>
+                </div>
+                <div class="media-body">
+                    <h1 th:utext="${blogPost.title}">title</h1>
+                </div>
             </div>
-            <!--Page content-->
+            <div class="blog-content" th:if="${blogPost.blogCategory}">
+                <span>分类：</span>
+                <span th:each="item:${blogPost.blogCategory}">
+                            <a th:utext="${item.title}" th:href="@{/blog/category/{catId}/article(catId=${item.getCatId()})}" href="#" class="badge"> 分类></a>
+                        </span>
+            </div>
+            <div class="blog-content">
+
+                <div class="blog-body" th:utext="${blogPost.blogCont.cont}"/>
+            </div>
+            <div class="blog-footer">
+                <div class="media-left">
+                    <span class="label label-success" th:text="${#dates.format(blogPost.dateCreated,'yyyy-MM-dd HH:mm:ss')}">5 Days ago</span>
+                    <small th:if="${blogPost.author}">作者 : <a href="#" class="btn-link" th:utext="${blogPost.author.username}" th:if="${blogPost.author}" th:href="@{/user/view/{id}(id=${blogPost.author.id})}">author</a></small>
+                </div>
+                <div class="media-body text-right">
+                    <span class="mar-rgt"><i class="demo-pli-heart-2 icon-fw"></i>519</span>
+                    <i class="demo-pli-speech-bubble-5 icon-fw"></i>23
+                </div>
+            </div>
+            <!-- Comment form -->
             <!--===================================================-->
-            <div id="page-content">
-                <div class="panel blog blog-details">
-                    <div class="panel-body">
-                        <div class="blog-title media-block">
-                            <div class="media-right textright">
-                                <a href="#" class="btn btn-icon demo-psi-twitter icon-lg add-tooltip" data-original-title="Twitter" data-container="body"></a>
-                            </div>
-                            <div class="media-body">
-                                <h1 th:utext="${blogPost.title}">title</h1>
-                            </div>
+            <hr class="new-section-sm bord-no"/>
+            <p class="text-lg text-main text-bold text-uppercase">评论</p>
+            <form role="form" class="ajaxform" method="post" th:action="@{/blog/postComment/{postId}(postId=${blogPost.postId})}">
+                <div class="row">
+                    <!--                                <div class="col-md-4">-->
+
+                    <!--                                    <div class="form-group">-->
+                    <!--                                        <input type="text" class="form-control" placeholder="Your name"/>-->
+                    <!--                                    </div>-->
+                    <!--                                    <div class="form-group">-->
+                    <!--                                        <input type="email" class="form-control" placeholder="Your email address"/>-->
+                    <!--                                    </div>-->
+                    <!--                                    <div class="form-group">-->
+                    <!--                                        <input type="url" class="form-control" placeholder="Your website"/>-->
+                    <!--                                    </div>-->
+                    <!--                                    <div class="form-group">-->
+                    <!--                                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-comment"></i> Submit comment</button>-->
+                    <!--                                    </div>-->
+
+                    <!--                                </div>-->
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <textarea class="form-control" rows="9" placeholder="Your comment" name="comment"></textarea>
                         </div>
-                        <div class="blog-content" th:if="${blogPost.blogCategory}">
-                            <span>分类：</span>
-                            <span th:each="item:${blogPost.blogCategory}">
-                                <a th:utext="${item.title}" th:href="@{/blog/category/{catId}/article(catId=${item.getCatId()})}" href="#" class="badge"> 分类></a>
-                            </span>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btn-block"><i class="fa fa-comment"></i> Submit comment</button>
                         </div>
-                        <div class="blog-content">
-
-                            <div class="blog-body" th:utext="${blogPost.blogCont.cont}"/>
-                        </div>
-                        <div class="blog-footer">
-                            <div class="media-left">
-                                <span class="label label-success" th:text="${#dates.format(blogPost.dateCreated,'yyyy-MM-dd HH:mm:ss')}">5 Days ago</span>
-                                <small th:if="${blogPost.author}">作者 : <a href="#" class="btn-link" th:utext="${blogPost.author.username}" th:if="${blogPost.author}" th:href="@{/user/view/{id}(id=${blogPost.author.id})}">author</a></small>
-                            </div>
-                            <div class="media-body text-right">
-                                <span class="mar-rgt"><i class="demo-pli-heart-2 icon-fw"></i>519</span>
-                                <i class="demo-pli-speech-bubble-5 icon-fw"></i>23
-                            </div>
-                        </div>
-                        <!-- Comment form -->
-                        <!--===================================================-->
-                        <hr class="new-section-sm bord-no"/>
-                        <p class="text-lg text-main text-bold text-uppercase">评论</p>
-                        <form role="form" class="ajaxform" method="post" th:action="@{/blog/postComment/{postId}(postId=${blogPost.postId})}">
-                            <div class="row">
-<!--                                <div class="col-md-4">-->
-
-<!--                                    <div class="form-group">-->
-<!--                                        <input type="text" class="form-control" placeholder="Your name"/>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-group">-->
-<!--                                        <input type="email" class="form-control" placeholder="Your email address"/>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-group">-->
-<!--                                        <input type="url" class="form-control" placeholder="Your website"/>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-group">-->
-<!--                                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-comment"></i> Submit comment</button>-->
-<!--                                    </div>-->
-
-<!--                                </div>-->
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <textarea class="form-control" rows="9" placeholder="Your comment" name="comment"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-comment"></i> Submit comment</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-
-
-
-
-                        <hr class="new-section-sm"/>
-
-                        <!-- Comments -->
-                        <!--===================================================-->
-                        <div class="comments media-block" th:each="coment:${blogComment}" th:if="${blogComment}">
-                            <a class="media-left" href="#"><img class="img-circle img-sm" alt="Profile Picture" src="//static.qintingfm.com/nifty/v2.9/img/profile-photos/8.png"/></a>
-                            <div class="media-body">
-                                <div class="comment-header">
-                                    <a href="#" class="media-heading box-inline text-main text-bold" th:utext="${coment.author.username}" th:if="${coment.author}">Author</a>
-                                    <p class="text-muted text-sm" th:utext="${coment.getCreateDate()}">创建时间</p>
-                                </div>
-                                <p th:utext="${coment.getCont()}">comnent</p>
-                                <a class="btn btn-sm btn-default"><i class="icon-lg demo-pli-like"></i> Like </a>
-                                <a class="btn btn-sm btn-default"><i class="icon-lg demo-pli-right-4"></i> Reply</a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <div th:text="|展现${blogComment.pageable.pageNumber+1}页 ,共计${blogComment.totalPages}页,合计${blogComment.totalElements}条|"></div>
-                            </div>
-                            <div class="col-sm-7 text-right">
-                                <ul class="pagination" th:replace="fragments/common::pager(${blogComment.pageable.pageNumber+1},${blogComment.totalPages},'/blog/view/'+${blogPost.postId}+'/{}')"/>
-                            </div>
-                        </div>
-                        <!--===================================================-->
-                        <!-- End Comments -->
-
                     </div>
                 </div>
+            </form>
 
 
+
+
+            <hr class="new-section-sm"/>
+
+            <!-- Comments -->
+            <!--===================================================-->
+            <div class="comments media-block" th:each="coment:${blogComment}" th:if="${blogComment}">
+                <a class="media-left" href="#"><img class="img-circle img-sm" alt="Profile Picture" src="//static.qintingfm.com/nifty/v2.9/img/profile-photos/8.png"/></a>
+                <div class="media-body">
+                    <div class="comment-header">
+                        <a href="#" class="media-heading box-inline text-main text-bold" th:utext="${coment.author.username}" th:if="${coment.author}">Author</a>
+                        <p class="text-muted text-sm" th:utext="${coment.getCreateDate()}">创建时间</p>
+                    </div>
+                    <p th:utext="${coment.getCont()}">comnent</p>
+                    <a class="btn btn-sm btn-default"><i class="icon-lg demo-pli-like"></i> Like </a>
+                    <a class="btn btn-sm btn-default"><i class="icon-lg demo-pli-right-4"></i> Reply</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div th:text="|展现${blogComment.pageable.pageNumber+1}页 ,共计${blogComment.totalPages}页,合计${blogComment.totalElements}条|"></div>
+                </div>
+                <div class="col-sm-7 text-right">
+                    <ul class="pagination" th:replace="fragments/common::pager(${blogComment.pageable.pageNumber+1},${blogComment.totalPages},'/blog/view/'+${blogPost.postId}+'/{}')"/>
+                </div>
             </div>
             <!--===================================================-->
-            <!--End page content-->
-
+            <!-- End Comments -->
         </div>
-        <!--===================================================-->
-        <!--END CONTENT CONTAINER-->
-
-        <!--ASIDE-->
-        <!--===================================================-->
-        <aside id="aside-container" th:replace="fragments/common::aside"/>
-        <!--===================================================-->
-        <!--END ASIDE-->
-
-
-        <!--MAIN NAVIGATION-->
-        <!--===================================================-->
-        <nav id="mainnav-container">
-            <div id="mainnav">
-
-
-                <!--OPTIONAL : ADD YOUR LOGO TO THE NAVIGATION-->
-                <!--It will only appear on small screen devices.-->
-                <!--================================
-                <div class="mainnav-brand">
-                    <a href="index.html" class="brand">
-                        <img src="img/logo.png" alt="Nifty Logo" class="brand-icon">
-                        <span class="brand-text">Nifty</span>
-                    </a>
-                    <a href="#" class="mainnav-toggle"><i class="pci-cross pci-circle icon-lg"></i></a>
-                </div>
-                -->
-
-
-
-                <!--Menu-->
-                <!--================================-->
-                <div id="mainnav-menu-wrap">
-                    <div class="nano">
-                        <div class="nano-content">
-                            <ul id="mainnav-menu" class="list-group" th:include="fragments/common::menu('/blog/view')"/>
-                            <!--Widget-->
-                            <div class="mainnav-widget" th:replace="fragments/common::mainnavwidget2"/>
-                            <!--End widget-->
-                        </div>
-                    </div>
-                </div>
-                <!--================================-->
-                <!--End menu-->
-
-            </div>
-        </nav>
-        <!--===================================================-->
-        <!--END MAIN NAVIGATION-->
-
     </div>
-    <footer id="footer" th:replace="fragments/common::contentFoot"/>
-</div>
 
-<div th:replace="fragments/common::footjs('')"></div>
 </body>
 </html>

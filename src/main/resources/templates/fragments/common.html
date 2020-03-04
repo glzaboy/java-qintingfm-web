@@ -4,13 +4,12 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="Keywords" content="keywords" th:content="|${keywords} ,资讯,博客,时事要闻,qintingfm,microtf|">
-    <meta name="description" content="资讯，博客，时事要闻" th:content="|${description},资讯,博客,时事要闻|">
 
-
-    <title th:text="|${title} qintingfm|">title</title>
+    <th:block th:replace="${title}" />
+    <th:block th:replace="${metas}" />
+<!--    <th:block th:replace="${metas}" />-->
     <!--Open Sans Font [ OPTIONAL ]-->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'/>
+<!--    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'/>-->
     <link type="application/rsd+xml" rel="EditURI" href="/xmlrpc.php" />
     <!--Bootstrap Stylesheet [ REQUIRED ]-->
     <link href="//static.qintingfm.com/nifty/v2.9/css/bootstrap.min.css" rel="stylesheet"/>
@@ -23,7 +22,7 @@
     <script href="//static.qintingfm.com/nifty/v2.9/plugins/pace/pace.min.js"></script>
     <!--Demo [ DEMONSTRATION ]-->
     <link href="//static.qintingfm.com/nifty/v2.9/css/theme-select.min.css" rel="stylesheet"/>
-    <link href="#" th:href="${css}" rel="stylesheet" th:each="css:${#strings.listSplit(csslist,',')}"/>
+    <th:block th:replace="${links}" th:if="${links}"/>
     <link id="theme" th:href="${#themes.code('skinCss')}" rel="stylesheet" th:if="${#themes.code('skinCss')}"/>
 </head>
 <ul th:fragment="menu(tpl)">
@@ -121,7 +120,8 @@
         });
         /*]]>*/
     </script>
-    <script th:src="${js}" th:each="js:${#strings.listSplit(jslist,',')}"></script>
+<!--    <script th:src="${js}" th:each="js:${#strings.listSplit(jslist,',')}"></script>-->
+    <th:block th:replace="${jslist}" th:if="${jslist}"/>
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -326,21 +326,4 @@
     <li th:class="${pageIndex==index}?'active':''" th:each="index:${#numbers.sequence(1, pageTotal)}"><a href="#" th:href="${#strings.replace(urlPrefix,'{}',index)}" th:text="${index}">1</a></li>
     <li th:class="${pageIndex==pageTotal}?'disabled':''"><a href="#" class="demo-pli-arrow-right" th:href="${#strings.replace(urlPrefix,'{}',pageTotal)}"></a></li>
 </ul>
-<footer id="footer" th:fragment="contentFoot">
-
-    <!-- Visible when footer positions are fixed -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <div class="show-fixed pad-rgt pull-right">
-        You have <a href="#" class="text-main"><span class="badge badge-danger">0</span> pending action.</a>
-    </div>
-    <!-- Visible when footer positions are static -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <div class="hide-fixed pull-right pad-rgt">
-        版权所有 &copy; qintingfm.com &nbsp; Microtf.com
-    </div>
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- Remove the class "show-fixed" and "hide-fixed" to make the content always appears. -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <p class="pad-lft">&#0169; 2020 qintingfm.com</p>
-</footer>
 </html>
