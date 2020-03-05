@@ -2,7 +2,7 @@
 <html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <title>首页</title>
-    <link href="//static.qintingfm.com/nifty/v2.9/css/aaa" rel="stylesheet"/>
+
     <meta name="Keywords" content="个人博客 ,资讯,博客,时事要闻,qintingfm,microtf">
     <meta name="description" content="null,资讯,博客,时事要闻">
     <style>
@@ -70,23 +70,23 @@
         </div>
     </div>
 </div>
-    <div layout:fragment="footjs">
-    <script src="//static.qintingfm.com/nifty/v2.9/plugins/masonry/masonry.pkgd.min.js"></script>
-    <script src="//static.qintingfm.com/plugins/imagesloaded.pkgd.min.js"></script>
-    <script>
-        $(document).on('nifty.ready', function () {
-            // init Masonry
-            var $grid = $('.grid').masonry({
-                itemSelector: '.grid-item',
-                columnWidth: '.grid-item',
-                gutter: 15
-                // options...
-            });
-            $grid.imagesLoaded().progress( function() {
-                $grid.masonry('layout');
-            });
+<div layout:fragment="footjs">
+<script src="//static.qintingfm.com/nifty/v2.9/plugins/masonry/masonry.pkgd.min.js"></script>
+<script src="//static.qintingfm.com/plugins/imagesloaded.pkgd.min.js"></script>
+<script>
+    $(document).on('nifty.ready', function () {
+        // init Masonry
+        var $grid = $('.grid').masonry({
+            itemSelector: '.grid-item',
+            columnWidth: '.grid-item',
+            gutter: 15
+            // options...
         });
-    </script>
-    </div>
+        $grid.imagesLoaded().progress( function() {
+            $grid.masonry('layout');
+        });
+    });
+</script>
+</div>
 </body>
 </html>
