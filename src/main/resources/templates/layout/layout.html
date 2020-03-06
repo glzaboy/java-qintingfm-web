@@ -33,15 +33,6 @@
                     <!--Page content-->
                     <!--===================================================-->
                     <div id="page-content" layout:fragment="content">
-
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <div th:text="|展现${pageIndex}页 ,共计${totalPages}页,合计${total}条|"></div>
-                            </div>
-                            <div class="col-sm-7 text-right">
-                                <ul class="pagination" th:replace="fragments/common::pager(${pageIndex},${totalPages},'/page/{}')"/>
-                            </div>
-                        </div>
                     </div>
                     <!--===================================================-->
                     <!--End page content-->
