@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <title>首页</title>
-
     <meta name="Keywords" content="个人博客 ,资讯,博客,时事要闻,qintingfm,microtf">
-    <meta name="description" content="null,资讯,博客,时事要闻">
+    <meta name="description" content="资讯,博客,时事要闻">
     <style>
         #content-container:before{
             display:none;
@@ -31,12 +30,6 @@
         }
     </style>
 </head>
-
-
-<!--<head th:replace="fragments/common::niftyHeader(title=~{::title},keywords='个人博客')">-->
-<!--    <title></title>-->
-<!--&lt;!&ndash;    <link href="#" th:href="${css}" rel="stylesheet" th:each="css:${#strings.listSplit(csslist,',')}"/>&ndash;&gt;-->
-<!--</head>-->
 <body>
 <div layout:fragment="content">
     <div class="row blog">
