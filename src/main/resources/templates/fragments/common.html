@@ -1,30 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="zh_CN" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
-<head th:fragment="niftyHeader">
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-
-    <th:block th:replace="${title}" />
-    <th:block th:replace="${metas}" />
-<!--    <th:block th:replace="${metas}" />-->
-    <!--Open Sans Font [ OPTIONAL ]-->
-<!--    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'/>-->
-    <link type="application/rsd+xml" rel="EditURI" href="/xmlrpc.php" />
-    <!--Bootstrap Stylesheet [ REQUIRED ]-->
-    <link href="//static.qintingfm.com/nifty/v2.9/css/bootstrap.min.css" rel="stylesheet"/>
-    <!--Nifty Stylesheet [ REQUIRED ]-->
-    <link href="//static.qintingfm.com/nifty/v2.9/css/nifty.min.css" rel="stylesheet"/>
-    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
-    <link href="//static.qintingfm.com/nifty/v2.9/css/demo/nifty-demo-icons.min.css" rel="stylesheet"/>
-    <!--Pace - Page Load Progress Par [OPTIONAL]-->
-    <link href="//static.qintingfm.com/nifty/v2.9/plugins/pace/pace.min.css" rel="stylesheet"/>
-    <script href="//static.qintingfm.com/nifty/v2.9/plugins/pace/pace.min.js"></script>
-    <!--Demo [ DEMONSTRATION ]-->
-    <link href="//static.qintingfm.com/nifty/v2.9/css/theme-select.min.css" rel="stylesheet"/>
-    <th:block th:replace="${links}" th:if="${links}"/>
-    <link id="theme" th:href="${#themes.code('skinCss')}" rel="stylesheet" th:if="${#themes.code('skinCss')}"/>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh_CN">
 <ul th:fragment="menu(tpl)">
     <!--Category name-->
     <li class="list-header">导航</li>
@@ -125,9 +100,9 @@
     <script>
         var _hmt = _hmt || [];
         (function() {
-            var hm = document.createElement("script");
+            const hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?16375d9784eb2d2366a8debc9bd11403";
-            var s = document.getElementsByTagName("script")[0];
+            const s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
     </script>
@@ -138,7 +113,7 @@
         <!--Brand logo & name-->
         <!--================================-->
         <div class="navbar-header">
-            <a href="index.html" class="navbar-brand" th:href="@{/}">
+            <a href="#" class="navbar-brand" th:href="@{/}">
                 <img src="//static.qintingfm.com/nifty/v2.9/img/logo.png" alt="QintingFm" class="brand-icon" />
                 <div class="brand-title">
                     <span class="brand-text">QintingFm</span>
@@ -200,7 +175,7 @@
                     <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
                         <ul class="head-list">
                             <li>
-                                <span th:utext="${#authentication.name}"/>
+                                <span th:utext="${#authentication.name}"></span>
                             </li>
                             <li>
                                 <a href="#"><i class="demo-pli-male icon-lg icon-fw"></i> Profile</a>
@@ -227,83 +202,6 @@
         <!--End Navbar Dropdown-->
     </div>
 </header>
-<aside id="aside-container" th:fragment="aside">
-    <div id="aside">
-        <div class="nano">
-            <div class="nano-content">
-                <ul class="list-group bg-trans">
-                    <li class="pad-top list-header">
-                        <p class="text-main text-sm text-uppercase text-bold mar-no">主题</p>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="clearfix text-center demo-srow-scheme">
-                            <div class="clearfix demo-full-theme">
-                                <div class="col-md-6">
-                                    <div class="media v-middle">
-                                        <div class="media-left demo-single-theme">
-                                            <a href="#" class="demo-theme demo-theme-light" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-full/theme-light-full.min.css" data-theme="fulllight"></a>
-                                        </div>
-                                        <div class="media-body">
-                                            <p class="text-bold text-main mar-no text-uppercase text-sm">Full Light</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="media v-middle">
-                                        <div class="media-left demo-single-theme">
-                                            <a href="#" class="demo-theme demo-theme-dark" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-full/theme-dark-full.min.css" data-theme="fulldark"></a>
-                                        </div>
-                                        <div class="media-body">
-                                            <p class="text-bold text-main mar-no text-uppercase text-sm">Full Dark </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="demo-theme-btn col-md-12">
-                                <div class="demo-justify-theme">
-                                    <a href="#" class="demo-theme demo-theme-gray add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-gray.min.css" data-theme="gray" data-title="Gray"></a>
-                                    <a href="#" class="demo-theme demo-theme-navy add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-navy.min.css" data-theme="navy" data-title="Navy Blue"></a>
-                                    <a href="#" class="demo-theme demo-theme-ocean add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-ocean.min.css" data-theme="ocean" data-title="Ocean"></a>
-
-                                    <a href="#" class="demo-theme demo-theme-lime add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-lime.min.css" data-theme="lime" data-title="Lime"></a>
-                                    <a href="#" class="demo-theme demo-theme-purple add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-purple.min.css" data-theme="purple" data-title="Purple"></a>
-                                    <a href="#" class="demo-theme demo-theme-dust add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-dust.min.css" data-theme="dust" data-title="Dust"></a>
-
-                                    <a href="#" class="demo-theme demo-theme-mint add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-mint.min.css" data-theme="mint" data-title="Mint"></a>
-                                    <a href="#" class="demo-theme demo-theme-yellow add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-yellow.min.css" data-theme="yellow" data-title="Yellow"></a>
-                                    <a href="#" class="demo-theme demo-theme-well-red add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-well-red.min.css" data-theme="well-red" data-title="Well Red"></a>
-
-                                    <a href="#" class="demo-theme demo-theme-coffee add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-coffee.min.css" data-theme="coffee" data-title="Coffee"></a>
-                                    <a href="#" class="demo-theme demo-theme-prickly-pear add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-prickly-pear.min.css" data-theme="prickly-pear" data-title="Prickly pear"></a>
-                                    <a href="#" class="demo-theme demo-theme-dark add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-dark.min.css" data-theme="dark" data-title="Dark"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                <ul class="list-group bg-trans">
-                    <li class="pad-top list-header">
-                        <p class="text-main text-sm text-uppercase text-bold mar-no">导航</p>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="pull-right">
-                            <input id="demo-nav-fixed" class="toggle-switch" type="checkbox"/>
-                            <label for="demo-nav-fixed"></label>
-                        </div>
-                        <p class="mar-no text-main">Fixed Position</p>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="pull-right">
-                            <input id="demo-nav-profile" class="toggle-switch" type="checkbox"/>
-                            <label for="demo-nav-profile"></label>
-                        </div>
-                        <p class="mar-no text-main">Widget Profil</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</aside>
 <div class="mainnav-widget" th:fragment="mainnavwidget2">
     <!-- Show the button on collapsed navigation -->
     <div class="show-small">

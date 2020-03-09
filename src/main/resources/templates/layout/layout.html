@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <head>
+        <meta name="theme-color" th:content="${#themes.code('skinColor')}" content="#fff"/>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -42,7 +43,83 @@
                 <!--END CONTENT CONTAINER-->
                 <!--ASIDE-->
                 <!--===================================================-->
-                <aside id="aside-container" th:replace="fragments/common::aside"/>
+                <aside id="aside-container">
+                    <div id="aside">
+                        <div class="nano">
+                            <div class="nano-content">
+                                <ul class="list-group bg-trans">
+                                    <li class="pad-top list-header">
+                                        <p class="text-main text-sm text-uppercase text-bold mar-no">主题</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="clearfix text-center demo-srow-scheme">
+                                            <div class="clearfix demo-full-theme">
+                                                <div class="col-md-6">
+                                                    <div class="media v-middle">
+                                                        <div class="media-left demo-single-theme">
+                                                            <a href="#" class="demo-theme demo-theme-light" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-full/theme-light-full.min.css" data-theme="fulllight" data-color="#fff"></a>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <p class="text-bold text-main mar-no text-uppercase text-sm">Full Light</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="media v-middle">
+                                                        <div class="media-left demo-single-theme">
+                                                            <a href="#" class="demo-theme demo-theme-dark" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-full/theme-dark-full.min.css" data-theme="fulldark" data-color="#3a444e"></a>
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <p class="text-bold text-main mar-no text-uppercase text-sm">Full Dark </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="demo-theme-btn col-md-12">
+                                                <div class="demo-justify-theme">
+                                                    <a href="#" class="demo-theme demo-theme-gray add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-gray.min.css" data-theme="gray" data-title="Gray" data-color="#8f9ea6"></a>
+                                                    <a href="#" class="demo-theme demo-theme-navy add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-navy.min.css" data-theme="navy" data-title="Navy Blue" data-color="#294d73"></a>
+                                                    <a href="#" class="demo-theme demo-theme-ocean add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-ocean.min.css" data-theme="ocean" data-title="Ocean" data-color="#177bbb"></a>
+
+                                                    <a href="#" class="demo-theme demo-theme-lime add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-lime.min.css" data-theme="lime" data-title="Lime" data-color="#80b343"></a>
+                                                    <a href="#" class="demo-theme demo-theme-purple add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-purple.min.css" data-theme="purple" data-title="Purple" data-color="#8b5b9f"></a>
+                                                    <a href="#" class="demo-theme demo-theme-dust add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-dust.min.css" data-theme="dust" data-title="Dust" data-color="#fd8943"></a>
+
+                                                    <a href="#" class="demo-theme demo-theme-mint add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-mint.min.css" data-theme="mint" data-title="Mint" data-color="#26a69a"></a>
+                                                    <a href="#" class="demo-theme demo-theme-yellow add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-yellow.min.css" data-theme="yellow" data-title="Yellow" data-color="#efd45a"></a>
+                                                    <a href="#" class="demo-theme demo-theme-well-red add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-well-red.min.css" data-theme="well-red" data-title="Well Red" data-color="#d23e3e"></a>
+
+                                                    <a href="#" class="demo-theme demo-theme-coffee add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-coffee.min.css" data-theme="coffee" data-title="Coffee" data-color="#807362"></a>
+                                                    <a href="#" class="demo-theme demo-theme-prickly-pear add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-prickly-pear.min.css" data-theme="prickly-pear" data-title="Prickly pear" data-color="#ad5468"></a>
+                                                    <a href="#" class="demo-theme demo-theme-dark add-tooltip" data-css="//static.qintingfm.com/nifty/v2.9/css/themes/type-e/theme-dark.min.css" data-theme="dark" data-title="Dark" data-color="#3a444e"></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <ul class="list-group bg-trans">
+                                    <li class="pad-top list-header">
+                                        <p class="text-main text-sm text-uppercase text-bold mar-no">导航</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="pull-right">
+                                            <input id="demo-nav-fixed" class="toggle-switch" type="checkbox"/>
+                                            <label for="demo-nav-fixed"></label>
+                                        </div>
+                                        <p class="mar-no text-main">Fixed Position</p>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="pull-right">
+                                            <input id="demo-nav-profile" class="toggle-switch" type="checkbox"/>
+                                            <label for="demo-nav-profile"></label>
+                                        </div>
+                                        <p class="mar-no text-main">Widget Profil</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
                 <!--===================================================-->
                 <!--END ASIDE-->
 
@@ -117,7 +194,7 @@
                     var themeBtn = $('.demo-theme');
                     var skincss=[[${#themes.code('skinCss')}]];
                     $(".demo-theme[data-css= '"+skincss+"' ").addClass('active').tooltip('hide');
-                    changeTheme = function (themeName, cssfile) {
+                    changeTheme = function (themeName, cssfile,themeColor) {
                         var themeCSS = $('#theme');
                         if (themeCSS.length) {
                             themeCSS.prop('href', cssfile);
@@ -125,6 +202,7 @@
                             themeCSS = '<link id="theme" href="' + cssfile + '" rel="stylesheet">';
                             $('head').append(themeCSS);
                         }
+                        $('meta[name=theme-color]').attr('content',themeColor);
                         $.get('/misc/changeTheme?theme='+themeName);
                     };
 
@@ -135,7 +213,7 @@
                         if (el.hasClass('disabled') || el.hasClass('active')) {
                             return false;
                         }
-                        changeTheme(el.attr('data-theme'), el.attr('data-css'));
+                        changeTheme(el.attr('data-theme'), el.attr('data-css'),el.attr('data-color'));
                         themeBtn.removeClass('active');
                         el.addClass('active').tooltip('hide');
                         return false;
