@@ -18,37 +18,43 @@
     <div class="row">
         <div class="col-xs-12 col-sm-7">
             <div class="form-group">
-                <label class="col-sm-3 control-label text-left" for="cat-selector">分类</label>
-                <div class="col-sm-9">
+                <div class="col-sm-12">
                     <select class="selectpicker" multiple id="cat-selector" style="width: 100%">
-                        <option value="none" selected="" disabled="disabled">UnCategorized</option>
+                        <option value="" disabled="disabled">分类</option>
                         <option value="push">Internet</option>
                         <option value="push">Movies</option>
                         <option value="push">Musics</option>
                         <option value="push">Entertainment</option>
                         <option value="push">Sports</option>
                     </select>
+
                 </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-2">
             <div class="form-group">
-                <label class="col-sm-5 control-label text-left" for="allow-comments">评论</label>
                 <div class="col-sm-7">
-                    <input class="toggle-switch" id="allow-comments" type="checkbox" checked="checked"/>
+                    <div class="checkbox">
+                        <input id="allow-comments" class="magic-checkbox" type="checkbox" checked="">
+                        <label for="allow-comments">允许评论</label>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-2">
             <div class="form-group">
-                <label class="col-sm-5 control-label text-left" for="public">发布</label>
-                <div class="col-sm-7">
-                    <input class="toggle-switch" id="public" type="checkbox" checked="checked"/>
+                <div class="col-sm-12">
+                    <div class="checkbox">
+                        <input id="public" class="magic-checkbox" type="checkbox" checked="">
+                        <label for="public">发布前台</label>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-1">
-            <button class="btn btn-primary">保存</button>
+            <div class="form-group">
+                <button class="btn btn-primary">保存</button>
+            </div>
         </div>
         <div class="col-xs-12 col-sm-12">
             <div class="form-group">
@@ -67,22 +73,8 @@
     <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
     <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
     <script src="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js"></script>
     <script>
         $(document).on('nifty.ready', function () {
-            $('#demo-dropzone').dropzone({
-                //url: '/file/post',
-                //autoProcessQueue: false,
-                addRemoveLinks: true,
-                maxFiles: 1,
-                init: function() {
-                    var myDropzone = this;
-                    myDropzone.on('maxfilesexceeded', function(file) {
-                        this.removeAllFiles();
-                        this.addFile(file);
-                    });
-                }
-            });
             ClassicEditor
                 .create( document.querySelector( '.editor' ), {
                     toolbar: {
@@ -94,7 +86,7 @@
                             'underline',
                             'strikethrough',
                             'fontColor',
-                            'fontBackgroundColor',
+                            'removeFormat',
                             '|',
                             'bulletedList',
                             'numberedList',
@@ -105,15 +97,13 @@
                             '|',
                             'link',
                             'imageUpload',
-                            'mediaEmbed',
                             'blockQuote',
-                            'codeBlock',
                             'insertTable',
                             'undo',
                             'redo',
                             '|',
-                            'removeFormat',
-                            'code'
+                            'fontBackgroundColor',
+                            'codeBlock'
                         ]
                     },
                     language: 'zh-cn',

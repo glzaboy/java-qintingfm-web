@@ -77,6 +77,10 @@ public class BlogController {
             }
             return ajaxDto;
         }
+        if(comment==null || comment.length()<=10){
+            ajaxDto.setMessage("评论内容不能为空，请发布有价值的评论。");
+            return ajaxDto;
+        }
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
                     BlogComment blogComment = new BlogComment();
@@ -98,13 +102,19 @@ public class BlogController {
         modelAndView.setViewName("blog/category");
         return modelAndView;
     }
-    @RequestMapping(value = {"/post/{postId}"})
-    public ModelAndView post(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
+    @RequestMapping(value = {"/post/{postId}"},method = {RequestMethod.GET})
+    public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item->{
             modelAndView.addObject("blog", item);
         });
         modelAndView.setViewName("blog/post");
         return modelAndView;
+    }
+    @RequestMapping(value = {"/post/{postId}"},method = {RequestMethod.POST})
+    public AjaxDto post(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
+        AjaxDto ajaxDto = new AjaxDto();
+        ajaxDto.setMessage("操作成功");
+        return ajaxDto;
     }
 }
