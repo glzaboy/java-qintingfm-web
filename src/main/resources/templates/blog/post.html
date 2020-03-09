@@ -14,13 +14,43 @@
 </head>
 <body>
 <div id="page-content" layout:fragment="content">
-    <div class="row pad-btm">
-        <div class="col-sm-6 col-sm-offset-6 toolbar-right text-right">
+    <form action="#" th:action="@{'/blog/post/{postId}'(postId=${blog.postId?:0})}" class="ajaxform" method="post">
+    <div class="row">
+        <div class="col-xs-12 col-sm-7">
+            <div class="form-group">
+                <label class="col-sm-3 control-label text-left" for="cat-selector">分类</label>
+                <div class="col-sm-9">
+                    <select class="selectpicker" multiple id="cat-selector" style="width: 100%">
+                        <option value="none" selected="" disabled="disabled">UnCategorized</option>
+                        <option value="push">Internet</option>
+                        <option value="push">Movies</option>
+                        <option value="push">Musics</option>
+                        <option value="push">Entertainment</option>
+                        <option value="push">Sports</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label class="col-sm-5 control-label text-left" for="allow-comments">评论</label>
+                <div class="col-sm-7">
+                    <input class="toggle-switch" id="allow-comments" type="checkbox" checked="checked"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-2">
+            <div class="form-group">
+                <label class="col-sm-5 control-label text-left" for="public">发布</label>
+                <div class="col-sm-7">
+                    <input class="toggle-switch" id="public" type="checkbox" checked="checked"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-1">
             <button class="btn btn-primary">保存</button>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-8">
+        <div class="col-xs-12 col-sm-12">
             <div class="form-group">
                 <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}"/>
             </div>
@@ -28,85 +58,10 @@
                 <div class="panel-body">
                     <div th:utext="${blog.blogCont.cont}" class="editor"></div>
                 </div>
-
             </div>
         </div>
-        <div class="col-xs-12 col-sm-4">
-            <div class="panel">
-                <div class="panel-body">
-                    <p class="text-main text-bold text-uppercase">Featured Image</p>
-                    <p>Featured images are images that represent an individual Post, Page, or Custom Post Type.</p>
-                    <!--Dropzonejs-->
-                    <!--===================================================-->
-                    <div class="dropzone-container">
-                        <form id="demo-dropzone" action="#">
-                            <div class="dz-default dz-message">
-                                <div class="dz-icon">
-                                    <i class="demo-pli-upload-to-cloud icon-5x"></i>
-                                </div>
-                                <div>
-                                    <span class="dz-text">Drop files to upload</span>
-                                    <p class="text-sm text-muted">or click to pick manually</p>
-                                </div>
-                            </div>
-                            <div class="fallback">
-                                <form action="#" method="post" enctype="multipart/form-data">
-                                    <input name="file" type="file" multiple="multiple"/>
-                                </form>
-                            </div>
-                        </form>
-                    </div>
-                    <!--===================================================-->
-                    <!-- End Dropzonejs -->
-                    <hr/>
-
-                    <p class="text-main text-bold text-uppercase">Publish</p>
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label text-left" for="publish-status">Status</label>
-                            <div class="col-sm-9">
-                                <div class="select">
-                                    <select id="publish-status">
-                                        <option value="push">Published</option>
-                                        <option value="push">Unpublish</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label text-left" for="demo-hor-inputpass">Categories</label>
-                            <div class="col-sm-9">
-                                <div class="select">
-                                    <select class="selectpicker" multiple>
-                                        <option value="none" selected="" disabled="disabled">UnCategorized</option>
-                                        <option value="push">Internet</option>
-                                        <option value="push">Movies</option>
-                                        <option value="push">Musics</option>
-                                        <option value="push">Entertainment</option>
-                                        <option value="push">Sports</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr/>
-
-                    <p class="text-main text-sm text-uppercase text-bold">Public Settings</p>
-                    <div class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-5 control-label text-left" for="allow-comments">开启评论</label>
-                            <div class="col-sm-7">
-                                <input class="toggle-switch" id="allow-comments" type="checkbox" checked="checked"/>
-                                <label for="allow-comments"></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+    </form>
 </div>
 <div layout:fragment="footjs">
     <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
