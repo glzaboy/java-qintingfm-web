@@ -3,8 +3,10 @@ package com.qintingfm.web.controller;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
+import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
+import com.qintingfm.web.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +20,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author guliuzhong
@@ -51,6 +56,7 @@ public class BlogController {
     public ModelAndView detail(ModelAndView modelAndView, @PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
+                item.setTitle(HtmlUtil.decodeEntityHtml(item.getTitle()));
                 modelAndView.addObject("blogPost", item);
                 modelAndView.addObject("blogComment", blogServer.getBlogComment(item, pageIndex, null, 10));
             }
@@ -106,13 +112,22 @@ public class BlogController {
     public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item->{
+            item.setTitle(HtmlUtil.decodeEntityHtml(item.getTitle()));
             modelAndView.addObject("blog", item);
+            List<Integer> catIds=new ArrayList<>();
+            List<Integer> collect = item.getBlogCategory().stream().map(category -> {
+                return category.getCatId();
+            }).collect(Collectors.toList());
+            modelAndView.addObject("blogCatList", collect);
         });
+        Page<Category> allCategory = category.getAllCategory(1, 10000);
+        modelAndView.addObject("allCategory",allCategory);
         modelAndView.setViewName("blog/post");
         return modelAndView;
     }
     @RequestMapping(value = {"/post/{postId}"},method = {RequestMethod.POST})
-    public AjaxDto post(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
+    @ResponseBody
+    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId) {
         AjaxDto ajaxDto = new AjaxDto();
         ajaxDto.setMessage("操作成功");
         return ajaxDto;

@@ -21,11 +21,7 @@
                 <div class="col-sm-12">
                     <select class="selectpicker" multiple id="cat-selector" style="width: 100%">
                         <option value="" disabled="disabled">分类</option>
-                        <option value="push">Internet</option>
-                        <option value="push">Movies</option>
-                        <option value="push">Musics</option>
-                        <option value="push">Entertainment</option>
-                        <option value="push">Sports</option>
+                        <option value="push" th:each="category:${allCategory}" th:value="${category.catId}" th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类</option>
                     </select>
 
                 </div>

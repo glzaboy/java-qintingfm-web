@@ -32,4 +32,10 @@ public class HtmlUtil {
         htmlStr = htmlStr.replaceAll("\\s{1,} ", " ");
         return htmlStr.trim();
     }
+    public static String decodeEntityHtml(String html){
+        html=html.replaceAll("&ldquo;","“");
+        html=html.replaceAll("&rdquo;","”");
+        html=html.replaceAll("&amp;","&");
+        return html;
+    }
 }
