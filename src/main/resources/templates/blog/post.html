@@ -10,6 +10,7 @@
         }
     </style>
     <link href="//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.css" rel="stylesheet"/>
+    <link href="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 </head>
 <body>
 <div id="page-content" layout:fragment="content">
@@ -18,8 +19,19 @@
             <button class="btn btn-primary">保存</button>
         </div>
     </div>
-    <div class="row fixed-fluid">
-        <div class="fixed-sm-300 pull-sm-right">
+    <div class="row">
+        <div class="col-xs-12 col-sm-8">
+            <div class="form-group">
+                <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}"/>
+            </div>
+            <div class="panel">
+                <div class="panel-body">
+                    <div th:utext="${blog.blogCont.cont}" class="editor"></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
             <div class="panel">
                 <div class="panel-body">
                     <p class="text-main text-bold text-uppercase">Featured Image</p>
@@ -46,17 +58,15 @@
                     </div>
                     <!--===================================================-->
                     <!-- End Dropzonejs -->
-
-
                     <hr/>
 
                     <p class="text-main text-bold text-uppercase">Publish</p>
                     <div class="form-horizontal">
                         <div class="form-group">
-                            <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Status</label>
-                            <div class="col-sm-7">
+                            <label class="col-sm-3 control-label text-left" for="publish-status">Status</label>
+                            <div class="col-sm-9">
                                 <div class="select">
-                                    <select>
+                                    <select id="publish-status">
                                         <option value="push">Published</option>
                                         <option value="push">Unpublish</option>
                                     </select>
@@ -64,10 +74,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-5 control-label text-left" for="demo-hor-inputpass">Categories</label>
-                            <div class="col-sm-7">
+                            <label class="col-sm-3 control-label text-left" for="demo-hor-inputpass">Categories</label>
+                            <div class="col-sm-9">
                                 <div class="select">
-                                    <select>
+                                    <select class="selectpicker" multiple>
                                         <option value="none" selected="" disabled="disabled">UnCategorized</option>
                                         <option value="push">Internet</option>
                                         <option value="push">Movies</option>
@@ -94,25 +104,14 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
-        <div class="fluid">
-            <div class="form-group">
-                <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}"/>
-            </div>
-            <div class="panel">
-                <div class="panel-body">
-                    <div th:utext="${blog.blogCont.cont}" class="editor"></div>
-                </div>
 
-            </div>
-        </div>
     </div>
 </div>
 <div layout:fragment="footjs">
     <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
     <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
+    <script src="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.js"></script>
     <script>
         $(document).on('nifty.ready', function () {
