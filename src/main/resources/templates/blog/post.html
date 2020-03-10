@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <title th:text="|${blog.title}-文章编辑|">文章编辑</title>
     <meta name="Keywords" content="keywords" th:content="|${blog.title},资讯,博客,时事要闻,qintingfm,microtf|">
@@ -13,17 +13,17 @@
     <link href="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 </head>
 <body>
+<ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/post')"></ul>
 <div id="page-content" layout:fragment="content">
     <form action="#" th:action="@{'/blog/post/{postId}'(postId=${blog.postId?:0})}" class="ajaxform" method="post">
     <div class="row">
         <div class="col-xs-12 col-sm-7">
             <div class="form-group">
                 <div class="col-sm-12">
-                    <select class="selectpicker" multiple id="cat-selector" style="width: 100%">
+                    <select class="selectpicker" multiple id="cat-selector" style="width: 100%" name="catId[]">
                         <option value="" disabled="disabled">分类</option>
                         <option value="push" th:each="category:${allCategory}" th:value="${category.catId}" th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类</option>
                     </select>
-
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
             <div class="form-group">
                 <div class="col-sm-7">
                     <div class="checkbox">
-                        <input id="allow-comments" class="magic-checkbox" type="checkbox" checked="">
+                        <input id="allow-comments" class="magic-checkbox" type="checkbox" checked="" name="comments">
                         <label for="allow-comments">允许评论</label>
                     </div>
                 </div>
@@ -41,8 +41,8 @@
             <div class="form-group">
                 <div class="col-sm-12">
                     <div class="checkbox">
-                        <input id="public" class="magic-checkbox" type="checkbox" checked="">
-                        <label for="public">发布前台</label>
+                        <input id="publish" class="magic-checkbox" type="checkbox" checked="" name="publish">
+                        <label for="publish">发布前台</label>
                     </div>
                 </div>
             </div>
@@ -54,11 +54,11 @@
         </div>
         <div class="col-xs-12 col-sm-12">
             <div class="form-group">
-                <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}"/>
+                <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}" name="title"/>
             </div>
             <div class="panel">
                 <div class="panel-body">
-                    <div th:utext="${blog.blogCont.cont}" class="editor"></div>
+                    <textarea th:utext="${blog.blogCont.cont}" class="editor" name="cont"></textarea>
                 </div>
             </div>
         </div>
@@ -75,31 +75,26 @@
                 .create( document.querySelector( '.editor' ), {
                     toolbar: {
                         items: [
-                            'heading',
-                            '|',
                             'bold',
                             'italic',
                             'underline',
                             'strikethrough',
                             'fontColor',
-                            'removeFormat',
+                            '|',
+                            'undo',
+                            'link',
+                            'imageUpload',
                             '|',
                             'bulletedList',
                             'numberedList',
-                            '|',
-                            'indent',
-                            'outdent',
                             'alignment',
                             '|',
-                            'link',
-                            'imageUpload',
                             'blockQuote',
                             'insertTable',
-                            'undo',
-                            'redo',
                             '|',
-                            'fontBackgroundColor',
-                            'codeBlock'
+                            'redo',
+                            'removeFormat',
+                            'fontBackgroundColor'
                         ]
                     },
                     language: 'zh-cn',
@@ -107,8 +102,6 @@
                         toolbar: [
                             'imageTextAlternative',
                             'imageStyle:full',
-                            'imageStyle:alignLeft',
-                            'imageStyle:alignRight',
                             'imageStyle:side'
                         ]
                     },
@@ -125,7 +118,6 @@
                         uploadUrl: ':/uploadImage'
                     },
                     licenseKey: '',
-
                 } )
                 .then( editor => {
                     window.editor = editor;

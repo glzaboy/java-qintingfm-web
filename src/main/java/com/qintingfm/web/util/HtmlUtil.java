@@ -7,12 +7,12 @@ package com.qintingfm.web.util;
 public class HtmlUtil {
     /**
      * 去除html代码中含有的标签
-     * @param htmlStr
-     * @return
+     * @param htmlStr html 内容
+     * @return 过滤后的 html
      */
     public static String delHtmlTags(String htmlStr) {
         //定义script的正则表达式，去除js可以防止注入
-        String scriptRegex="<script[^>]*?>[\\s\\S]*?<\\/script>";
+        String scriptRegex="<script[^>]*?>[\\s\\S]*?</script>";
         //定义style的正则表达式，去除style样式，防止css代码过多时只截取到css样式代码
         String styleRegex="<style[^>]*?>[\\s\\S]*?<\\/style>";
         //定义HTML标签的正则表达式，去除标签，只提取文字内容
@@ -29,7 +29,7 @@ public class HtmlUtil {
         htmlStr = htmlStr.replaceAll(htmlRegex, "");
         // 过滤空格等
         htmlStr = htmlStr.replaceAll(naRegex, "");
-        htmlStr = htmlStr.replaceAll("\\s{1,} ", " ");
+        htmlStr = htmlStr.replaceAll("\\s+ ", " ");
         return htmlStr.trim();
     }
     public static String decodeEntityHtml(String html){
