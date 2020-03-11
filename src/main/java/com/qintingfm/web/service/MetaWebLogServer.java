@@ -286,6 +286,12 @@ public class MetaWebLogServer extends XmlRpcServer {
             Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
             blog.setDateCreated(dateCreated);
         }
+        if(stringObjectHashMap.get("categories")!=null){
+            Object[] categories = (Object[]) stringObjectHashMap.get("categories");
+            List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
+            Collection<Category> category = categoryService.getCategory(collect);
+            blog.setBlogCategory(category);
+        }
         Blog save = blogServer.save(blog);
         return save.getPostId().toString();
     }
