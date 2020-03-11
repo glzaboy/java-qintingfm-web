@@ -248,7 +248,7 @@ public class MetaWebLogServer extends XmlRpcServer {
                 Object[] categories = (Object[]) stringObjectHashMap.get("categories");
                 List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
                 Collection<Category> category = categoryService.getCategory(collect);
-                blog.setBlogCategory(category);
+                blog.setBlogCategory(category.stream().collect(Collectors.toList()));
             }
             blogServer.save(blog);
         });
@@ -266,7 +266,7 @@ public class MetaWebLogServer extends XmlRpcServer {
                 Object[] categories = (Object[]) stringObjectHashMap.get("categories");
                 List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
                 Collection<Category> category = categoryService.getCategory(collect);
-                blog.setBlogCategory(category);
+                blog.setBlogCategory(category.stream().collect(Collectors.toList()));
             }
             blogServer.save(blog);
         }
@@ -289,7 +289,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         if(stringObjectHashMap.get("categories")!=null){
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
             List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
-            Collection<Category> category = categoryService.getCategory(collect);
+            List<Category> category = categoryService.getCategory(collect);
             blog.setBlogCategory(category);
         }
         Blog save = blogServer.save(blog);

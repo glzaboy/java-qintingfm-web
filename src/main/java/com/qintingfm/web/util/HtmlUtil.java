@@ -30,6 +30,7 @@ public class HtmlUtil {
         // 过滤空格等
         htmlStr = htmlStr.replaceAll(naRegex, "");
         htmlStr = htmlStr.replaceAll("\\s+ ", " ");
+        htmlStr = htmlStr.replaceAll("&nbsp;", "");
         return htmlStr.trim();
     }
     public static String decodeEntityHtml(String html){

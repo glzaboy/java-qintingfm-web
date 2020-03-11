@@ -37,7 +37,7 @@ public class CategoryService {
         return categoryJpa.findAll(postId);
     }
 
-    public Collection<Category> getCategory(Collection<String> categoryNameList){
+    public List<Category> getCategory(Collection<String> categoryNameList){
         return categoryJpa.findAllByTitleIn(categoryNameList.stream().collect(Collectors.toList()));
     }
 }
