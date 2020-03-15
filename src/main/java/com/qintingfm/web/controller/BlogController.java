@@ -6,7 +6,7 @@ import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
-import com.qintingfm.web.util.HtmlUtil;
+import com.qintingfm.web.common.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

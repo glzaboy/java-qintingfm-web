@@ -1,4 +1,4 @@
-package com.qintingfm.web.util;
+package com.qintingfm.web.common.util;
 
 /**
  * HTML帮助类
