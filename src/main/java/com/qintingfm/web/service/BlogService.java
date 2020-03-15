@@ -6,7 +6,6 @@ import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.spider.BaiduSpider;
-import com.qintingfm.web.common.util.HtmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +33,7 @@ public class BlogService {
     BaiduSpider baiduSpider;
 
     BlogCommentJpa blogCommentJpa;
+    HtmlService htmlService;
 
     @Autowired
     public void setBaiduSpider(BaiduSpider baiduSpider) {
@@ -48,6 +48,11 @@ public class BlogService {
     @Autowired
     public void setBlogCommentJpa(BlogCommentJpa blogCommentJpa) {
         this.blogCommentJpa = blogCommentJpa;
+    }
+
+    @Autowired
+    public void setHtmlService(HtmlService htmlService) {
+        this.htmlService = htmlService;
     }
 
     public Page<Blog> getBlogList(Integer catId, Integer pageIndex, Sort sort, Integer pageSize) {
@@ -69,7 +74,7 @@ public class BlogService {
     }
 
     public Blog save(Blog blog) {
-        String contentText = HtmlUtil.delHtmlTags(blog.getBlogCont().getCont());
+        String contentText = htmlService.filterNone(blog.getBlogCont().getCont());
         if (contentText.length() > shortContLen) {
             blog.setShotCont(contentText.substring(0, shortContLen));
         } else {
@@ -82,15 +87,15 @@ public class BlogService {
         try {
             Blog save = blogJpa.save(blog);
             try {
-                Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class,Integer.class);
-                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()),null).build().toString();
+                Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
+                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()), null).build().toString();
                 pushUrl.add(s);
                 baiduSpider.pushUrlToSpider(pushUrl);
             } catch (NoSuchMethodException e) {
                 log.error("找不到博客文档的url");
             }
             return save;
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             log.error(e.getStackTrace().toString());
         }
@@ -105,16 +110,18 @@ public class BlogService {
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
         return blogCommentJpa.findByBlog(blog, request);
     }
+
     public BlogComment saveComment(BlogComment blogComment) {
-        String contentText = HtmlUtil.delHtmlTags(blogComment.getCont());
+        String contentText = htmlService.filterNone(blogComment.getCont());
         blogComment.setCont(contentText);
         if (blogComment.getCreateDate() == null) {
             blogComment.setCreateDate(new Date());
         }
         return blogCommentJpa.save(blogComment);
     }
-    public BlogComment saveComment(BlogComment blogComment,Blog blog) {
-        String contentText = HtmlUtil.delHtmlTags(blogComment.getCont());
+
+    public BlogComment saveComment(BlogComment blogComment, Blog blog) {
+        String contentText = htmlService.filterNone(blogComment.getCont());
         blogComment.setCont(contentText);
         blogComment.setBlog(blog);
         if (blogComment.getCreateDate() == null) {

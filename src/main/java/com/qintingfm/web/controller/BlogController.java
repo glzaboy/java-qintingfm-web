@@ -6,7 +6,7 @@ import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
-import com.qintingfm.web.common.util.HtmlUtil;
+import com.qintingfm.web.service.HtmlService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +36,7 @@ public class BlogController {
 
     BlogService blogServer;
     CategoryService categoryService;
+    HtmlService htmlService;
 
     @Autowired
     public void setBlogServer(BlogService blogServer) {
@@ -52,14 +53,19 @@ public class BlogController {
         this.category = category;
     }
 
+    @Autowired
+    public void setHtmlService(HtmlService htmlService) {
+        this.htmlService = htmlService;
+    }
+
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
     public ModelAndView detail(ModelAndView modelAndView, @PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
-                item.setTitle(HtmlUtil.decodeEntityHtml(item.getTitle()));
-                modelAndView.addObject("blogPost", item);
-                modelAndView.addObject("blogComment", blogServer.getBlogComment(item, pageIndex, null, 10));
-            }
+                    item.setTitle(htmlService.decodeEntityHtml(item.getTitle()));
+                    modelAndView.addObject("blogPost", item);
+                    modelAndView.addObject("blogComment", blogServer.getBlogComment(item, pageIndex, null, 10));
+                }
         );
         modelAndView.setViewName("blog/view");
         return modelAndView;
@@ -83,7 +89,7 @@ public class BlogController {
             }
             return ajaxDto;
         }
-        if(comment==null || comment.length()<=10){
+        if (comment == null || comment.length() <= 10) {
             ajaxDto.setMessage("评论内容不能为空，请发布有价值的评论。");
             return ajaxDto;
         }
@@ -108,24 +114,26 @@ public class BlogController {
         modelAndView.setViewName("blog/category");
         return modelAndView;
     }
-    @RequestMapping(value = {"/post/{postId}"},method = {RequestMethod.GET})
+
+    @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.GET})
     public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
         Optional<Blog> blog = blogServer.getBlog(postId);
-        blog.ifPresent(item->{
-            item.setTitle(HtmlUtil.decodeEntityHtml(item.getTitle()));
+        blog.ifPresent(item -> {
+            item.setTitle(htmlService.decodeEntityHtml(item.getTitle()));
             modelAndView.addObject("blog", item);
-            List<Integer> catIds=new ArrayList<>();
+            List<Integer> catIds = new ArrayList<>();
             List<Integer> collect = item.getBlogCategory().stream().map(category -> {
                 return category.getCatId();
             }).collect(Collectors.toList());
             modelAndView.addObject("blogCatList", collect);
         });
         Page<Category> allCategory = category.getAllCategory(1, 10000);
-        modelAndView.addObject("allCategory",allCategory);
+        modelAndView.addObject("allCategory", allCategory);
         modelAndView.setViewName("blog/post");
         return modelAndView;
     }
-    @RequestMapping(value = {"/post/{postId}"},method = {RequestMethod.POST})
+
+    @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
     public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId) {
         AjaxDto ajaxDto = new AjaxDto();
