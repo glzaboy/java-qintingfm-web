@@ -67,7 +67,7 @@
                     <!--                                </div>-->
                     <div class="col-md-12">
                         <div class="form-group">
-                            <textarea class="form-control" rows="9" placeholder="文明上网" name="comment"></textarea>
+                            <textarea class="form-control comment" rows="9" placeholder="文明上网" name="comment"></textarea>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-comment"></i> 评论</button>
@@ -106,6 +106,37 @@
         </div>
     </div>
 </div>
-
+<div layout:fragment="footjs">
+    <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
+    <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
+    <script>
+        $(document).on('nifty.ready', function () {
+            ClassicEditor
+                .create( document.querySelector( '.comment' ), {
+                    toolbar: {
+                        items: [
+                            'bold',
+                            'italic',
+                            'underline',
+                            'strikethrough',
+                            'fontColor',
+                            '|',
+                            'blockQuote',
+                            '|',
+                            'removeFormat'
+                        ]
+                    },
+                    language: 'zh-cn',
+                    licenseKey: '',
+                } )
+                .then( editor => {
+                    window.editor = editor;
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+        });
+    </script>
+</div>
 </body>
 </html>
