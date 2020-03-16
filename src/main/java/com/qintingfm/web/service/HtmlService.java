@@ -39,7 +39,7 @@ public class HtmlService {
         return Jsoup.clean(html,"", whitelist,outputSettings);
     }
 
-    public static String decodeEntityHtml(String html){
+    public String decodeEntityHtml(String html){
         html=html.replaceAll("&ldquo;","“");
         html=html.replaceAll("&rdquo;","”");
         html=html.replaceAll("&amp;","&");

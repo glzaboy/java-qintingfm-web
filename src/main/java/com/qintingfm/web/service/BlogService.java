@@ -121,7 +121,7 @@ public class BlogService {
     }
 
     public BlogComment saveComment(BlogComment blogComment, Blog blog) {
-        String contentText = htmlService.filterNone(blogComment.getCont());
+        String contentText = htmlService.filterSimpleText(blogComment.getCont());
         blogComment.setCont(contentText);
         blogComment.setBlog(blog);
         if (blogComment.getCreateDate() == null) {
