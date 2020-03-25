@@ -12,21 +12,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ValidationException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author guliuzhong
  */
 @Service
 @Slf4j
-public class BlogService {
+public class BlogService extends BaseService {
     final int shortContLen = 100;
     BlogJpa blogJpa;
 
@@ -55,6 +55,7 @@ public class BlogService {
         this.htmlService = htmlService;
     }
 
+
     public Page<Blog> getBlogList(Integer catId, Integer pageIndex, Sort sort, Integer pageSize) {
         pageIndex = (pageIndex == null) ? 1 : pageIndex;
         if (sort == null) {
@@ -68,7 +69,6 @@ public class BlogService {
         Optional<Blog> byId = blogJpa.findById(postId);
         byId.ifPresent(blog -> blogJpa.delete(blog));
     }
-
     public Optional<Blog> getBlog(Integer postId) {
         return blogJpa.findById(postId);
     }
@@ -110,20 +110,10 @@ public class BlogService {
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
         return blogCommentJpa.findByBlog(blog, request);
     }
-
+    @Transactional(rollbackFor = {javax.validation.ConstraintViolationException.class})
     public BlogComment saveComment(BlogComment blogComment) {
-        String contentText = htmlService.filterNone(blogComment.getCont());
-        blogComment.setCont(contentText);
-        if (blogComment.getCreateDate() == null) {
-            blogComment.setCreateDate(new Date());
-        }
-        return blogCommentJpa.save(blogComment);
-    }
-
-    public BlogComment saveComment(BlogComment blogComment, Blog blog) {
         String contentText = htmlService.filterSimpleText(blogComment.getCont());
         blogComment.setCont(contentText);
-        blogComment.setBlog(blog);
         if (blogComment.getCreateDate() == null) {
             blogComment.setCreateDate(new Date());
         }

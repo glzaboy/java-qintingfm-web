@@ -15,14 +15,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Path;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +60,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
+    @Transactional(readOnly = true)
     public ModelAndView detail(ModelAndView modelAndView, @PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
@@ -89,10 +91,10 @@ public class BlogController {
             }
             return ajaxDto;
         }
-        if (comment == null || comment.length() <= 10) {
-            ajaxDto.setMessage("评论内容不能为空，请发布有价值的评论。");
-            return ajaxDto;
-        }
+//        if (comment == null || comment.length() <= 10) {
+//            ajaxDto.setMessage("评论内容不能为空，请发布有价值的评论。");
+//            return ajaxDto;
+//        }
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
                     BlogComment blogComment = new BlogComment();
@@ -100,10 +102,27 @@ public class BlogController {
 
 //            blogComment.setAuthor(authentication.getName());
                     blogComment.setCont(comment);
-                    blogServer.saveComment(blogComment, item);
+                    blogComment.setBlog(item);
+                    blogServer.saveComment(blogComment);
+//                    Set<ConstraintViolation<BlogComment>> constraintViolations = blogServer.validatePojo(blogComment);
+//                    if (!constraintViolations.isEmpty()){
+//
+//                        Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
+//                            return k.getPropertyPath().toString();
+//                        }, i -> {
+//                            return i.getMessage();
+//                        }));
+//                        ajaxDto.setError(collect);
+//                    }else {
+//                        blogServer.saveComment(blogComment);
+//                    }
                 }
         );
-        ajaxDto.setAutoJump(1);
+        if(ajaxDto.getError()!=null){
+            ajaxDto.setMessage("评论出错。");
+        }else{
+            ajaxDto.setAutoJump(1);
+        }
         return ajaxDto;
     }
 

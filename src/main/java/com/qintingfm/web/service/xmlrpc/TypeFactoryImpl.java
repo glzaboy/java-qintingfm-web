@@ -6,6 +6,7 @@ import org.apache.xmlrpc.serializer.TypeSerializer;
 import org.xml.sax.SAXException;
 
 /**
+ * 本例的
  * @author guliuzhong
  */
 public class TypeFactoryImpl extends org.apache.xmlrpc.common.TypeFactoryImpl {

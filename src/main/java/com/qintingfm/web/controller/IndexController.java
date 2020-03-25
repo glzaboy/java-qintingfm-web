@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +33,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = {"/page/{pageIndex}", "/"})
+    @Transactional
     public ModelAndView index(ModelAndView view, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         view.addObject("title", "钦听知天下");
         Page<Blog> blogList = blogServer.getBlogList(0, pageIndex, null, 10);

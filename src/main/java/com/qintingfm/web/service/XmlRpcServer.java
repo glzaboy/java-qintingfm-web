@@ -19,7 +19,6 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 /**
  * xml rpc简易服务端需要依赖xml-prc-common
@@ -48,7 +47,6 @@ public class XmlRpcServer {
     }
 
     public XmlRpcRequestParser getXmlRequestParser(InputStream inputStream) throws XmlRpcException, IOException, SAXException {
-
         rpcController.setXmlRpcConfig(streamConfig);
         TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
         final XmlRpcRequestParser parser = new XmlRpcRequestParser(streamConfig, typeFactory);
@@ -64,7 +62,7 @@ public class XmlRpcServer {
         rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
         TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
-        ContentHandler w = null;
+        ContentHandler w;
         try {
             w = writerFactory.getXmlWriter(streamConfig, outputStream);
             XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(streamConfig, w, typeFactory);
@@ -74,14 +72,13 @@ public class XmlRpcServer {
         } catch (SAXException e) {
             logger.error("responseError SAXException {}",e.getMessage());
         }
-
     }
 
     public void response(OutputStream outputStream, Object pResult) {
         rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
         TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
-        ContentHandler w = null;
+        ContentHandler w;
         try {
             w = writerFactory.getXmlWriter(streamConfig, outputStream);
             XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(streamConfig, w, typeFactory);
@@ -91,6 +88,5 @@ public class XmlRpcServer {
         } catch (SAXException e) {
             logger.error("response SAXException {}",e.getMessage());
         }
-
     }
 }

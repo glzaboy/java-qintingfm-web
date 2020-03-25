@@ -1,6 +1,5 @@
 package com.qintingfm.web.service;
 
-import com.qintingfm.web.jpa.CategoryJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
@@ -83,6 +82,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
     }
+
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -125,7 +125,6 @@ public class MetaWebLogServer extends XmlRpcServer {
                     Object invoke = method.invoke(this, xmlRequestParser);
                     response(outputStream, invoke);
                 }
-
             } catch (NoSuchMethodException e) {
                 responseError(outputStream, 404, "服务不存在");
                 return;
@@ -133,7 +132,7 @@ public class MetaWebLogServer extends XmlRpcServer {
                 responseError(outputStream, 404, "服务执行出错 IllegalAccessException");
                 return;
             } catch (InvocationTargetException e) {
-                responseError(outputStream, 404, "服务执行出错 InvocationTargetException");
+                responseError(outputStream, 500, "服务执行出错 InvocationTargetException");
                 return;
             }
         });
@@ -159,7 +158,7 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Vector<Map<String, String>> mapVector = new Vector<>();
-        categoryService.getAllCategory(1,10000).stream().forEach((item) -> {
+        categoryService.getAllCategory(1, 10000).stream().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
             caterories.put("title", item.getTitle());
             caterories.put("categoryid", item.getCatId().toString());
@@ -232,6 +231,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mapVector;
 
     }
+
     @Transactional(rollbackFor = {Exception.class})
     String editPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
@@ -244,9 +244,11 @@ public class MetaWebLogServer extends XmlRpcServer {
                 Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
                 blog.setDateCreated(dateCreated);
             }
-            if(stringObjectHashMap.get("categories")!=null){
+            if (stringObjectHashMap.get("categories") != null) {
                 Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-                List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
+                List<String> collect = Stream.of(categories).map(item -> {
+                    return (String) item;
+                }).collect(Collectors.toList());
                 Collection<Category> category = categoryService.getCategory(collect);
                 blog.setBlogCategory(category.stream().collect(Collectors.toList()));
             }
@@ -262,9 +264,11 @@ public class MetaWebLogServer extends XmlRpcServer {
                 Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
                 blog.setDateCreated(dateCreated);
             }
-            if(stringObjectHashMap.get("categories")!=null){
+            if (stringObjectHashMap.get("categories") != null) {
                 Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-                List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
+                List<String> collect = Stream.of(categories).map(item -> {
+                    return (String) item;
+                }).collect(Collectors.toList());
                 Collection<Category> category = categoryService.getCategory(collect);
                 blog.setBlogCategory(category.stream().collect(Collectors.toList()));
             }
@@ -286,9 +290,9 @@ public class MetaWebLogServer extends XmlRpcServer {
             Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
             blog.setDateCreated(dateCreated);
         }
-        if(stringObjectHashMap.get("categories")!=null){
+        if (stringObjectHashMap.get("categories") != null) {
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-            List<String> collect = Stream.of(categories).map(item-> {return (String)item;}).collect(Collectors.toList());
+            List<String> collect = Stream.of(categories).map(item -> (String) item).collect(Collectors.toList());
             List<Category> category = categoryService.getCategory(collect);
             blog.setBlogCategory(category);
         }
