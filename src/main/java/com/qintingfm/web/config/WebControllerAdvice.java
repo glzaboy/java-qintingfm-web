@@ -23,39 +23,18 @@ public class WebControllerAdvice {
     @ResponseBody
     public AjaxDto c(final TransactionSystemException ex){
         Throwable t = ex.getCause();
-        while ((t != null) && !(t instanceof ConstraintViolationException)) {
-            t = t.getCause();
-        }
         AjaxDto ajaxDto=new AjaxDto();
-        if (t instanceof  ConstraintViolationException){
-            Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
-            Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
-                return k.getPropertyPath().toString();
-            }, i -> i.getMessage()));
-            ajaxDto.setError(collect);
-        }
-
-        ajaxDto.setMessage("请求出错");
+        do{
+            if( t instanceof  ConstraintViolationException){
+                Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
+                Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
+                    return k.getPropertyPath().toString();
+                }, i -> i.getMessage(),(v1,v2)->v1+","+v2));
+                ajaxDto.setError(collect);
+                ajaxDto.setAutoHide("3");
+                ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
+            }
+        }while ((t=t.getCause())!=null);
         return ajaxDto;
-
-    }
-    @ExceptionHandler(RollbackException.class)
-    public AjaxDto c(final RollbackException ex){
-        Throwable t = ex.getCause();
-        while ((t != null) && !(t instanceof ConstraintViolationException)) {
-            t = t.getCause();
-        }
-        AjaxDto ajaxDto=new AjaxDto();
-        if (t instanceof  ConstraintViolationException){
-            Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
-            Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
-                return k.getPropertyPath().toString();
-            }, i -> i.getMessage()));
-            ajaxDto.setError(collect);
-        }
-
-        ajaxDto.setMessage("请求出错");
-        return ajaxDto;
-
     }
 }

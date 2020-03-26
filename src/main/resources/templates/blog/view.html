@@ -49,25 +49,9 @@
             <p class="text-lg text-main text-bold text-uppercase">评论</p>
             <form class="ajaxform" method="post" th:action="@{/blog/postComment/{postId}(postId=${blogPost.postId})}">
                 <div class="row">
-                    <!--                                <div class="col-md-4">-->
-
-                    <!--                                    <div class="form-group">-->
-                    <!--                                        <input type="text" class="form-control" placeholder="Your name"/>-->
-                    <!--                                    </div>-->
-                    <!--                                    <div class="form-group">-->
-                    <!--                                        <input type="email" class="form-control" placeholder="Your email address"/>-->
-                    <!--                                    </div>-->
-                    <!--                                    <div class="form-group">-->
-                    <!--                                        <input type="url" class="form-control" placeholder="Your website"/>-->
-                    <!--                                    </div>-->
-                    <!--                                    <div class="form-group">-->
-                    <!--                                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-comment"></i> Submit comment</button>-->
-                    <!--                                    </div>-->
-
-                    <!--                                </div>-->
                     <div class="col-md-12">
                         <div class="form-group">
-                            <textarea class="form-control comment" rows="9" placeholder="文明上网" name="comment"></textarea>
+                            <textarea class="form-control comment" rows="9" placeholder="文明上网" name="cont"></textarea>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-comment"></i> 评论</button>

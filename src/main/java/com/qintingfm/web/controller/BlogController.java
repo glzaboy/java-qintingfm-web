@@ -4,9 +4,11 @@ import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.pojo.WebUserDetails;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
 import com.qintingfm.web.service.HtmlService;
+import com.qintingfm.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,8 @@ public class BlogController {
     CategoryService categoryService;
     HtmlService htmlService;
 
+    UserService userService;
+
     @Autowired
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
@@ -58,6 +62,10 @@ public class BlogController {
     public void setHtmlService(HtmlService htmlService) {
         this.htmlService = htmlService;
     }
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
     @Transactional(readOnly = true)
@@ -75,7 +83,8 @@ public class BlogController {
 
     @RequestMapping(value = {"/postComment/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
-    public AjaxDto postComment(@PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex, @RequestParam("comment") String comment) {
+    @Transactional()
+    public AjaxDto postComment(@PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex, @RequestParam("cont") String cont) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
@@ -91,31 +100,14 @@ public class BlogController {
             }
             return ajaxDto;
         }
-//        if (comment == null || comment.length() <= 10) {
-//            ajaxDto.setMessage("评论内容不能为空，请发布有价值的评论。");
-//            return ajaxDto;
-//        }
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
                     BlogComment blogComment = new BlogComment();
-                    Object details = authentication.getDetails();
-
-//            blogComment.setAuthor(authentication.getName());
-                    blogComment.setCont(comment);
+                    WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
+                    blogComment.setAuthor(userService.getUser(principal.getUsername()));
+                    blogComment.setCont(cont);
                     blogComment.setBlog(item);
                     blogServer.saveComment(blogComment);
-//                    Set<ConstraintViolation<BlogComment>> constraintViolations = blogServer.validatePojo(blogComment);
-//                    if (!constraintViolations.isEmpty()){
-//
-//                        Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
-//                            return k.getPropertyPath().toString();
-//                        }, i -> {
-//                            return i.getMessage();
-//                        }));
-//                        ajaxDto.setError(collect);
-//                    }else {
-//                        blogServer.saveComment(blogComment);
-//                    }
                 }
         );
         if(ajaxDto.getError()!=null){

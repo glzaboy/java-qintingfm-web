@@ -22,7 +22,7 @@ import java.util.Optional;
  * @author guliuzhong
  */
 @Service
-public class AppUserDetailsServiceImpl implements UserDetailsService {
+public class UserService {
     UserJpa userJpa;
     RoleJpa roleJpa;
 
@@ -36,33 +36,24 @@ public class AppUserDetailsServiceImpl implements UserDetailsService {
         this.roleJpa = roleJpa;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    public User getUser(String userName)  {
         if (userName == null || userName.isEmpty()) {
             return null;
         }
-//        User user=new User();
         Optional<User> one = userJpa.findByUsername(userName);
         if (!one.isPresent()) {
-            throw new UsernameNotFoundException("用户不存在");
-            //return null;
+            return null;
         }
-        User user1 = one.get();
-
-        WebUserDetails webUserDetails = new WebUserDetails();
-        webUserDetails.setUsername(user1.getUsername());
-        webUserDetails.setPassword(user1.getPassword());
-        webUserDetails.setAccountNonExpired(user1.isAccountNonExpired());
-        webUserDetails.setAccountNonLocked(user1.isAccountNonLocked());
-        webUserDetails.setCredentialsNonExpired(user1.isCredentialsNonExpired());
-        webUserDetails.setEnabled(user1.isEnabled());
-        webUserDetails.setUserId(user1.getId());
-        Role role = new Role();
-        role.setUserId(user1.getId());
-        List<Role> all = roleJpa.findAll(Example.of(role));
-        Collection<GrantedAuthority> grantedAuthorities = new LinkedList<>();
-        all.forEach(item -> grantedAuthorities.add(item));
-        webUserDetails.setAuthorities(grantedAuthorities);
-        return webUserDetails;
+        return one.get();
+    }
+    public User getUser(Long userId)  {
+        if (userId == null || userId==0) {
+            return null;
+        }
+        Optional<User> one = userJpa.findById(userId);
+        if (!one.isPresent()) {
+            return null;
+        }
+        return one.get();
     }
 }

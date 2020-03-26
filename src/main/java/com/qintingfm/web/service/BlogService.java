@@ -110,7 +110,6 @@ public class BlogService extends BaseService {
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
         return blogCommentJpa.findByBlog(blog, request);
     }
-    @Transactional(rollbackFor = {javax.validation.ConstraintViolationException.class})
     public BlogComment saveComment(BlogComment blogComment) {
         String contentText = htmlService.filterSimpleText(blogComment.getCont());
         blogComment.setCont(contentText);

@@ -19,6 +19,7 @@ public class WebUserDetails implements UserDetails {
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
+    private Integer userId;
     Collection<GrantedAuthority> authorities=new ArrayList<>();
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
