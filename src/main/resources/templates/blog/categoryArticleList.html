@@ -16,9 +16,18 @@
     <div class="row fixed-fluid">
         <div class="panel">
             <div class="panel-body">
-                        <span th:if="${allCategory.size()>0}" th:each="item:${allCategory}">
-                            <a th:text="${item.getTitle()}" th:href="@{/blog/category/{catName}/(catName=${item.title})}">分类</a>
-                        </span>
+                <p th:each="item:${catBlog.toList()}">
+                    <a href="#" th:href="@{/blog/view/{postId}(postId=${item.postId})}" th:utext="${item.title}">链接</a><span th:utext="${item.author.getUsername}" th:if="${item.author}">作者</span>
+                </p>
+
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div th:text="|展现${catBlog.pageable.pageNumber+1}页 ,共计${catBlog.totalPages}页,合计${catBlog.totalElements}条|"></div>
+                    </div>
+                    <div class="col-sm-7 text-right">
+                        <ul class="pagination" th:replace="fragments/common::pager(${catBlog.pageable.pageNumber+1},${catBlog.totalPages},@{/blog/category/{catName}/{}(catName=${catName})})"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

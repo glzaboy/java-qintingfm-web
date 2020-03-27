@@ -27,6 +27,7 @@ public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
     public ThemeResolver getCookieThemeResolver(){
         CookieThemeResolver cookieThemeResolver = new CookieThemeResolver();
         cookieThemeResolver.setCookieMaxAge(30*86400);
+        cookieThemeResolver.setDefaultThemeName("fulllight");
         return cookieThemeResolver;
     }
 

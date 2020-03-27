@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -62,13 +62,13 @@ public class BlogController {
     public void setHtmlService(HtmlService htmlService) {
         this.htmlService = htmlService;
     }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
-    @Transactional(readOnly = true)
     public ModelAndView detail(ModelAndView modelAndView, @PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
@@ -110,21 +110,14 @@ public class BlogController {
                     blogServer.saveComment(blogComment);
                 }
         );
-        if(ajaxDto.getError()!=null){
+        if (ajaxDto.getError() != null) {
             ajaxDto.setMessage("评论出错。");
-        }else{
+        } else {
             ajaxDto.setAutoJump(1);
         }
         return ajaxDto;
     }
 
-    @RequestMapping(value = {"/category", "/category/{page}"})
-    public ModelAndView categoryList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex) {
-        Page<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(pageIndex, null, 10);
-        modelAndView.addObject("allCategory", category.toList());
-        modelAndView.setViewName("blog/category");
-        return modelAndView;
-    }
 
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.GET})
     public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
@@ -150,5 +143,25 @@ public class BlogController {
         AjaxDto ajaxDto = new AjaxDto();
         ajaxDto.setMessage("操作成功");
         return ajaxDto;
+    }
+
+
+    @RequestMapping(value = {"/category"}, method = {RequestMethod.GET})
+    public ModelAndView categoryList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex) {
+        Page<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(pageIndex, null, 100);
+        modelAndView.addObject("allCategory", category.toList());
+        modelAndView.setViewName("blog/category");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/category/{catName}", "/category/{catName}/{page}"})
+    public ModelAndView categoryArticleList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex, @PathVariable(value = "catName", required = true) String catName) {
+        ArrayList<String> catNames = new ArrayList<>();
+        catNames.add(catName);
+        List<Category> category = categoryService.getCategory(catNames);
+        Page<Blog> catBlogList = blogServer.getCatBlogList(category, pageIndex, null, 30);
+        modelAndView.addObject("catBlog", catBlogList);
+        modelAndView.setViewName("blog/categoryArticleList");
+        return modelAndView;
     }
 }

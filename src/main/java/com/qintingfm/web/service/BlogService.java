@@ -5,6 +5,7 @@ import com.qintingfm.web.jpa.BlogCommentJpa;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
+import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.spider.BaiduSpider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,15 @@ public class BlogService extends BaseService {
         }
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
         return blogJpa.findAll(request);
+    }
+
+    public Page<Blog> getCatBlogList(List<Category> categories, Integer pageIndex, Sort sort, Integer pageSize) {
+        pageIndex = (pageIndex == null) ? 1 : pageIndex;
+        if (sort == null) {
+            sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "postId"));
+        }
+        PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
+        return blogJpa.findAllByBlogCategoryIn(categories,request);
     }
 
     public void deleteBlog(Integer postId) {
