@@ -34,7 +34,8 @@ public class WebLoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("loginSuccess");
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setLink("/");
-        ajaxDto.setAutoJump(3);
+        ajaxDto.setAutoJump(1);
+        ajaxDto.setMessage("登录成功，正在跳转页面。");
         response.setCharacterEncoding("utf-8");
         response.getWriter().println(objectMapper.writeValueAsString(ajaxDto));
     }
@@ -44,7 +45,8 @@ public class WebLoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("loginSuccess");
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setLink("/");
-        ajaxDto.setAutoJump(3);
+        ajaxDto.setAutoJump(1);
+        ajaxDto.setMessage("登录成功，正在跳转页面。");
         response.getWriter().println(objectMapper.writeValueAsString(ajaxDto));
         chain.doFilter(request,response);
     }
