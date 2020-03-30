@@ -8,6 +8,7 @@ import java.util.*;
 
 /**
  * 网页的元数据抽取
+ * @author guliuzhong
  */
 public class MetadataExtractor {
     private static final String WHITESPACE = "[ \r\t\n]+";
@@ -22,7 +23,7 @@ public class MetadataExtractor {
                     .or(innerTrim(doc.select("meta[property=article:author]").attr("content")))
                     .or(innerTrim(doc.select("a[id=post-user]").text()))
                     .toString();
-        } catch (HeuristicString.CandidateFound candidateFound) {
+        } catch (HeuristicString.CandidateFoundException candidateFound) {
             return cleanTitle(candidateFound.candidate);
         }
     }
@@ -50,7 +51,7 @@ public class MetadataExtractor {
                     .or(doc.select("meta[property=bt:pubDate]").attr("content"))
                     .or(doc.select("em[id=post-date]").text())
                     .toString();
-        } catch (HeuristicString.CandidateFound candidateFound) {
+        } catch (HeuristicString.CandidateFoundException candidateFound) {
             sdate = candidateFound.candidate;
         }
 
@@ -74,7 +75,7 @@ public class MetadataExtractor {
                     .or(urlEncodeSpaceCharacter(doc.select("meta[name=thumbnail]").attr("content")))
                     .or(urlEncodeSpaceCharacter(doc.select("meta[itemprop=image]").attr("content")))
                     .toString();
-        } catch (HeuristicString.CandidateFound candidateFound) {
+        } catch (HeuristicString.CandidateFoundException candidateFound) {
             return candidateFound.candidate;
         }
     }
@@ -87,7 +88,7 @@ public class MetadataExtractor {
                     .or(innerTrim(doc.select("meta[property=og:title]").attr("content")))
                     .or(innerTrim(doc.select("meta[name=twitter:title]").attr("content")))
                     .toString());
-        } catch (HeuristicString.CandidateFound candidateFound) {
+        } catch (HeuristicString.CandidateFoundException candidateFound) {
             return cleanTitle(candidateFound.candidate);
         }
     }
@@ -99,19 +100,22 @@ public class MetadataExtractor {
                     .or(innerTrim(doc.select("meta[property=og:description]").attr("content")))
                     .or(innerTrim(doc.select("meta[name=twitter:description]").attr("content")))
                     .toString();
-        } catch (HeuristicString.CandidateFound candidateFound) {
+        } catch (HeuristicString.CandidateFoundException candidateFound) {
             return candidateFound.candidate;
         }
     }
 
     public static Collection<String> keywords(Document doc) {
         String content = innerTrim(doc.select("meta[name=keywords]").attr("content"));
-        if (content.startsWith("[") && content.endsWith("]"))
+        if (content.startsWith("[") && content.endsWith("]")) {
             content = content.substring(1, content.length() - 1);
+        }
 
         String[] split = content.split("\\s*,\\s*");
-        if (split.length > 1 || (split.length > 0 && !"".equals(split[0])))
+        if (split.length > 1 || (split.length > 0 && !"".equals(split[0]))){
             return Arrays.asList(split);
+        }
+
 
         return Collections.emptyList();
     }
@@ -126,8 +130,9 @@ public class MetadataExtractor {
     public static String cleanTitle(String title) {
         StringBuilder res = new StringBuilder();
         int index = title.lastIndexOf("|");
-        if (index > 0 && title.length() / 2 < index)
+        if (index > 0 && title.length() / 2 < index){
             title = title.substring(0, index + 1);
+        }
 
         int counter = 0;
         String[] strs = title.split("\\|");

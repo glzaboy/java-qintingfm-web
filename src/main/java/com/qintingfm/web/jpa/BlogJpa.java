@@ -15,6 +15,11 @@ import java.util.List;
  */
 @Component
 public interface BlogJpa extends JpaRepository<Blog,Integer> {
-
+    /**
+     * 根据分类列出文章
+     * @param categories 分类
+     * @param pageable 分页
+     * @return
+     */
     Page<Blog> findAllByBlogCategoryIn(List<Category> categories, Pageable pageable);
 }

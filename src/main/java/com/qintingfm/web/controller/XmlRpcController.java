@@ -38,19 +38,19 @@ public class XmlRpcController {
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
         response.setContentType("application/xml");
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] bytes = new byte[1024];
-        int readNum;
-        do {
-            readNum = inputStream.read(bytes, 0, 1024);
-            if (readNum > 0) {
-                byteArrayOutputStream.write(bytes, 0, readNum);
-            }
-        } while (readNum > 0);
-        log.info(byteArrayOutputStream.toString());
-        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        byte[] bytes = new byte[1024];
+//        int readNum;
+//        do {
+//            readNum = inputStream.read(bytes, 0, 1024);
+//            if (readNum > 0) {
+//                byteArrayOutputStream.write(bytes, 0, readNum);
+//            }
+//        } while (readNum > 0);
+//        log.info(byteArrayOutputStream.toString());
+//        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         try {
-            metaWebLogServer.invoke(byteInputStream, response.getOutputStream());
+            metaWebLogServer.invoke(inputStream, response.getOutputStream());
         } catch (SAXException e) {
             log.error("MetaWebLog invoke ERROR{}", e.getMessage());
         }

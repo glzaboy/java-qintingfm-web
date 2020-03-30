@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  * 基于文本密度算法的正文抽取
  * 代码截取自 <a href="https://gitee.com/webcollector/WebCollector/blob/master/WebCollector/src/main/java/cn/edu/hfut/dmic/contentextractor/ContentExtractor.java" target="_blank">WebCollector</a>
+ * @author guliuzhong
  */
 public class TextDensityExtractor implements ContentExtractor {
 
@@ -49,10 +50,10 @@ public class TextDensityExtractor implements ContentExtractor {
             }
             countInfo.tagCount++;
             String tagName = tag.tagName();
-            if (tagName.equals("a")) {
+            if ("a".equals(tagName)) {
                 countInfo.linkTextCount = countInfo.textCount;
                 countInfo.linkTagCount++;
-            } else if (tagName.equals("p")) {
+            } else if ("p".equals(tagName)) {
                 countInfo.pCount++;
             }
 
@@ -114,7 +115,7 @@ public class TextDensityExtractor implements ContentExtractor {
         Element content = null;
         for (Map.Entry<Element, CountInfo> entry : infoMap.entrySet()) {
             Element tag = entry.getKey();
-            if (tag.tagName().equals("a") || tag == body) {
+            if ("a".equals(tag.tagName()) || tag == body) {
                 continue;
             }
             double score = computeScore(tag, infoMap);

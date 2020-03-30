@@ -1,22 +1,25 @@
 package com.qintingfm.web.htmlsucker;
 
+/**
+ * @author guliuzhong
+ */
 public class HeuristicString {
 
     private String string;
 
-    public HeuristicString(String string) throws CandidateFound {
+    public HeuristicString(String string) throws CandidateFoundException {
         this.string = string;
         if (string != null && !string.isEmpty()) {
-            throw new CandidateFound(string);
+            throw new CandidateFoundException(string);
         }
     }
 
-    public HeuristicString or(String candidate) throws CandidateFound {
+    public HeuristicString or(String candidate) throws CandidateFoundException {
         if (candidate != null) {
             if (string == null || string.isEmpty()) {
                 string = candidate;
             } else {
-                throw new CandidateFound(string);
+                throw new CandidateFoundException(string);
             }
         }
         return this;
@@ -27,10 +30,10 @@ public class HeuristicString {
         return string;
     }
 
-    public static class CandidateFound extends Exception {
+    public static class CandidateFoundException extends Exception {
         public final String candidate;
 
-        public CandidateFound(String candidate) {
+        public CandidateFoundException(String candidate) {
             this.candidate = candidate;
         }
     }
