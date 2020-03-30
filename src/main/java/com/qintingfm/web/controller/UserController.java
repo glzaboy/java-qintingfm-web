@@ -1,5 +1,6 @@
 package com.qintingfm.web.controller;
 
+import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.pojo.BingBgImage;
 import com.qintingfm.web.service.BingImageService;
 import lombok.extern.slf4j.Slf4j;
@@ -49,5 +50,12 @@ public class UserController {
         modelAndView.addObject("image", image.getImageList().get(0));
         modelAndView.setViewName("user/register");
         return modelAndView;
+    }
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxDto registerPpost(ModelAndView modelAndView) {
+        AjaxDto ajaxDto=new AjaxDto();
+        ajaxDto.setMessage("暂不开放注册。如果有需求，直接联系我 postmaster@qintingfm.com");
+        return ajaxDto;
     }
 }
