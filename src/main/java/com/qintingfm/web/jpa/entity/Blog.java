@@ -24,12 +24,12 @@ public class Blog implements Serializable {
     @SequenceGenerator(sequenceName = "qt_blog_cat_id_seq", name = "genBlogid", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genBlogid")
     private Integer postId;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "contId", nullable = false)
     @Valid
     private BlogCont blogCont;
     private String shotCont;
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinTable(name = "qt_blog2cat", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns = {@JoinColumn(name = "catId")})
     private List<Category> blogCategory;
     private Date dateCreated;

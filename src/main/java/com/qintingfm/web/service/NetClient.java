@@ -60,7 +60,6 @@ public class NetClient {
     }
 
     public void setJson(Object jsonObject) throws JsonProcessingException {
-//        ObjectMapper objectMapper = new ObjectMapper();
         setJson(objectMapper.writeValueAsString(jsonObject));
     }
     public void setBin(String contextType,byte[] bytes) {
