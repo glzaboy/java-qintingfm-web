@@ -1,5 +1,6 @@
 package com.qintingfm.web.service;
 
+import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
@@ -22,6 +23,8 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -132,6 +135,19 @@ public class MetaWebLogServer extends XmlRpcServer {
                 responseError(outputStream, 404, "服务执行出错 IllegalAccessException");
                 return;
             } catch (InvocationTargetException e) {
+                Throwable t = e.getCause();
+                AjaxDto ajaxDto=new AjaxDto();
+                do{
+                    if( t instanceof ConstraintViolationException){
+                        Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
+                        logger.error(constraintViolations.toString());
+                        Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
+                            return k.getPropertyPath().toString();
+                        }, i -> i.getMessage(),(v1,v2)->v1+","+v2));
+                        responseError(outputStream, 500, "服务执行出错"+collect.toString());
+                        return;
+                    }
+                }while ((t=t.getCause())!=null);
                 responseError(outputStream, 500, "服务执行出错 InvocationTargetException");
                 return;
             }

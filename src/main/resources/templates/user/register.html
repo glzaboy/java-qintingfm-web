@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-    <title>Register page | Nifty - Admin Template</title>
+    <title>注册</title>
 
 
     <!--STYLESHEET-->
@@ -42,31 +42,6 @@
     <link href="//static.qintingfm.com/nifty/v2.9/css/demo/nifty-demo.min.css" rel="stylesheet"/>
 
 
-    <!--=================================================
-
-    REQUIRED
-    You must include this in your project.
-
-
-    RECOMMENDED
-    This category must be included but you may modify which plugins or components which should be included in your project.
-
-
-    OPTIONAL
-    Optional plugins. You may choose whether to include it in your project or not.
-
-
-    DEMONSTRATION
-    This is to be removed, used for demonstration purposes only. This category must not be included in your project.
-
-
-    SAMPLE
-    Some script samples which explain how to initialize plugins or components. This category should not be included in your project.
-
-
-    Detailed information and more samples can be found in the document.
-
-    =================================================-->
 
 </head>
 
@@ -148,30 +123,16 @@
 </div>
 <!--===================================================-->
 <!-- END OF CONTAINER -->
-
-
-
-<!--JAVASCRIPT-->
-<!--=================================================-->
-
-<!--jQuery [ REQUIRED ]-->
 <script src="//static.qintingfm.com/nifty/v2.9/js/jquery.min.js"></script>
 
-
-<!--BootstrapJS [ RECOMMENDED ]-->
 <script src="//static.qintingfm.com/nifty/v2.9/js/bootstrap.min.js"></script>
 
 
-<!--NiftyJS [ RECOMMENDED ]-->
 <script src="//static.qintingfm.com/nifty/v2.9/js/nifty.min.js"></script>
 
 
 
 
-<!--=================================================-->
-
-<!--Background Image [ DEMONSTRATION ]-->
-<!--<script src="js/demo/bg-images.js"></script>-->
 <script th:inline="javascript">
     $('<img/>').attr('src' , [[${image.getImageUrl()}]]).on('load', function(){
         $('#bg-overlay').css('background-image', 'url("' + $(this).attr('src') + '")').addClass('bg-img');

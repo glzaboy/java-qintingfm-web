@@ -3,6 +3,7 @@ package com.qintingfm.web.jpa.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author guliuzhong
@@ -16,5 +17,6 @@ public class BlogCont {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genContId")
     private Long contId;
     @Column(length = 1048576,nullable = false)
+    @NotBlank(message = "文章内容不能为空")
     private String cont;
 }

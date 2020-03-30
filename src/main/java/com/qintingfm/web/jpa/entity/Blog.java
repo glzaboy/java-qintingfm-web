@@ -1,8 +1,11 @@
 package com.qintingfm.web.jpa.entity;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.List;
 @Entity
 @Table(name = "qt_blog")
 public class Blog implements Serializable {
+    @NotBlank(message = "标题不能为空")
+    @Length(min = 4,message = "标题至少长度为四个字符")
     String title;
     @Id
     @SequenceGenerator(sequenceName = "qt_blog_cat_id_seq", name = "genBlogid", allocationSize = 1)
@@ -21,6 +26,7 @@ public class Blog implements Serializable {
     private Integer postId;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "contId", nullable = false)
+    @Valid
     private BlogCont blogCont;
     private String shotCont;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

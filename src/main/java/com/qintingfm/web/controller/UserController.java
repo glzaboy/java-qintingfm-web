@@ -40,4 +40,14 @@ public class UserController {
     public ModelAndView logout(ModelAndView modelAndView) {
         return modelAndView;
     }
+
+
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public ModelAndView registerPage(ModelAndView modelAndView) {
+        BingBgImage image = bingImageService.getImage();
+        image.getImageList();
+        modelAndView.addObject("image", image.getImageList().get(0));
+        modelAndView.setViewName("user/register");
+        return modelAndView;
+    }
 }

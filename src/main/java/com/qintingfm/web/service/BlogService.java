@@ -94,22 +94,16 @@ public class BlogService extends BaseService {
             blog.setDateCreated(new Date());
         }
         Collection<String> pushUrl = new ArrayList<>();
+        Blog save = blogJpa.save(blog);
         try {
-            Blog save = blogJpa.save(blog);
-            try {
-                Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()), null).build().toString();
-                pushUrl.add(s);
-                baiduSpider.pushUrlToSpider(pushUrl);
-            } catch (NoSuchMethodException e) {
-                log.error("找不到博客文档的url");
-            }
-            return save;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            log.error(e.getStackTrace().toString());
+            Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
+            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()), null).build().toString();
+            pushUrl.add(s);
+            baiduSpider.pushUrlToSpider(pushUrl);
+        } catch (NoSuchMethodException e) {
+            log.error("找不到博客文档的url");
         }
-        return null;
+        return save;
     }
 
     public Page<BlogComment> getBlogComment(Blog blog, Integer pageIndex, Sort sort, Integer pageSize) {
