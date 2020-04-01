@@ -90,7 +90,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-
+    @Transactional(rollbackFor = Exception.class)
     public void invoke(InputStream inputStream, OutputStream outputStream) throws XmlRpcException, SAXException, IOException {
         XmlRpcRequestParser xmlRequestParser = getXmlRequestParser(inputStream);
         String methodName = xmlRequestParser.getMethodName();
@@ -248,7 +248,6 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     }
 
-    @Transactional(rollbackFor = {Exception.class})
     String editPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
@@ -293,7 +292,6 @@ public class MetaWebLogServer extends XmlRpcServer {
         return "";
     }
 
-    @Transactional(rollbackFor = {Exception.class})
     String newPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);

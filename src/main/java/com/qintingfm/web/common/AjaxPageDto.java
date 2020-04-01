@@ -1,5 +1,7 @@
 package com.qintingfm.web.common;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -8,6 +10,7 @@ import java.util.Collection;
  * @author guliuzhong
  * @param <T>
  */
+@Data
 public class AjaxPageDto<T extends Serializable> extends AjaxDto {
     /**
      * 当前页数
@@ -35,38 +38,6 @@ public class AjaxPageDto<T extends Serializable> extends AjaxDto {
     }
 
     public AjaxPageDto(Collection<T> data) {
-        this.data = data;
-    }
-
-    public long getPage() {
-        return page;
-    }
-
-    public void setPage(long page) {
-        this.page = page;
-    }
-
-    public Collection<T> getData() {
-        return data;
-    }
-
-    public void setData(Collection<T> data) {
-        this.data = data;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public long getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(long totalPage) {
-        this.totalPage = totalPage;
+        this(data,0,0,0);
     }
 }

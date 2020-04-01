@@ -29,7 +29,7 @@ public class Blog implements Serializable {
     @Valid
     private BlogCont blogCont;
     private String shotCont;
-    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(name = "qt_blog2cat", joinColumns = {@JoinColumn(name = "postId")}, inverseJoinColumns = {@JoinColumn(name = "catId")})
     private List<Category> blogCategory;
     private Date dateCreated;

@@ -37,4 +37,19 @@ public class WebControllerAdvice {
         }while ((t=t.getCause())!=null);
         return ajaxDto;
     }
+    @ExceptionHandler(TransactionSystemException.class)
+    @ResponseBody
+    public AjaxDto c(final ConstraintViolationException ex){
+        AjaxDto ajaxDto=new AjaxDto();
+        if( ex instanceof  ConstraintViolationException){
+            Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) ex).getConstraintViolations();
+            Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
+                return k.getPropertyPath().toString();
+            }, i -> i.getMessage(),(v1,v2)->v1+","+v2));
+            ajaxDto.setError(collect);
+            ajaxDto.setAutoHide("3");
+            ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
+        }
+        return ajaxDto;
+    }
 }

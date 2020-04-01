@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -83,7 +84,8 @@ public class BlogService extends BaseService {
         return blogJpa.findById(postId);
     }
 
-    public Blog save(Blog blog) {
+    public Blog save(Blog blog) throws ConstraintViolationException {
+        validatePojoAndThrow(blog);
         String contentText = htmlService.filterNone(blog.getBlogCont().getCont());
         if (contentText.length() > shortContLen) {
             blog.setShotCont(contentText.substring(0, shortContLen));
