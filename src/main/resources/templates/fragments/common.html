@@ -18,7 +18,7 @@
         </a>
         <!--Submenu-->
         <ul class="collapse">
-            <li th:class="${tpl}=='/blog/post'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a></li>
+            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a></li>
             <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
         </ul>
     </li>
@@ -30,7 +30,9 @@
         </a>
         <!--Submenu-->
         <ul class="collapse">
-            <li th:class="${tpl}=='/admin/blog/setting/pushbaidu'?'active-link':''"><a href="pages-blank.html" th:href="@{/admin/blog/setting/pushbaidu}">百度推送</a></li>
+            <li th:class="${tpl}=='/admin/setting/pushbaidu'?'active-link':''"><a href="#" th:href="@{/admin/setting/pushbaidu}">百度推送</a></li>
+            <li th:class="${tpl}=='/admin/setting/keyword'?'active-link':''"><a href="#" th:href="@{/admin/setting/keyword}"> 关键词</a></li>
+            <li th:class="${tpl}=='/admin/setting/site'?'active-link':''"><a href="#" th:href="@{/admin/setting/site}">站点设置</a></li>
         </ul>
     </li>
 </ul>
