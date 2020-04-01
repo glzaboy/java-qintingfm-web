@@ -78,7 +78,12 @@ public class BlogService extends BaseService {
 
     public void deleteBlog(Integer postId) {
         Optional<Blog> byId = blogJpa.findById(postId);
-        byId.ifPresent(blog -> blogJpa.delete(blog));
+        byId.ifPresent(blog -> {
+            blog.getComment().forEach(item->{item.setAuthor(null);});
+            blog.setBlogCategory(null);
+            blog.setAuthor(null);
+            blogJpa.delete(blog);
+        });
     }
     public Optional<Blog> getBlog(Integer postId) {
         return blogJpa.findById(postId);

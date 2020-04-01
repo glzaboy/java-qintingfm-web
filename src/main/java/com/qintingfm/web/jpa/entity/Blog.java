@@ -36,4 +36,7 @@ public class Blog implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "authorId", nullable = true)
     private User author;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY,mappedBy = "blog")
+    private List<BlogComment> Comment;
+
 }

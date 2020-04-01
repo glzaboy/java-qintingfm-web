@@ -199,7 +199,6 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mediaObject;
     }
 
-    @Transactional(rollbackFor = {Exception.class})
     Boolean deletePost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(1).toString());
         blogServer.deleteBlog(postId);
