@@ -263,8 +263,8 @@ public class MetaWebLogServer extends XmlRpcServer {
                 List<String> collect = Stream.of(categories).map(item -> {
                     return (String) item;
                 }).collect(Collectors.toList());
-                Collection<Category> category = categoryService.getCategory(collect);
-                blog.setBlogCategory(category.stream().collect(Collectors.toList()));
+                List<Category> category = categoryService.getCategory(collect);
+                blog.setBlogCategory(category);
             }
             blogServer.save(blog);
         });
@@ -283,8 +283,8 @@ public class MetaWebLogServer extends XmlRpcServer {
                 List<String> collect = Stream.of(categories).map(item -> {
                     return (String) item;
                 }).collect(Collectors.toList());
-                Collection<Category> category = categoryService.getCategory(collect);
-                blog.setBlogCategory(category.stream().collect(Collectors.toList()));
+                List<Category> category = categoryService.getCategory(collect);
+                blog.setBlogCategory(category);
             }
             blogServer.save(blog);
         }

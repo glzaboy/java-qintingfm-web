@@ -20,9 +20,9 @@
         <div class="col-xs-12 col-sm-7">
             <div class="form-group">
                 <div class="col-sm-12">
-                    <select class="selectpicker" multiple id="cat-selector" style="width: 100%" name="catId[]">
+                    <select class="selectpicker" multiple id="cat-selector" style="width: 100%" name="catNameList">
                         <option value="" disabled="disabled">分类</option>
-                        <option value="push" th:each="category:${allCategory}" th:value="${category.catId}" th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类</option>
+                        <option value="push" th:each="category:${allCategory}" th:value="${category.title}" th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类</option>
                     </select>
                 </div>
             </div>
