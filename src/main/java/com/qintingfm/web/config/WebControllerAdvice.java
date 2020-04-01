@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class WebControllerAdvice {
     @ExceptionHandler(TransactionSystemException.class)
     @ResponseBody
-    public AjaxDto c(final TransactionSystemException ex){
+    public AjaxDto transactionSystemException(final TransactionSystemException ex){
         Throwable t = ex.getCause();
         AjaxDto ajaxDto=new AjaxDto();
         do{
@@ -37,9 +37,9 @@ public class WebControllerAdvice {
         }while ((t=t.getCause())!=null);
         return ajaxDto;
     }
-    @ExceptionHandler(TransactionSystemException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
-    public AjaxDto c(final ConstraintViolationException ex){
+    public AjaxDto constraintViolationException(final ConstraintViolationException ex){
         AjaxDto ajaxDto=new AjaxDto();
         if( ex instanceof  ConstraintViolationException){
             Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) ex).getConstraintViolations();
