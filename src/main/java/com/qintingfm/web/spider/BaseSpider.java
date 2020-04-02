@@ -5,7 +5,6 @@ import com.qintingfm.web.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 /**

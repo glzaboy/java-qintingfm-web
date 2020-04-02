@@ -17,7 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
         <maven.test.skip>true</maven.test.skip>
-<!--            <maven.javadoc.skip>true</maven.javadoc.skip>-->
+        <!--            <maven.javadoc.skip>true</maven.javadoc.skip>-->
     </properties>
 
     <dependencies>
@@ -127,14 +127,14 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <!--速度慢不建议线上编译-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.8.1</version>-->
-<!--                <configuration>-->
-<!--                    <compilerArgument>-Xlint:unchecked</compilerArgument>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+            <!--                <version>3.8.1</version>-->
+            <!--                <configuration>-->
+            <!--                    <compilerArgument>-Xlint:unchecked</compilerArgument>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

@@ -62,7 +62,8 @@ public class NetClient {
     public void setJson(Object jsonObject) throws JsonProcessingException {
         setJson(objectMapper.writeValueAsString(jsonObject));
     }
-    public void setBin(String contextType,byte[] bytes) {
+
+    public void setBin(String contextType, byte[] bytes) {
         builder.post(RequestBody.create(MediaType.parse(contextType), bytes));
     }
 

@@ -23,12 +23,13 @@ import java.io.OutputStream;
 /**
  * xml rpc简易服务端需要依赖xml-prc-common
  * 本类配置比较奇特不适合使用spring配置。
+ *
  * @author guliuzhong
  */
 public class XmlRpcServer {
     StreamConfig streamConfig;
     RpcController rpcController;
-    Logger logger=LoggerFactory.getLogger(XmlRpcServer.class);
+    Logger logger = LoggerFactory.getLogger(XmlRpcServer.class);
 
     public StreamConfig getStreamConfig() {
         return streamConfig;
@@ -58,7 +59,7 @@ public class XmlRpcServer {
         return parser;
     }
 
-    public void responseError(OutputStream outputStream, int pCode, String pMessage)  {
+    public void responseError(OutputStream outputStream, int pCode, String pMessage) {
         rpcController.setXmlRpcConfig(streamConfig);
         XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
         TypeFactoryImpl typeFactory = new TypeFactoryImpl(rpcController);
@@ -68,9 +69,9 @@ public class XmlRpcServer {
             XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(streamConfig, w, typeFactory);
             xmlRpcWriter.write(streamConfig, pCode, pMessage);
         } catch (XmlRpcException e) {
-            logger.error("responseError XmlRpcException {}",e.getMessage());
+            logger.error("responseError XmlRpcException {}", e.getMessage());
         } catch (SAXException e) {
-            logger.error("responseError SAXException {}",e.getMessage());
+            logger.error("responseError SAXException {}", e.getMessage());
         }
     }
 
@@ -84,9 +85,9 @@ public class XmlRpcServer {
             XmlRpcWriter xmlRpcWriter = new XmlRpcWriter(streamConfig, w, typeFactory);
             xmlRpcWriter.write(streamConfig, pResult);
         } catch (XmlRpcException e) {
-            logger.error("response XmlRpcException {}",e.getMessage());
+            logger.error("response XmlRpcException {}", e.getMessage());
         } catch (SAXException e) {
-            logger.error("response SAXException {}",e.getMessage());
+            logger.error("response SAXException {}", e.getMessage());
         }
     }
 }

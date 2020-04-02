@@ -4,6 +4,7 @@ import lombok.Data;
 
 /**
  * 存储配置信息
+ *
  * @author guliuzhong
  */
 @Data

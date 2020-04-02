@@ -7,7 +7,8 @@ import java.util.*;
 
 /**
  * 基于最大文本块的内容提取算法
- *  @author Winter Lau (javayou@gmail.com)
+ *
+ * @author Winter Lau (javayou@gmail.com)
  */
 public class MaxTextContentExtractor implements ContentExtractor {
 
@@ -19,7 +20,7 @@ public class MaxTextContentExtractor implements ContentExtractor {
             "p", "b", "i", "u", "strong", "em", "span",
             "a", "pre", "code", "h1", "h2", "h3", "h4",
             "h5", "h6", "blockquote", "img", "hr", "br",
-            "ul", "ol", "li", "embed","table"/*,"section"*/
+            "ul", "ol", "li", "embed", "table"/*,"section"*/
     );
 
     @Override
@@ -33,6 +34,7 @@ public class MaxTextContentExtractor implements ContentExtractor {
 
     /**
      * 找出所有的内容节点
+     *
      * @param element
      * @return
      */

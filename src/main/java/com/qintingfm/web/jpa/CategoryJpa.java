@@ -8,12 +8,14 @@ import java.util.List;
 
 /**
  * 博客分类
+ *
  * @author guliuzhong
  */
 @Component
-public interface CategoryJpa  extends JpaRepository<Category,String> {
+public interface CategoryJpa extends JpaRepository<Category, String> {
     /**
      * 查找指定类型的分类
+     *
      * @param titleList
      * @return
      */

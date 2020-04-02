@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.validation.constraints.*;
 import java.util.Date;

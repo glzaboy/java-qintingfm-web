@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <title th:text="|${blog.title}-文章编辑|">文章编辑</title>
     <meta name="Keywords" content="keywords" th:content="|${blog.title},资讯,博客,时事要闻,qintingfm,microtf|">
     <meta name="description" content="资讯，博客，时事要闻" th:content="|${blog.title}资讯,博客,时事要闻|">
     <style>
-        #content-container:before{
-            display:none;
+        #content-container:before {
+            display: none;
         }
     </style>
     <link href="//static.qintingfm.com/nifty/v2.9/plugins/dropzone/dropzone.min.css" rel="stylesheet"/>
@@ -16,53 +17,57 @@
 <ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/post')"></ul>
 <div id="page-content" layout:fragment="content">
     <form action="#" th:action="@{'/blog/post/{postId}'(postId=${blog.postId?:0})}" class="ajaxform" method="post">
-    <div class="row">
-        <div class="col-xs-12 col-sm-7">
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <select class="selectpicker" multiple id="cat-selector" style="width: 100%" name="catNameList">
-                        <option value="" disabled="disabled">分类</option>
-                        <option value="push" th:each="category:${allCategory}" th:value="${category.title}" th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类</option>
-                    </select>
+        <div class="row">
+            <div class="col-xs-12 col-sm-7">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <select class="selectpicker" multiple id="cat-selector" style="width: 100%" name="catNameList">
+                            <option value="" disabled="disabled">分类</option>
+                            <option value="push" th:each="category:${allCategory}" th:value="${category.title}"
+                                    th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xs-12 col-sm-2">
-            <div class="form-group">
-                <div class="col-sm-7">
-                    <div class="checkbox">
-                        <input id="allow-comments" class="magic-checkbox" type="checkbox" checked="" name="comments">
-                        <label for="allow-comments">允许评论</label>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <div class="col-sm-7">
+                        <div class="checkbox">
+                            <input id="allow-comments" class="magic-checkbox" type="checkbox" checked=""
+                                   name="comments">
+                            <label for="allow-comments">允许评论</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="checkbox">
+                            <input id="publish" class="magic-checkbox" type="checkbox" checked="" name="state">
+                            <label for="publish">发布前台</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-1">
+                <div class="form-group">
+                    <button class="btn btn-primary">保存</button>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12">
+                <div class="form-group">
+                    <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus"
+                           th:value="${blog.title}" name="title"/>
+                </div>
+                <div class="panel">
+                    <div class="panel-body">
+                        <textarea th:utext="${blog.blogCont.cont}" class="editor" name="cont"></textarea>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-2">
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <div class="checkbox">
-                        <input id="publish" class="magic-checkbox" type="checkbox" checked="" name="state">
-                        <label for="publish">发布前台</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-1">
-            <div class="form-group">
-                <button class="btn btn-primary">保存</button>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-12">
-            <div class="form-group">
-                <input type="text" placeholder="Blog Title" class="form-control input-lg" autofocus="autofocus" th:value="${blog.title}" name="title"/>
-            </div>
-            <div class="panel">
-                <div class="panel-body">
-                    <textarea th:utext="${blog.blogCont.cont}" class="editor" name="cont"></textarea>
-                </div>
-            </div>
-        </div>
-    </div>
     </form>
 </div>
 <div layout:fragment="footjs">
@@ -72,7 +77,7 @@
     <script>
         $(document).on('nifty.ready', function () {
             ClassicEditor
-                .create( document.querySelector( '.editor' ), {
+                .create(document.querySelector('.editor'), {
                     toolbar: {
                         items: [
                             'bold',
@@ -114,17 +119,17 @@
                             'tableProperties'
                         ]
                     },
-                    simpleUpload:{
+                    simpleUpload: {
                         uploadUrl: ':/uploadImage'
                     },
                     licenseKey: '',
-                } )
-                .then( editor => {
+                })
+                .then(editor => {
                     window.editor = editor;
-                } )
-                .catch( error => {
-                    console.error( error );
-                } );
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         });
     </script>
 </div>

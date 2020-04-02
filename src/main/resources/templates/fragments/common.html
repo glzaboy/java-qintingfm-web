@@ -18,8 +18,10 @@
         </a>
         <!--Submenu-->
         <ul class="collapse">
-            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a></li>
-            <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
+            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a>
+            </li>
+            <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html"
+                                                                        th:href="@{/blog/category}">分类</a></li>
         </ul>
     </li>
     <li>
@@ -30,17 +32,28 @@
         </a>
         <!--Submenu-->
         <ul class="collapse">
-            <li th:class="${tpl}=='/admin/setting/pushbaidu'?'active-link':''"><a href="#" th:href="@{/admin/setting/pushbaidu}">百度推送</a></li>
-            <li th:class="${tpl}=='/admin/setting/keyword'?'active-link':''"><a href="#" th:href="@{/admin/setting/keyword}"> 关键词</a></li>
-            <li th:class="${tpl}=='/admin/setting/site'?'active-link':''"><a href="#" th:href="@{/admin/setting/site}">站点设置</a></li>
+            <li th:class="${tpl}=='/admin/setting/pushbaidu'?'active-link':''"><a href="#"
+                                                                                  th:href="@{/admin/setting/pushbaidu}">百度推送</a>
+            </li>
+            <li th:class="${tpl}=='/admin/setting/keyword'?'active-link':''"><a href="#"
+                                                                                th:href="@{/admin/setting/keyword}">
+                关键词</a></li>
+            <li th:class="${tpl}=='/admin/setting/site'?'active-link':''"><a href="#" th:href="@{/admin/setting/site}">站点设置</a>
+            </li>
         </ul>
     </li>
 </ul>
 <!-- 分页 -->
 <ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
-    <li th:class="${pageIndex==1}?'disabled':''"><a href="#" class="demo-pli-arrow-left" th:href="${#strings.replace(urlPrefix,'{}',1)}"></a></li>
+    <li th:class="${pageIndex==1}?'disabled':''"><a href="#" class="demo-pli-arrow-left"
+                                                    th:href="${#strings.replace(urlPrefix,'{}',1)}"></a></li>
 
-    <li th:class="${pageIndex==index}?'active':''" th:each="index:${#numbers.sequence(1, pageTotal)}"><a href="#" th:href="${#strings.replace(urlPrefix,'{}',index)}" th:text="${index}">1</a></li>
-    <li th:class="${pageIndex==pageTotal}?'disabled':''"><a href="#" class="demo-pli-arrow-right" th:href="${#strings.replace(urlPrefix,'{}',pageTotal)}"></a></li>
+    <li th:class="${pageIndex==index}?'active':''" th:each="index:${#numbers.sequence(1, pageTotal)}"><a href="#"
+                                                                                                         th:href="${#strings.replace(urlPrefix,'{}',index)}"
+                                                                                                         th:text="${index}">1</a>
+    </li>
+    <li th:class="${pageIndex==pageTotal}?'disabled':''"><a href="#" class="demo-pli-arrow-right"
+                                                            th:href="${#strings.replace(urlPrefix,'{}',pageTotal)}"></a>
+    </li>
 </ul>
 </html>

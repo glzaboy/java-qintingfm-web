@@ -19,14 +19,16 @@ public class WebMvcConfigurerAdapter extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getThemeChangeInterceptor()).addPathPatterns("/misc/changeTheme");
     }
+
     @Bean
-    public HandlerInterceptor getThemeChangeInterceptor(){
+    public HandlerInterceptor getThemeChangeInterceptor() {
         return new ThemeChangeInterceptor();
     }
+
     @Bean("themeResolver")
-    public ThemeResolver getCookieThemeResolver(){
+    public ThemeResolver getCookieThemeResolver() {
         CookieThemeResolver cookieThemeResolver = new CookieThemeResolver();
-        cookieThemeResolver.setCookieMaxAge(30*86400);
+        cookieThemeResolver.setCookieMaxAge(30 * 86400);
         cookieThemeResolver.setDefaultThemeName("fulllight");
         return cookieThemeResolver;
     }

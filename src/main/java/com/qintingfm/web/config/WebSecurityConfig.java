@@ -8,7 +8,6 @@ import com.qintingfm.web.service.AppUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,40 +25,50 @@ import java.util.UUID;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    UUID key= UUID.randomUUID();
+    UUID key = UUID.randomUUID();
     AppUserDetailsServiceImpl appUserDetailsService;
+
     @Autowired
     public void setAppUserDetailsService(AppUserDetailsServiceImpl appUserDetailsService) {
         this.appUserDetailsService = appUserDetailsService;
     }
+
     WebLogoutSuccessHandler webLogoutSuccessHandler;
+
     @Autowired
     public void setWebLogoutSuccessHandler(WebLogoutSuccessHandler webLogoutSuccessHandler) {
         this.webLogoutSuccessHandler = webLogoutSuccessHandler;
     }
+
     WebLoginSuccessHandler webLoginSuccessHandler;
+
     @Autowired
     public void setWebLoginSuccessHandler(WebLoginSuccessHandler webLoginSuccessHandler) {
         this.webLoginSuccessHandler = webLoginSuccessHandler;
     }
+
     WebLoginFailHandler webLoginFailHandler;
+
     @Autowired
     public void setWebLoginFailHandler(WebLoginFailHandler webLoginFailHandler) {
         this.webLoginFailHandler = webLoginFailHandler;
     }
+
     JpaTokenRepositoryImpl jpaTokenRepository;
+
     @Autowired
     public void setJpaTokenRepository(JpaTokenRepositoryImpl jpaTokenRepository) {
         this.jpaTokenRepository = jpaTokenRepository;
     }
+
     @Bean
-    RememberMeServices rememberMeServices(){
-        return new PersistentTokenBasedRememberMeServices(key.toString(),appUserDetailsService,jpaTokenRepository);
+    RememberMeServices rememberMeServices() {
+        return new PersistentTokenBasedRememberMeServices(key.toString(), appUserDetailsService, jpaTokenRepository);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/user/login","/user/register", "/xmlrpc/server","/misc/changeTheme","/xmlrpc.php","/","/page/*","/blog/**","/robots.txt").permitAll()
+        http.authorizeRequests().antMatchers("/user/login", "/user/register", "/xmlrpc/server", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/user/login").loginProcessingUrl("/login").
@@ -67,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
                 .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString())
-                .and().csrf(cs->cs.ignoringAntMatchers("/xmlrpc/server","/xmlrpc.php","/user/register"));
+                .and().csrf(cs -> cs.ignoringAntMatchers("/xmlrpc/server", "/xmlrpc.php", "/user/register"));
     }
 
     @Bean

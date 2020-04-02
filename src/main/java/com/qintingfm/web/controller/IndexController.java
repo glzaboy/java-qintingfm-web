@@ -37,7 +37,7 @@ public class IndexController {
     public ModelAndView index(ModelAndView view, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         view.addObject("title", "钦听知天下");
         Page<Blog> blogList = blogServer.getBlogList(0, pageIndex, null, 10);
-        view.addObject("blogList",blogList.toList());
+        view.addObject("blogList", blogList.toList());
         view.addObject("pageIndex", blogList.getPageable().getPageNumber() + 1);
         view.addObject("totalPages", blogList.getTotalPages());
         view.addObject("total", blogList.getTotalElements());

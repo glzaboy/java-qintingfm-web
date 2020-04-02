@@ -10,6 +10,7 @@ import java.util.Collection;
 
 /**
  * 应用的用户鉴权服务对象
+ *
  * @author guliuzhong
  */
 @Setter
@@ -22,5 +23,5 @@ public class WebUserDetails implements UserDetails {
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
     private Long userId;
-    Collection<? extends GrantedAuthority> authorities=new ArrayList<>();
+    Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
 }

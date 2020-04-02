@@ -4,9 +4,11 @@ import lombok.Data;
 
 import java.util.Collection;
 import java.util.Date;
+
 /**
  * 文章对象
- *  @author Winter Lau (javayou@gmail.com)
+ *
+ * @author Winter Lau (javayou@gmail.com)
  */
 @Data
 public class Article {

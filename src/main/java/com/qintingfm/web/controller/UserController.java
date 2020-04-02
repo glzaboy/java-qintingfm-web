@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 用户登录和退出
+ *
  * @author guliuzhong
  */
 @Controller
@@ -51,10 +52,11 @@ public class UserController {
         modelAndView.setViewName("user/register");
         return modelAndView;
     }
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     public AjaxDto registerPpost(ModelAndView modelAndView) {
-        AjaxDto ajaxDto=new AjaxDto();
+        AjaxDto ajaxDto = new AjaxDto();
         ajaxDto.setMessage("暂不开放注册。如果有需求，直接联系我 postmaster@qintingfm.com");
         return ajaxDto;
     }

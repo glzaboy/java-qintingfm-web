@@ -1,11 +1,8 @@
 package com.qintingfm.web.jpa.entity;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +30,7 @@ public class Blog implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "authorId", nullable = true)
     private User author;
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY,mappedBy = "blog")
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "blog")
     private List<BlogComment> Comment;
     String state;
 

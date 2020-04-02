@@ -1,10 +1,10 @@
 package com.qintingfm.web.service.xmlrpc;
 
-import java.util.Arrays;
 import java.util.TimeZone;
 
 /**
  * xmlRpc 输出配置
+ *
  * @author guliuzhong
  */
 public class StreamConfig implements org.apache.xmlrpc.common.XmlRpcStreamRequestConfig {

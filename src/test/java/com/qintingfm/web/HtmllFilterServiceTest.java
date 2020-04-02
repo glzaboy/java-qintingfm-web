@@ -14,11 +14,13 @@ import java.io.IOException;
 public class HtmllFilterServiceTest {
     @Autowired
     HtmlService htmlFilterService;
+
     @Test
-    public void testHtmlFilter(){
+    public void testHtmlFilter() {
         String filter = htmlFilterService.filter("<img src=\"http://baidu.com\" alt=\"tst\"><script>alert(1)</script><p>afds</p>");
         log.info(filter);
     }
+
     @Test
     public void testHtmlTool() throws IOException {
         Article parse = htmlFilterService.parse("https://shareapp.cyol.com/cmsfile/News/202003/14/share349788.html?t=1584188623", 2000);

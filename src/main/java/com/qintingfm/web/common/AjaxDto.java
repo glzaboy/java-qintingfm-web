@@ -1,12 +1,12 @@
 package com.qintingfm.web.common;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Map;
 
 /**
  * 网页版本ajax请求
+ *
  * @author guliuzhong
  */
 @Data
@@ -18,6 +18,6 @@ public class AjaxDto {
 
     private int autoJump;
 
-    private Map<String,String> error;
+    private Map<String, String> error;
 
 }

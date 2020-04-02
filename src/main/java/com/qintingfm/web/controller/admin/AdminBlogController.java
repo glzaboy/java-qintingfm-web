@@ -19,6 +19,7 @@ public class AdminBlogController {
     CategoryService category;
 
     SettingService settingService;
+
     @Autowired
     public void setSettingService(SettingService settingService) {
         this.settingService = settingService;
@@ -35,7 +36,7 @@ public class AdminBlogController {
     }
 
     @RequestMapping("/setting/pushBaidu")
-    public ModelAndView settingPushBaidu(ModelAndView modelAndView, @PathVariable(value = "postId",required = false) Integer postId) {
+    public ModelAndView settingPushBaidu(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
         return modelAndView;
     }
 }

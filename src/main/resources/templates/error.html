@@ -19,11 +19,12 @@
         <p class="h4 text-uppercase text-bold" th:text="${error}">Page Not Found!</p>
         <div class="pad-btm" th:utext="|${message},${timestamp}|"></div>
         <div class="row mar-ver">
-            <form class="col-xs-12 col-sm-10 col-sm-offset-1" method="post" action="pages-search-results.html" th:action="@{/}">
+            <form class="col-xs-12 col-sm-10 col-sm-offset-1" method="post" action="pages-search-results.html"
+                  th:action="@{/}">
                 <input type="text" placeholder="Search.." class="form-control error-search"/>
             </form>
         </div>
-        <hr class="new-section-sm bord-no" />
+        <hr class="new-section-sm bord-no"/>
         <div class="pad-top"><a class="btn btn-primary" href="index.html" th:href="@{/}">首页</a></div>
     </div>
 

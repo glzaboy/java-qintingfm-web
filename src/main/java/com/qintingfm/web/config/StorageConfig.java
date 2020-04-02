@@ -15,19 +15,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class StorageConfig {
     @Bean
-    @ConfigurationProperties(prefix="storage.qiniu")
-    Config qiniuConfig(){
+    @ConfigurationProperties(prefix = "storage.qiniu")
+    Config qiniuConfig() {
         return new Config();
     }
+
     @Bean
     @Autowired
-    Oss qiniuOss( Config config){
+    Oss qiniuOss(Config config) {
         QiniuOssImpl qiniuOss = new QiniuOssImpl();
         qiniuOss.setConfig(config);
         return qiniuOss;
     }
+
     @Bean
-    Manager manager(@Autowired Oss oss){
+    Manager manager(@Autowired Oss oss) {
         Manager manager = new Manager();
         manager.setOss(oss);
         return manager;

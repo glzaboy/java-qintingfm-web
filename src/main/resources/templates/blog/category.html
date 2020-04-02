@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <title>分类</title>
     <meta name="Keywords" content="keywords" th:content="|资讯,博客,时事要闻,qintingfm,microtf|">
     <meta name="description" content="资讯，博客，时事要闻" th:content="|资讯,博客,时事要闻|">
     <style>
-        #content-container:before{
-            display:none;
+        #content-container:before {
+            display: none;
         }
     </style>
 </head>
 <body>
-<ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/category')"></ul>
+<ul id="mainnav-menu" class="list-group" layout:fragment="menu"
+    th:include="fragments/common::menu('/blog/category')"></ul>
 <div id="page-content" layout:fragment="content">
     <div class="row fixed-fluid">
         <div class="panel">
             <div class="panel-body">
                         <span th:if="${allCategory.size()>0}" th:each="item:${allCategory}">
-                            <a th:text="${item.getTitle()}" th:href="@{/blog/category/{catName}/(catName=${item.title})}">分类</a>
+                            <a th:text="${item.getTitle()}"
+                               th:href="@{/blog/category/{catName}/(catName=${item.title})}">分类</a>
                         </span>
             </div>
         </div>

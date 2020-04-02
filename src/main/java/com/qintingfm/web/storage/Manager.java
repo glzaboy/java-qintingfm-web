@@ -13,16 +13,19 @@ public class Manager {
         this.oss = oss;
     }
 
-    public StorageObject put(byte[] data,  String token) throws ManagerException{
-        return oss.put( data, token);
+    public StorageObject put(byte[] data, String token) throws ManagerException {
+        return oss.put(data, token);
     }
-    public StorageObject put(URL url, String objName)  throws ManagerException{
+
+    public StorageObject put(URL url, String objName) throws ManagerException {
         return oss.put(url, objName);
     }
-    public StorageObject put(InputStream inputStream, String objName)  throws ManagerException{
+
+    public StorageObject put(InputStream inputStream, String objName) throws ManagerException {
         return oss.put(inputStream, objName);
     }
-    public Boolean delete(String objName)  throws ManagerException{
-        return oss.delete( objName);
+
+    public Boolean delete(String objName) throws ManagerException {
+        return oss.delete(objName);
     }
 }

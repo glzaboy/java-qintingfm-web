@@ -8,10 +8,12 @@ import java.util.*;
 
 /**
  * 网页的元数据抽取
+ *
  * @author guliuzhong
  */
 public class MetadataExtractor {
     private static final String WHITESPACE = "[ \r\t\n]+";
+
     public static String author(Document doc) {
         try {
             return new HeuristicString(null)
@@ -28,7 +30,7 @@ public class MetadataExtractor {
         }
     }
 
-    private static String[] DATE_FORMATS = {"yyyy-MM-dd'T'hh:mm:ss","EEE MMM dd HH:mm:ss yyyy", "yyyy-MM-dd HH:mm:ss","yyyyMMddHHmmss", "yyyy-MM-dd"};
+    private static String[] DATE_FORMATS = {"yyyy-MM-dd'T'hh:mm:ss", "EEE MMM dd HH:mm:ss yyyy", "yyyy-MM-dd HH:mm:ss", "yyyyMMddHHmmss", "yyyy-MM-dd"};
 
     public static Date date(Document doc) {
         String sdate;
@@ -55,7 +57,7 @@ public class MetadataExtractor {
             sdate = candidateFound.candidate;
         }
 
-        if(sdate != null) {
+        if (sdate != null) {
             for (String fmt : DATE_FORMATS) {
                 try {
                     return new SimpleDateFormat(fmt, Locale.ENGLISH).parse(sdate);
@@ -112,7 +114,7 @@ public class MetadataExtractor {
         }
 
         String[] split = content.split("\\s*,\\s*");
-        if (split.length > 1 || (split.length > 0 && !"".equals(split[0]))){
+        if (split.length > 1 || (split.length > 0 && !"".equals(split[0]))) {
             return Arrays.asList(split);
         }
 
@@ -130,7 +132,7 @@ public class MetadataExtractor {
     public static String cleanTitle(String title) {
         StringBuilder res = new StringBuilder();
         int index = title.lastIndexOf("|");
-        if (index > 0 && title.length() / 2 < index){
+        if (index > 0 && title.length() / 2 < index) {
             title = title.substring(0, index + 1);
         }
 

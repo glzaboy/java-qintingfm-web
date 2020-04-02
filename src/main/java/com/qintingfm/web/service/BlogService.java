@@ -15,13 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -40,6 +37,8 @@ public class BlogService extends BaseService {
     HtmlService htmlService;
 
     UserService userService;
+
+    CategoryService categoryService;
 
     @Autowired
     public void setBaiduSpider(BaiduSpider baiduSpider) {
@@ -60,9 +59,15 @@ public class BlogService extends BaseService {
     public void setHtmlService(HtmlService htmlService) {
         this.htmlService = htmlService;
     }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     public Page<Blog> getBlogList(Integer catId, Integer pageIndex, Sort sort, Integer pageSize) {
@@ -80,54 +85,60 @@ public class BlogService extends BaseService {
             sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "postId"));
         }
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
-        return blogJpa.findAllByBlogCategoryIn(categories,request);
+        return blogJpa.findAllByBlogCategoryIn(categories, request);
     }
 
     public void deleteBlog(Integer postId) {
         Optional<Blog> byId = blogJpa.findById(postId);
         byId.ifPresent(blog -> {
-            blog.getComment().forEach(item->{item.setAuthor(null);});
+            blog.getComment().forEach(item -> {
+                item.setAuthor(null);
+            });
             blog.setBlogCategory(null);
             blog.setAuthor(null);
             blogJpa.delete(blog);
         });
     }
+
     public Optional<Blog> getBlog(Integer postId) {
-        if(postId==null){
+        if (postId == null) {
             return Optional.ofNullable(null);
         }
         return blogJpa.findById(postId);
     }
-    public Blog save(BlogPojo blogPojo) throws ConstraintViolationException{
+
+    public Blog save(BlogPojo blogPojo) throws ConstraintViolationException {
         validatePojoAndThrow(blogPojo);
         String contentText = htmlService.filterNone(blogPojo.getCont());
-        if(contentText.length()>shortContLen){
-            contentText=contentText.substring(0,shortContLen);
+        if (contentText.length() > shortContLen) {
+            contentText = contentText.substring(0, shortContLen);
         }
         Optional<Blog> blogOptional = getBlog(blogPojo.getPostId());
         Blog blog = blogOptional.orElseGet(() -> new Blog());
         blog.setTitle(blogPojo.getTitle());
-        if(blog.getBlogCont()==null){
-            BlogCont blogCont=new BlogCont();
+        if (blog.getBlogCont() == null) {
+            BlogCont blogCont = new BlogCont();
             blogCont.setCont(blogPojo.getCont());
             blog.setBlogCont(blogCont);
-        }else{
+        } else {
             blog.getBlogCont().setCont(blogPojo.getCont());
         }
         if (blogPojo.getCreateDate() == null) {
             blog.setDateCreated(new Date());
-        }else{
+        } else {
             blog.setDateCreated(blogPojo.getCreateDate());
         }
         blog.setShotCont(contentText);
         blog.setAuthor(userService.getUser(Long.valueOf(blogPojo.getAuthorId())));
+        blog.setBlogCategory(categoryService.getCategory(blogPojo.getCatNames()));
         Blog save = blogJpa.save(blog);
-        if(save.getState()!=null && save.getState().equalsIgnoreCase("publish")){
+        if (save.getState() != null && save.getState().equalsIgnoreCase("publish")) {
             pushToBaidu(save);
         }
         return save;
     }
-    public void pushToBaidu(Blog blog){
+
+    public void pushToBaidu(Blog blog) {
         Collection<String> pushUrl = new ArrayList<>();
         try {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
@@ -147,6 +158,7 @@ public class BlogService extends BaseService {
         PageRequest request = PageRequest.of(pageIndex - 1, pageSize, sort);
         return blogCommentJpa.findByBlog(blog, request);
     }
+
     public BlogComment saveComment(BlogComment blogComment) {
         String contentText = htmlService.filterSimpleText(blogComment.getCont());
         blogComment.setCont(contentText);

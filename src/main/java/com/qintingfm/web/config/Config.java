@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class Config {
     /**
      * http客户端
+     *
      * @return OkHttpClient
      */
     @Bean

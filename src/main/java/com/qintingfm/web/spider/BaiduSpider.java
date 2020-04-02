@@ -51,7 +51,7 @@ public class BaiduSpider extends BaseSpider {
             netClient.setBin("text/plain", postData.toString().getBytes());
             String s = netClient.requestToString();
             log.info("baidu推送结果{}", s);
-            return "baidu推送结果"+s;
+            return "baidu推送结果" + s;
         } else {
             log.info("baidu不推送");
             return "baidu不推送";

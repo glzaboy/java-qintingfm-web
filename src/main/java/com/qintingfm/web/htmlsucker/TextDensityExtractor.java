@@ -1,7 +1,6 @@
 package com.qintingfm.web.htmlsucker;
 
 
-
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -13,6 +12,7 @@ import java.util.Map;
 /**
  * 基于文本密度算法的正文抽取
  * 代码截取自 <a href="https://gitee.com/webcollector/WebCollector/blob/master/WebCollector/src/main/java/cn/edu/hfut/dmic/contentextractor/ContentExtractor.java" target="_blank">WebCollector</a>
+ *
  * @author guliuzhong
  */
 public class TextDensityExtractor implements ContentExtractor {

@@ -7,8 +7,9 @@ import java.util.Collection;
 
 /**
  * 网页版本ajax请求列表带分页
- * @author guliuzhong
+ *
  * @param <T>
+ * @author guliuzhong
  */
 @Data
 public class AjaxPageDto<T extends Serializable> extends AjaxDto {
@@ -30,7 +31,7 @@ public class AjaxPageDto<T extends Serializable> extends AjaxDto {
     private long totalPage;
 
 
-    public AjaxPageDto(Collection<T> data,long page, long total, long totalPage) {
+    public AjaxPageDto(Collection<T> data, long page, long total, long totalPage) {
         this.page = page;
         this.data = data;
         this.total = total;
@@ -38,6 +39,6 @@ public class AjaxPageDto<T extends Serializable> extends AjaxDto {
     }
 
     public AjaxPageDto(Collection<T> data) {
-        this(data,0,0,0);
+        this(data, 0, 0, 0);
     }
 }

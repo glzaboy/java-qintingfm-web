@@ -38,6 +38,7 @@ import java.util.Optional;
 public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
 
     LoginTokenJpa loginTokenJpa;
+
     @Autowired
     public void setLoginTokenJpa(LoginTokenJpa loginTokenJpa) {
         this.loginTokenJpa = loginTokenJpa;
@@ -87,6 +88,7 @@ public class JpaTokenRepositoryImpl implements PersistentTokenRepository {
                 + "' returned no results.");
         return null;
     }
+
     @Override
     @Transactional(rollbackFor = {Exception.class})
     public void removeUserTokens(String username) {

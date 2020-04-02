@@ -1,23 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <title>分类</title>
     <meta name="Keywords" content="keywords" th:content="|资讯,博客,时事要闻,qintingfm,microtf|">
     <meta name="description" content="资讯，博客，时事要闻" th:content="|资讯,博客,时事要闻|">
     <style>
-        #content-container:before{
-            display:none;
+        #content-container:before {
+            display: none;
         }
     </style>
 </head>
 <body>
-<ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/category')"></ul>
+<ul id="mainnav-menu" class="list-group" layout:fragment="menu"
+    th:include="fragments/common::menu('/blog/category')"></ul>
 <div id="page-content" layout:fragment="content">
     <div class="row fixed-fluid">
         <div class="panel">
             <div class="panel-body">
                 <p th:each="item:${catBlog.toList()}">
-                    <a href="#" th:href="@{/blog/view/{postId}(postId=${item.postId})}" th:utext="${item.title}">链接</a><span th:utext="${item.author.username}" th:if="${item.author}">作者</span>
+                    <a href="#" th:href="@{/blog/view/{postId}(postId=${item.postId})}"
+                       th:utext="${item.title}">链接</a><span th:utext="${item.author.username}"
+                                                            th:if="${item.author}">作者</span>
                 </p>
 
                 <div class="row">
@@ -25,7 +29,8 @@
                         <div th:text="|展现${catBlog.pageable.pageNumber+1}页 ,共计${catBlog.totalPages}页,合计${catBlog.totalElements}条|"></div>
                     </div>
                     <div class="col-sm-7 text-right">
-                        <ul class="pagination" th:replace="fragments/common::pager(${catBlog.pageable.pageNumber+1},${catBlog.totalPages},@{/blog/category/{catName}/{}(catName=${catName})})"/>
+                        <ul class="pagination"
+                            th:replace="fragments/common::pager(${catBlog.pageable.pageNumber+1},${catBlog.totalPages},@{/blog/category/{catName}/{}(catName=${catName})})"/>
                     </div>
                 </div>
             </div>
