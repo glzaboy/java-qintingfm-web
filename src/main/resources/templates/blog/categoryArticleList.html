@@ -17,7 +17,7 @@
         <div class="panel">
             <div class="panel-body">
                 <p th:each="item:${catBlog.toList()}">
-                    <a href="#" th:href="@{/blog/view/{postId}(postId=${item.postId})}" th:utext="${item.title}">链接</a><span th:utext="${item.author.getUsername}" th:if="${item.author}">作者</span>
+                    <a href="#" th:href="@{/blog/view/{postId}(postId=${item.postId})}" th:utext="${item.title}">链接</a><span th:utext="${item.author.username}" th:if="${item.author}">作者</span>
                 </p>
 
                 <div class="row">
