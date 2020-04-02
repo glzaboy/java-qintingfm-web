@@ -3,9 +3,9 @@ package com.qintingfm.web.controller;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
-import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.pojo.WebUserDetails;
+import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
 import com.qintingfm.web.service.HtmlService;
@@ -23,13 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author guliuzhong
@@ -142,7 +140,7 @@ public class BlogController {
 
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
-    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId,@RequestParam("cont") String cont,@RequestParam("title") String title,@RequestParam(value = "catNameList",required = false) List<String> catNameList) {
+    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
@@ -158,36 +156,21 @@ public class BlogController {
             }
             return ajaxDto;
         }
-        if (postId>0){
-            Optional<Blog> blog = blogServer.getBlog(postId);
-            if(!blog.isPresent()){
-                ajaxDto.setMessage("数据不存在");
-            }
-            Blog blog1 = blog.get();
-            List<String> collect = catNameList.stream().map(item -> {
-                return (String) item;
-            }).collect(Collectors.toList());
-            List<Category> category = categoryService.getCategory(collect);
-            blog1.setBlogCategory(category);
-
-            blog1.getBlogCont().setCont(cont);
-
-            blogServer.save(blog1);
-        }else{
-            Blog blog=new Blog();
-            List<String> collect = catNameList.stream().map(item -> {
-                return (String) item;
-            }).collect(Collectors.toList());
-            List<Category> category = categoryService.getCategory(collect);
-            blog.setBlogCategory(category);
-            BlogCont blogCont=new BlogCont();
-            blogCont.setCont(cont);
-            blog.setBlogCont(blogCont);
-            WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
-            blog.setAuthor(userService.getUser(principal.getUsername()));
-            blogServer.save(blog);
-        }
+        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
+        builder.postId(postId);
+        builder.title(title);
+        builder.cont(cont);
+        builder.catNames(catNameList);
+        Blog save = blogServer.save(builder.build());
         ajaxDto.setMessage("操作成功");
+        try {
+            Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
+            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()), null).build().toString();
+            ajaxDto.setLink(s);
+        } catch (NoSuchMethodException e) {
+            log.error("找不到博客文档的url");
+        }
+
         return ajaxDto;
     }
 

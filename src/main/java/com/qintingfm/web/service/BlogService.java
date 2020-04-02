@@ -5,7 +5,9 @@ import com.qintingfm.web.jpa.BlogCommentJpa;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
+import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.spider.BaiduSpider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class BlogService extends BaseService {
     BlogCommentJpa blogCommentJpa;
     HtmlService htmlService;
 
+    UserService userService;
+
     @Autowired
     public void setBaiduSpider(BaiduSpider baiduSpider) {
         this.baiduSpider = baiduSpider;
@@ -56,7 +60,10 @@ public class BlogService extends BaseService {
     public void setHtmlService(HtmlService htmlService) {
         this.htmlService = htmlService;
     }
-
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     public Page<Blog> getBlogList(Integer catId, Integer pageIndex, Sort sort, Integer pageSize) {
         pageIndex = (pageIndex == null) ? 1 : pageIndex;
@@ -86,31 +93,47 @@ public class BlogService extends BaseService {
         });
     }
     public Optional<Blog> getBlog(Integer postId) {
+        if(postId==null){
+            return Optional.ofNullable(null);
+        }
         return blogJpa.findById(postId);
     }
-
-    public Blog save(Blog blog) throws ConstraintViolationException {
-        validatePojoAndThrow(blog);
-        String contentText = htmlService.filterNone(blog.getBlogCont().getCont());
-        if (contentText.length() > shortContLen) {
-            blog.setShotCont(contentText.substring(0, shortContLen));
-        } else {
-            blog.setShotCont(contentText);
+    public Blog save(BlogPojo blogPojo) throws ConstraintViolationException{
+        validatePojoAndThrow(blogPojo);
+        final String contentText = htmlService.filterNone(blogPojo.getCont()).substring(0,shortContLen);
+        Optional<Blog> blogOptional = getBlog(blogPojo.getPostId());
+        Blog blog = blogOptional.orElseGet(() -> new Blog());
+        blog.setTitle(blogPojo.getTitle());
+        if(blog.getBlogCont()==null){
+            BlogCont blogCont=new BlogCont();
+            blogCont.setCont(blogPojo.getCont());
+            blog.setBlogCont(blogCont);
+        }else{
+            blog.getBlogCont().setCont(blogPojo.getCont());
         }
-        if (blog.getDateCreated() == null) {
+        if (blogPojo.getCreateDate() == null) {
             blog.setDateCreated(new Date());
+        }else{
+            blog.setDateCreated(blogPojo.getCreateDate());
         }
-        Collection<String> pushUrl = new ArrayList<>();
+        blog.setShotCont(contentText);
+        blog.setAuthor(userService.getUser(Long.valueOf(blogPojo.getAuthorId())));
         Blog save = blogJpa.save(blog);
+        if(save.getState()!=null && save.getState().equalsIgnoreCase("publish")){
+            pushToBaidu(save);
+        }
+        return save;
+    }
+    public void pushToBaidu(Blog blog){
+        Collection<String> pushUrl = new ArrayList<>();
         try {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()), null).build().toString();
+            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(blog.getPostId()), null).build().toString();
             pushUrl.add(s);
             baiduSpider.pushUrlToSpider(pushUrl);
         } catch (NoSuchMethodException e) {
             log.error("找不到博客文档的url");
         }
-        return save;
     }
 
     public Page<BlogComment> getBlogComment(Blog blog, Integer pageIndex, Sort sort, Integer pageSize) {

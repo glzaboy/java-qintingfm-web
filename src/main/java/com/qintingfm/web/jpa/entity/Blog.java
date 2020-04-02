@@ -17,16 +17,13 @@ import java.util.List;
 @Entity
 @Table(name = "qt_blog")
 public class Blog implements Serializable {
-    @NotBlank(message = "标题不能为空")
-    @Length(min = 4,message = "标题至少长度为四个字符")
-    String title;
     @Id
     @SequenceGenerator(sequenceName = "qt_blog_cat_id_seq", name = "genBlogid", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genBlogid")
     private Integer postId;
+    String title;
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinColumn(name = "contId", nullable = false)
-    @Valid
     private BlogCont blogCont;
     private String shotCont;
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
@@ -38,5 +35,6 @@ public class Blog implements Serializable {
     private User author;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY,mappedBy = "blog")
     private List<BlogComment> Comment;
+    String state;
 
 }

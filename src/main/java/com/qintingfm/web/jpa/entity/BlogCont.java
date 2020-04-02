@@ -15,8 +15,7 @@ public class BlogCont {
     @Id
     @SequenceGenerator(sequenceName="qt_blog_cont_id_seq",name = "genContId",allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genContId")
-    private Long contId;
+    public Long contId;
     @Column(length = 1048576,nullable = false)
-    @NotBlank(message = "文章内容不能为空")
-    private String cont;
+    public String cont;
 }

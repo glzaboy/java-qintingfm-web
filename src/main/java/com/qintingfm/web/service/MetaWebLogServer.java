@@ -4,6 +4,7 @@ import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.xmlrpc.RpcController;
 import com.qintingfm.web.service.xmlrpc.StreamConfig;
 import com.qintingfm.web.storage.Manager;
@@ -250,66 +251,76 @@ public class MetaWebLogServer extends XmlRpcServer {
     String editPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
-        Optional<Blog> blog1 = blogServer.getBlog(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
-        blog1.ifPresent(blog -> {
-            blog.setTitle(stringObjectHashMap.get("title").toString());
-            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
-            if (stringObjectHashMap.get("dateCreated") != null) {
-                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-                blog.setDateCreated(dateCreated);
-            }
-            if (stringObjectHashMap.get("categories") != null) {
-                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-                List<String> collect = Stream.of(categories).map(item -> {
-                    return (String) item;
-                }).collect(Collectors.toList());
-                List<Category> category = categoryService.getCategory(collect);
-                blog.setBlogCategory(category);
-            }
-            blogServer.save(blog);
-        });
-        if (!blog1.isPresent()) {
-            Blog blog = new Blog();
-            blog.setTitle(stringObjectHashMap.get("title").toString());
-            BlogCont blogCont = new BlogCont();
-            blogCont.setCont(stringObjectHashMap.get("description").toString());
-            blog.setBlogCont(blogCont);
-            if (stringObjectHashMap.get("dateCreated") != null) {
-                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-                blog.setDateCreated(dateCreated);
-            }
-            if (stringObjectHashMap.get("categories") != null) {
-                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-                List<String> collect = Stream.of(categories).map(item -> {
-                    return (String) item;
-                }).collect(Collectors.toList());
-                List<Category> category = categoryService.getCategory(collect);
-                blog.setBlogCategory(category);
-            }
-            blogServer.save(blog);
+        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
+        builder.postId(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
+        builder.title(stringObjectHashMap.get("title").toString());
+        builder.cont(stringObjectHashMap.get("description").toString());
+        if (stringObjectHashMap.get("dateCreated") != null) {
+            builder.createDate((Date) stringObjectHashMap.get("dateCreated"));
         }
+        if (stringObjectHashMap.get("categories") != null) {
+            Object[] categories = (Object[]) stringObjectHashMap.get("categories");
+            builder.catNames(Stream.of(categories).map(item -> (String) item).collect(Collectors.toList()));
+        }
+        Blog save = blogServer.save(builder.build());
+
+
+
+//        Optional<Blog> blog1 = blogServer.getBlog(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
+//        blog1.ifPresent(blog -> {
+//            blog.setTitle(stringObjectHashMap.get("title").toString());
+//            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
+//            if (stringObjectHashMap.get("dateCreated") != null) {
+//                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
+//                blog.setDateCreated(dateCreated);
+//            }
+//            if (stringObjectHashMap.get("categories") != null) {
+//                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
+//                List<String> collect = Stream.of(categories).map(item -> {
+//                    return (String) item;
+//                }).collect(Collectors.toList());
+//                List<Category> category = categoryService.getCategory(collect);
+//                blog.setBlogCategory(category);
+//            }
+//            blogServer.save(blog);
+//        });
+//        if (!blog1.isPresent()) {
+//            Blog blog = new Blog();
+//            blog.setTitle(stringObjectHashMap.get("title").toString());
+//            BlogCont blogCont = new BlogCont();
+//            blogCont.setCont(stringObjectHashMap.get("description").toString());
+//            blog.setBlogCont(blogCont);
+//            if (stringObjectHashMap.get("dateCreated") != null) {
+//                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
+//                blog.setDateCreated(dateCreated);
+//            }
+//            if (stringObjectHashMap.get("categories") != null) {
+//                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
+//                List<String> collect = Stream.of(categories).map(item -> {
+//                    return (String) item;
+//                }).collect(Collectors.toList());
+//                List<Category> category = categoryService.getCategory(collect);
+//                blog.setBlogCategory(category);
+//            }
+//            blogServer.save(blog);
+//        }
         return "";
     }
 
     String newPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
-        Blog blog = new Blog();
-        blog.setTitle(stringObjectHashMap.get("title").toString());
-        BlogCont blogCont = new BlogCont();
-        blogCont.setCont(stringObjectHashMap.get("description").toString());
-        blog.setBlogCont(blogCont);
+        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
+        builder.title(stringObjectHashMap.get("title").toString());
+        builder.cont(stringObjectHashMap.get("description").toString());
         if (stringObjectHashMap.get("dateCreated") != null) {
-            Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-            blog.setDateCreated(dateCreated);
+            builder.createDate((Date) stringObjectHashMap.get("dateCreated"));
         }
         if (stringObjectHashMap.get("categories") != null) {
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-            List<String> collect = Stream.of(categories).map(item -> (String) item).collect(Collectors.toList());
-            List<Category> category = categoryService.getCategory(collect);
-            blog.setBlogCategory(category);
+            builder.catNames(Stream.of(categories).map(item -> (String) item).collect(Collectors.toList()));
         }
-        Blog save = blogServer.save(blog);
+        Blog save = blogServer.save(builder.build());
         return save.getPostId().toString();
     }
 

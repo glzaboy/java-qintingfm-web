@@ -1,15 +1,13 @@
 package com.qintingfm.web.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Constants;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
+import javax.validation.*;
 import java.util.Set;
 
 /**
  * 服务基础类
+ *
  * @author guliuzhong
  */
 public class BaseService {
@@ -19,13 +17,15 @@ public class BaseService {
     public void setValidator(Validator validator) {
         this.validator = validator;
     }
+
     public <T> Set<ConstraintViolation<T>> validatePojo(T tPojo) {
         Set<ConstraintViolation<T>> validate = validator.validate(tPojo);
         return validate;
     }
-    public <T>  void validatePojoAndThrow(T tPojo) throws Constants.ConstantException {
+
+    public <T> void validatePojoAndThrow(T tPojo) throws ConstraintViolationException {
         Set<ConstraintViolation<T>> validate = validator.validate(tPojo);
-        if (!validate.isEmpty()){
+        if (!validate.isEmpty()) {
             throw new ConstraintViolationException(validate);
         }
     }
