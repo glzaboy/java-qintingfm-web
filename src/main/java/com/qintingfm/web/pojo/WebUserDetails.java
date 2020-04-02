@@ -21,6 +21,6 @@ public class WebUserDetails implements UserDetails {
     private boolean isAccountNonLocked;
     private boolean isCredentialsNonExpired;
     private boolean isEnabled;
-    private Integer userId;
+    private Long userId;
     Collection<? extends GrantedAuthority> authorities=new ArrayList<>();
 }

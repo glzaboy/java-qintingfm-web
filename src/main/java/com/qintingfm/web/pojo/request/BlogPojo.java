@@ -29,7 +29,7 @@ public class BlogPojo {
     List<String> catNames;
     @NotNull(message = "作者不能为空")
     @Min(value = 1, message = "用户不合法")
-    Integer authorId;
+    Long authorId;
     Integer postId;
     Date createDate;
     Date updateDate;

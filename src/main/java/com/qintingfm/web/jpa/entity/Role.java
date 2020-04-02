@@ -16,7 +16,7 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "genRoleId")
     private Long id;
     private String authority;
-    private  Integer userId;
+    private  Long userId;
     @Override
     public String getAuthority() {
         return authority;
