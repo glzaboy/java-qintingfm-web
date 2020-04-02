@@ -100,7 +100,10 @@ public class BlogService extends BaseService {
     }
     public Blog save(BlogPojo blogPojo) throws ConstraintViolationException{
         validatePojoAndThrow(blogPojo);
-        final String contentText = htmlService.filterNone(blogPojo.getCont()).substring(0,shortContLen);
+        String contentText = htmlService.filterNone(blogPojo.getCont());
+        if(contentText.length()>shortContLen){
+            contentText=contentText.substring(0,shortContLen);
+        }
         Optional<Blog> blogOptional = getBlog(blogPojo.getPostId());
         Blog blog = blogOptional.orElseGet(() -> new Blog());
         blog.setTitle(blogPojo.getTitle());
