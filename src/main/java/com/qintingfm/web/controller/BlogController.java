@@ -161,6 +161,8 @@ public class BlogController {
         builder.title(title);
         builder.cont(cont);
         builder.catNames(catNameList);
+        WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
+        builder.authorId(principal.getUserId());
         Blog save = blogServer.save(builder.build());
         ajaxDto.setMessage("操作成功");
         try {
