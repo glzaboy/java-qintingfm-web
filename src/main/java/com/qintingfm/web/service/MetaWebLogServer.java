@@ -282,6 +282,8 @@ public class MetaWebLogServer extends XmlRpcServer {
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
             builder.catNames(Stream.of(categories).map(item -> (String) item).collect(Collectors.toList()));
         }
+        builder.authorId(userDetails.getId());
+        builder.state("publish");
         Blog save = blogServer.save(builder.build());
         return save.getPostId().toString();
     }
