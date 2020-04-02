@@ -3,7 +3,7 @@ package com.qintingfm.web.service;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
-import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.xmlrpc.RpcController;
 import com.qintingfm.web.service.xmlrpc.StreamConfig;
@@ -15,8 +15,6 @@ import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +40,12 @@ import java.util.stream.Stream;
 public class MetaWebLogServer extends XmlRpcServer {
     public static final List<String> NO_LOGIN_METHOD = Stream.of("system.listMethods").collect(Collectors.toList());
     final Map<String, String> methodMap = new HashMap<>();
-    AppUserDetailsServiceImpl appUserDetailsService;
     PasswordEncoder passwordEncoder;
     CategoryService categoryService;
     Manager manager;
     BlogService blogServer;
+
+    UserService userService;
 
     public MetaWebLogServer() {
         super();
@@ -66,10 +65,6 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     }
 
-    @Autowired
-    public void setAppUserDetailsService(AppUserDetailsServiceImpl appUserDetailsService) {
-        this.appUserDetailsService = appUserDetailsService;
-    }
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -91,6 +86,12 @@ public class MetaWebLogServer extends XmlRpcServer {
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void invoke(InputStream inputStream, OutputStream outputStream) throws XmlRpcException, SAXException, IOException {
         XmlRpcRequestParser xmlRequestParser = getXmlRequestParser(inputStream);
@@ -115,12 +116,12 @@ public class MetaWebLogServer extends XmlRpcServer {
                             username = xmlRequestParser.getParams().get(2).toString();
                             password = xmlRequestParser.getParams().get(3).toString();
                         }
-                        Optional<UserDetails> login = login(username, password);
+                        Optional<User> login = login(username, password);
                         if (!login.isPresent()) {
                             responseError(outputStream, 403, "无权限执行");
                             return;
                         }
-                        Method method = aClass.getDeclaredMethod(findMethod.getValue(), XmlRpcRequestParser.class, UserDetails.class);
+                        Method method = aClass.getDeclaredMethod(findMethod.getValue(), XmlRpcRequestParser.class, User.class);
                         Object invoke = method.invoke(this, xmlRequestParser, login.get());
                         response(outputStream, invoke);
                     }
@@ -137,18 +138,18 @@ public class MetaWebLogServer extends XmlRpcServer {
                 return;
             } catch (InvocationTargetException e) {
                 Throwable t = e.getCause();
-                AjaxDto ajaxDto=new AjaxDto();
-                do{
-                    if( t instanceof ConstraintViolationException){
+                AjaxDto ajaxDto = new AjaxDto();
+                do {
+                    if (t instanceof ConstraintViolationException) {
                         Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
                         logger.error(constraintViolations.toString());
                         Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
                             return k.getPropertyPath().toString();
-                        }, i -> i.getMessage(),(v1,v2)->v1+","+v2));
-                        responseError(outputStream, 500, "服务执行出错"+collect.toString());
+                        }, i -> i.getMessage(), (v1, v2) -> v1 + "," + v2));
+                        responseError(outputStream, 500, "服务执行出错" + collect.toString());
                         return;
                     }
-                }while ((t=t.getCause())!=null);
+                } while ((t = t.getCause()) != null);
                 responseError(outputStream, 500, "服务执行出错 InvocationTargetException");
                 return;
             }
@@ -161,7 +162,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         }).collect(Collectors.toList());
     }
 
-    private Vector<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, UserDetails userDetails) {
+    private Vector<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {
         Vector<Map<String, String>> mapVector = new Vector<>();
         Map<String, String> userBlog = new HashMap<>(10);
         userBlog.put("blogid", "1");
@@ -173,7 +174,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mapVector;
     }
 
-    private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
+    private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         Vector<Map<String, String>> mapVector = new Vector<>();
         categoryService.getAllCategory(1, 10000).stream().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
@@ -188,7 +189,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mapVector;
     }
 
-    private Map<String, String> newMediaObject(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) throws ManagerException {
+    private Map<String, String> newMediaObject(XmlRpcRequestParser xmlRequestParser, User userDetails) throws ManagerException {
         @SuppressWarnings("unchecked")
         Map<String, Object> stringObjectMap = (Map<String, Object>) xmlRequestParser.getParams().get(3);
         Map<String, String> mediaObject = new HashMap<>(10);
@@ -200,13 +201,13 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mediaObject;
     }
 
-    Boolean deletePost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
+    Boolean deletePost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(1).toString());
         blogServer.deleteBlog(postId);
         return true;
     }
 
-    private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
+    private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         Map<String, Object> postMap = new HashMap<>(10);
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(0).toString());
         Optional<Blog> blog = blogServer.getBlog(postId);
@@ -220,7 +221,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         return postMap;
     }
 
-    Vector<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
+    Vector<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         Vector<Map<String, Object>> mapVector = new Vector<>();
         Integer pageSize = Integer.valueOf(xmlRequestParser.getParams().get(3).toString());
         if (pageSize >= 100) {
@@ -248,7 +249,7 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     }
 
-    String editPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
+    String editPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
@@ -262,52 +263,12 @@ public class MetaWebLogServer extends XmlRpcServer {
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
             builder.catNames(Stream.of(categories).map(item -> (String) item).collect(Collectors.toList()));
         }
+        builder.authorId(userDetails.getId());
         Blog save = blogServer.save(builder.build());
-
-
-
-//        Optional<Blog> blog1 = blogServer.getBlog(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
-//        blog1.ifPresent(blog -> {
-//            blog.setTitle(stringObjectHashMap.get("title").toString());
-//            blog.getBlogCont().setCont(stringObjectHashMap.get("description").toString());
-//            if (stringObjectHashMap.get("dateCreated") != null) {
-//                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-//                blog.setDateCreated(dateCreated);
-//            }
-//            if (stringObjectHashMap.get("categories") != null) {
-//                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-//                List<String> collect = Stream.of(categories).map(item -> {
-//                    return (String) item;
-//                }).collect(Collectors.toList());
-//                List<Category> category = categoryService.getCategory(collect);
-//                blog.setBlogCategory(category);
-//            }
-//            blogServer.save(blog);
-//        });
-//        if (!blog1.isPresent()) {
-//            Blog blog = new Blog();
-//            blog.setTitle(stringObjectHashMap.get("title").toString());
-//            BlogCont blogCont = new BlogCont();
-//            blogCont.setCont(stringObjectHashMap.get("description").toString());
-//            blog.setBlogCont(blogCont);
-//            if (stringObjectHashMap.get("dateCreated") != null) {
-//                Date dateCreated = (Date) stringObjectHashMap.get("dateCreated");
-//                blog.setDateCreated(dateCreated);
-//            }
-//            if (stringObjectHashMap.get("categories") != null) {
-//                Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-//                List<String> collect = Stream.of(categories).map(item -> {
-//                    return (String) item;
-//                }).collect(Collectors.toList());
-//                List<Category> category = categoryService.getCategory(collect);
-//                blog.setBlogCategory(category);
-//            }
-//            blogServer.save(blog);
-//        }
         return "";
     }
 
-    String newPost(XmlRpcRequestParser xmlRequestParser, UserDetails userDetails) {
+    String newPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
@@ -325,18 +286,14 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
 
-    private Optional<UserDetails> login(String username, String password) {
-        try {
-            UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
-            if (userDetails == null) {
-                return Optional.empty();
-            }
-            boolean matches = passwordEncoder.matches(password, userDetails.getPassword());
-            if (matches) {
-                return Optional.of(userDetails);
-            }
-        } catch (UsernameNotFoundException exception) {
+    private Optional<User> login(String username, String password) {
+        User user = userService.getUser(username);
+        if (user == null) {
             return Optional.empty();
+        }
+        boolean matches = passwordEncoder.matches(password, user.getPassword());
+        if (matches) {
+            return Optional.of(user);
         }
         return Optional.empty();
     }
