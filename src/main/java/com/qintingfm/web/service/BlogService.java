@@ -131,6 +131,7 @@ public class BlogService extends BaseService {
         blog.setShotCont(contentText);
         blog.setAuthor(userService.getUser(Long.valueOf(blogPojo.getAuthorId())));
         blog.setBlogCategory(categoryService.getCategory(blogPojo.getCatNames()));
+        blog.setState(blogPojo.getState().toLowerCase());
         Blog save = blogJpa.save(blog);
         if (save.getState() != null && save.getState().equalsIgnoreCase("publish")) {
             pushToBaidu(save);
