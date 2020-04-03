@@ -11,6 +11,7 @@ import com.qintingfm.web.service.CategoryService;
 import com.qintingfm.web.service.HtmlService;
 import com.qintingfm.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -140,7 +141,7 @@ public class BlogController {
 
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
-    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList) {
+    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList, @RequestParam(value = "state",required = false) String state) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
@@ -163,6 +164,11 @@ public class BlogController {
         builder.catNames(catNameList);
         WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
         builder.authorId(principal.getUserId());
+        if(state!=null){
+            builder.state("publish");
+        }else{
+            builder.state("draft");
+        }
         Blog save = blogServer.save(builder.build());
         ajaxDto.setMessage("操作成功");
         try {

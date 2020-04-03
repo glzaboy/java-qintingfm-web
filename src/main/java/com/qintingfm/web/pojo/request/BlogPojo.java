@@ -23,7 +23,6 @@ public class BlogPojo {
     @NotBlank(message = "文章内容不能为空")
     String cont;
     @Pattern(regexp = "publish|draft", message = "发布状态只支持publish,draft", flags = {Pattern.Flag.CASE_INSENSITIVE})
-    @NotBlank(message = "发布状态不能为空")
     String state;
     @NotEmpty
     List<String> catNames;
