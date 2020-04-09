@@ -114,7 +114,8 @@ public class MetadataExtractor {
         }
 
         String[] split = content.split("\\s*,\\s*");
-        if (split.length > 1 || (split.length > 0 && !"".equals(split[0]))) {
+        boolean hasKeyWords = split.length > 1 || (split.length > 0 && !"".equals(split[0]));
+        if (hasKeyWords) {
             return Arrays.asList(split);
         }
 

@@ -8,7 +8,11 @@ import org.jsoup.nodes.Element;
  * @author Winter Lau (javayou@gmail.com)
  */
 public interface ContentExtractor {
-
+    /**
+     * 获取内容
+     * @param body
+     * @return
+     */
     String content(Element body);
 
 }

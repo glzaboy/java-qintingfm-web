@@ -91,9 +91,7 @@ public class BlogService extends BaseService {
     public void deleteBlog(Integer postId) {
         Optional<Blog> byId = blogJpa.findById(postId);
         byId.ifPresent(blog -> {
-            blog.getComment().forEach(item -> {
-                item.setAuthor(null);
-            });
+            blog.getComment().forEach(item -> item.setAuthor(null));
             blog.setBlogCategory(null);
             blog.setAuthor(null);
             blogJpa.delete(blog);
@@ -102,7 +100,7 @@ public class BlogService extends BaseService {
 
     public Optional<Blog> getBlog(Integer postId) {
         if (postId == null) {
-            return Optional.ofNullable(null);
+            return Optional.empty();
         }
         return blogJpa.findById(postId);
     }
@@ -114,7 +112,7 @@ public class BlogService extends BaseService {
             contentText = contentText.substring(0, shortContLen);
         }
         Optional<Blog> blogOptional = getBlog(blogPojo.getPostId());
-        Blog blog = blogOptional.orElseGet(() -> new Blog());
+        Blog blog = blogOptional.orElseGet(Blog::new);
         blog.setTitle(blogPojo.getTitle());
         if (blog.getBlogCont() == null) {
             BlogCont blogCont = new BlogCont();
@@ -129,11 +127,11 @@ public class BlogService extends BaseService {
             blog.setDateCreated(blogPojo.getCreateDate());
         }
         blog.setShotCont(contentText);
-        blog.setAuthor(userService.getUser(Long.valueOf(blogPojo.getAuthorId())));
+        blog.setAuthor(userService.getUser(blogPojo.getAuthorId()));
         blog.setBlogCategory(categoryService.getCategory(blogPojo.getCatNames()));
         blog.setState(blogPojo.getState().toLowerCase());
         Blog save = blogJpa.save(blog);
-        if (save.getState() != null && save.getState().equalsIgnoreCase("publish")) {
+        if (save.getState() != null && "publish".equalsIgnoreCase(save.getState())) {
             pushToBaidu(save);
         }
         return save;
@@ -143,7 +141,7 @@ public class BlogService extends BaseService {
         Collection<String> pushUrl = new ArrayList<>();
         try {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(blog.getPostId()), null).build().toString();
+            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, blog.getPostId(), null).build().toString();
             pushUrl.add(s);
             baiduSpider.pushUrlToSpider(pushUrl);
         } catch (NoSuchMethodException e) {

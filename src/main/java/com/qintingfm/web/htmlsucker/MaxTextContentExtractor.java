@@ -14,13 +14,13 @@ public class MaxTextContentExtractor implements ContentExtractor {
 
     /**
      * Tags that should be retained in the output. This list should be fairly minimal, and equivalent
-     * to the list of tags that callers can be expected to be able to handle.
+     * to the list of tags that callers can be expected to be able to handle./*,"section"*/
      */
     private static final Collection<String> TEXT_TAGS = Arrays.asList(
             "p", "b", "i", "u", "strong", "em", "span",
             "a", "pre", "code", "h1", "h2", "h3", "h4",
             "h5", "h6", "blockquote", "img", "hr", "br",
-            "ul", "ol", "li", "embed", "table"/*,"section"*/
+            "ul", "ol", "li", "embed", "table"
     );
 
     @Override

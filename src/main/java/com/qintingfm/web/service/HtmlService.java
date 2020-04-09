@@ -53,8 +53,14 @@ public class HtmlService {
         return html;
     }
 
-    public final static int MAX_TEXT_EXTRACTOR = 1; //最大文本长度抽取
-    public final static int TEXT_DENSITY_EXTRACTOR = 2; //文本密度算法抽取
+    /**
+     * 最大文本长度抽取
+     */
+    public final static int MAX_TEXT_EXTRACTOR = 1;
+    /**
+     * 文本密度算法抽取
+     */
+    public final static int TEXT_DENSITY_EXTRACTOR = 2;
     int extractor = 2;
 
     public void setExtractor(int extractor) {

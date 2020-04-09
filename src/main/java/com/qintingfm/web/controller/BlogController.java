@@ -85,7 +85,7 @@ public class BlogController {
 
     @RequestMapping(value = {"/postComment/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
-    @Transactional()
+    @Transactional(rollbackFor = Exception.class)
     public AjaxDto postComment(@PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex, @RequestParam("cont") String cont) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();

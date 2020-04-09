@@ -108,7 +108,7 @@ public class TextDensityExtractor implements ContentExtractor {
     }
 
     private Element getContentElement(Element body) {
-        Map<Element, CountInfo> infoMap = new HashMap<>();
+        Map<Element, CountInfo> infoMap = new HashMap<>(32);
         clean(body);
         computeNodeInfo(body, infoMap);
         double maxScore = 0;

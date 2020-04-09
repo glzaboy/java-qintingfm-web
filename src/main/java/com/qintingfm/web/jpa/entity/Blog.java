@@ -31,7 +31,7 @@ public class Blog implements Serializable {
     @JoinColumn(name = "authorId", nullable = true)
     private User author;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "blog")
-    private List<BlogComment> Comment;
+    private List<BlogComment> comment;
     String state;
 
 }

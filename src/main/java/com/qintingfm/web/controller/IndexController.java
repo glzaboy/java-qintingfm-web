@@ -33,7 +33,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = {"/page/{pageIndex}", "/"})
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ModelAndView index(ModelAndView view, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
         view.addObject("title", "钦听知天下");
         Page<Blog> blogList = blogServer.getBlogList(0, pageIndex, null, 10);
