@@ -17,10 +17,6 @@
     <div class="panel blog blog-details">
         <div class="panel-body">
             <div class="blog-title media-block">
-                <div class="media-right textright">
-                    <a href="#" class="btn btn-icon demo-psi-twitter icon-lg add-tooltip" data-original-title="Twitter"
-                       data-container="body"></a>
-                </div>
                 <div class="media-body">
                     <h1 th:utext="${blogPost.title}">title</h1>
                 </div>
@@ -44,6 +40,7 @@
                                                               th:utext="${blogPost.author.username}"
                                                               th:if="${blogPost.author}"
                                                               th:href="@{/user/view/{id}(id=${blogPost.author.id})}">author</a></small>
+                    <small><a href="post.html" th:href="@{/blog/post/{postId}(postId=${blogPost.postId})}">编辑</a></small>
                 </div>
             </div>
             <!-- Comment form -->
