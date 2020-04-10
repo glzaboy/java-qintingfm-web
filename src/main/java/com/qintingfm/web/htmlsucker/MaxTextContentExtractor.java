@@ -14,7 +14,7 @@ public class MaxTextContentExtractor implements ContentExtractor {
 
     /**
      * Tags that should be retained in the output. This list should be fairly minimal, and equivalent
-     * to the list of tags that callers can be expected to be able to handle./*,"section"*/
+     * to the list of tags that callers can be expected to be able to handle./*,"section"
      */
     private static final Collection<String> TEXT_TAGS = Arrays.asList(
             "p", "b", "i", "u", "strong", "em", "span",

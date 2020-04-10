@@ -1,6 +1,7 @@
 package com.qintingfm.web.controller;
 
 import com.qintingfm.web.common.AjaxDto;
+import com.qintingfm.web.common.exception.ResourceNotFoundException;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.jpa.entity.Category;
@@ -11,7 +12,6 @@ import com.qintingfm.web.service.CategoryService;
 import com.qintingfm.web.service.HtmlService;
 import com.qintingfm.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -79,6 +79,7 @@ public class BlogController {
                     modelAndView.addObject("blogComment", blogServer.getBlogComment(item, pageIndex, null, 10));
                 }
         );
+        blog.orElseThrow(()->{throw new ResourceNotFoundException("您要查看的内容已经不存在，请查看其它内容。");});
         modelAndView.setViewName("blog/view");
         return modelAndView;
     }
@@ -141,7 +142,7 @@ public class BlogController {
 
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
-    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList, @RequestParam(value = "state",required = false) String state) {
+    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList, @RequestParam(value = "state", required = false) String state) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
@@ -164,9 +165,9 @@ public class BlogController {
         builder.catNames(catNameList);
         WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
         builder.authorId(principal.getUserId());
-        if(state!=null){
+        if (state != null) {
             builder.state("publish");
-        }else{
+        } else {
             builder.state("draft");
         }
         Blog save = blogServer.save(builder.build());
