@@ -4,6 +4,7 @@ import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.ResourceNotFoundException;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogComment;
+import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.pojo.WebUserDetails;
 import com.qintingfm.web.pojo.request.BlogPojo;
@@ -124,16 +125,33 @@ public class BlogController {
 
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.GET})
     public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
-        Optional<Blog> blog = blogServer.getBlog(postId);
-        blog.ifPresent(item -> {
-            item.setTitle(htmlService.decodeEntityHtml(item.getTitle()));
-            modelAndView.addObject("blog", item);
-            List<Integer> catIds = new ArrayList<>();
-            List<Integer> collect = item.getBlogCategory().stream().map(category -> {
-                return category.getCatId();
-            }).collect(Collectors.toList());
-            modelAndView.addObject("blogCatList", collect);
-        });
+        Optional<Blog> blogDb = blogServer.getBlog(postId);
+//        Optional<Blog> blog = blogDb.or(() -> {
+//            Blog blogtmp=new Blog();
+//            BlogCont blogCont=new BlogCont();
+//            blogCont.setCont("");
+//            blogtmp.setBlogCont(blogCont);
+//            blogtmp.setBlogCategory(new ArrayList<>());
+//            blogtmp.setTitle("");
+//            return Optional.ofNullable(blogtmp);
+//        });
+//        Optional<Blog> blog=Optional.ofNullable(blogDb.get()).ifPresentOrElse();
+        Blog blogtmp=new Blog();
+        BlogCont blogCont=new BlogCont();
+        blogCont.setCont("");
+        blogtmp.setBlogCont(blogCont);
+        blogtmp.setBlogCategory(new ArrayList<>());
+        blogtmp.setTitle("");
+        Blog blog = blogDb.orElse(blogtmp);
+//        blog.ifPresent(item -> {
+        blog.setTitle(htmlService.decodeEntityHtml(blog.getTitle()));
+        modelAndView.addObject("blog", blog);
+        List<Integer> catIds = new ArrayList<>();
+        List<Integer> collect = blog.getBlogCategory().stream().map(category -> {
+            return category.getCatId();
+        }).collect(Collectors.toList());
+        modelAndView.addObject("blogCatList", collect);
+//        });
         Page<Category> allCategory = category.getAllCategory(1, 10000);
         modelAndView.addObject("allCategory", allCategory);
         modelAndView.setViewName("blog/post");
@@ -142,6 +160,7 @@ public class BlogController {
 
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
+    @Transactional(rollbackFor = {Exception.class})
     public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList, @RequestParam(value = "state", required = false) String state) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
@@ -159,7 +178,7 @@ public class BlogController {
             return ajaxDto;
         }
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
-        builder.postId(postId);
+        builder.postId(postId>0?postId:null);
         builder.title(title);
         builder.cont(cont);
         builder.catNames(catNameList);

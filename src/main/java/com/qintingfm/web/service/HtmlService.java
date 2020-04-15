@@ -44,6 +44,9 @@ public class HtmlService {
     }
 
     public String decodeEntityHtml(String html) {
+        if (html==null){
+            return null;
+        }
         html = html.replaceAll("&ldquo;", "“");
         html = html.replaceAll("&rdquo;", "”");
         html = html.replaceAll("&amp;", "&");
