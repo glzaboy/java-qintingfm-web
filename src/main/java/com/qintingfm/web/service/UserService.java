@@ -95,6 +95,7 @@ public class UserService extends BaseService {
     public UserRegister register(UserRegisterPojo userRegisterPojo) {
         this.validatePojoAndThrow(userRegisterPojo);
         UserRegister userRegisterExam = new UserRegister();
+        userRegisterExam.setUserName(userRegisterPojo.getUserName());
         long count = userRegisterJpa.count(Example.of(userRegisterExam));
         if (count > 0) {
             Business.BusinessBuilder builder = Business.builder();
