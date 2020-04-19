@@ -1,0 +1,22 @@
+<!DOCTYPE>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <title th:text="${title}"></title>
+    <link href="//static.qintingfm.com/nifty/v2.9/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="container" class="cls-container">
+    <div class="cls-content">
+        <div>亲爱的用户你好：</div>
+        <p>您收到本邮件是因为您注册了我们的网站，本邮件是为您提供服务的邮件。</p>
+        <p th:utext="${mail_text}">邮件内容</p>
+        <hr class="new-section-sm bord-no"/>
+        <p><a href="https://qintingfm.com">钦听知天下</a>  </p>
+    </div>
+</div>
+</body>
+</html>

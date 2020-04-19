@@ -6,10 +6,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.safety.Whitelist;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
+import java.util.Objects;
 
 
 /**
@@ -17,7 +27,20 @@ import java.net.URL;
  */
 @Slf4j
 @Service
-public class HtmlService {
+public class HtmlService  implements ApplicationContextAware {
+    ApplicationContext applicationContext;
+
+    SpringTemplateEngine springTemplateEngine;
+
+    @Autowired
+    public void setSpringTemplateEngine(SpringTemplateEngine springTemplateEngine) {
+        this.springTemplateEngine = springTemplateEngine;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext=applicationContext;
+    }
 
     public String filter(String html) {
         return filter(html, Whitelist.basicWithImages());
@@ -98,7 +121,7 @@ public class HtmlService {
         art.setAuthor(MetadataExtractor.author(doc));
         art.setDate(MetadataExtractor.date(doc));
         art.setImage(MetadataExtractor.image(doc));
-        ContentExtractor extractor2 = null;
+        ContentExtractor extractor2;
         switch (extractor) {
             case 1:
                 extractor2 = new MaxTextContentExtractor();
@@ -126,5 +149,16 @@ public class HtmlService {
         }
 
         return art;
+    }
+    public String renderModelAndViewToString(ModelAndView mv){
+        StringWriter stringWriter=new StringWriter();
+        renderModelAndView(mv,stringWriter);
+        return stringWriter.toString();
+    }
+    public Writer renderModelAndView(ModelAndView mv, final Writer writer){
+        Context context=new Context();
+        context.setVariables(mv.getModel());
+        springTemplateEngine.process(Objects.requireNonNull(mv.getViewName(),"HtmlService render Template must set variable viewName."),context,writer);
+        return writer;
     }
 }

@@ -61,7 +61,7 @@ public class AppUserDetailsServiceImpl implements UserDetailsService {
         role.setUserId(user1.getId());
         List<Role> all = roleJpa.findAll(Example.of(role));
         Collection<GrantedAuthority> grantedAuthorities = new LinkedList<>();
-        all.forEach(item -> grantedAuthorities.add(item));
+        grantedAuthorities.addAll(all);
         webUserDetails.setAuthorities(grantedAuthorities);
         return webUserDetails;
     }

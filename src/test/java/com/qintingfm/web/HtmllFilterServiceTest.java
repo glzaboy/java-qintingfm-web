@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
@@ -27,5 +28,15 @@ public class HtmllFilterServiceTest {
 
         log.info(String.valueOf(parse));
         log.info(htmlFilterService.filter(parse.getContent()));
+    }
+    @Test
+    public void testHtmlTemplate() throws IOException {
+        ModelAndView modelAndView=new ModelAndView();
+        modelAndView.setViewName("mail/mail");
+        modelAndView.addObject("mail_text","您好你的密码123456");
+        String s = htmlFilterService.renderModelAndViewToString(modelAndView);
+        String s1 = htmlFilterService.filterSimpleText(s);
+        System.out.println(s);
+        System.out.println(s1);
     }
 }

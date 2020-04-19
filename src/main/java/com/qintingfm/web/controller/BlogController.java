@@ -38,8 +38,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/blog")
 @Slf4j
 public class BlogController {
-    CategoryService category;
-
     BlogService blogServer;
     CategoryService categoryService;
     HtmlService htmlService;
@@ -54,11 +52,6 @@ public class BlogController {
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
-    }
-
-    @Autowired
-    public void setCategory(CategoryService category) {
-        this.category = category;
     }
 
     @Autowired
@@ -126,16 +119,6 @@ public class BlogController {
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.GET})
     public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
         Optional<Blog> blogDb = blogServer.getBlog(postId);
-//        Optional<Blog> blog = blogDb.or(() -> {
-//            Blog blogtmp=new Blog();
-//            BlogCont blogCont=new BlogCont();
-//            blogCont.setCont("");
-//            blogtmp.setBlogCont(blogCont);
-//            blogtmp.setBlogCategory(new ArrayList<>());
-//            blogtmp.setTitle("");
-//            return Optional.ofNullable(blogtmp);
-//        });
-//        Optional<Blog> blog=Optional.ofNullable(blogDb.get()).ifPresentOrElse();
         Blog blogtmp=new Blog();
         BlogCont blogCont=new BlogCont();
         blogCont.setCont("");
@@ -143,16 +126,11 @@ public class BlogController {
         blogtmp.setBlogCategory(new ArrayList<>());
         blogtmp.setTitle("");
         Blog blog = blogDb.orElse(blogtmp);
-//        blog.ifPresent(item -> {
         blog.setTitle(htmlService.decodeEntityHtml(blog.getTitle()));
         modelAndView.addObject("blog", blog);
-        List<Integer> catIds = new ArrayList<>();
-        List<Integer> collect = blog.getBlogCategory().stream().map(category -> {
-            return category.getCatId();
-        }).collect(Collectors.toList());
+        List<Integer> collect = blog.getBlogCategory().stream().map(category -> category.getCatId()).collect(Collectors.toList());
         modelAndView.addObject("blogCatList", collect);
-//        });
-        Page<Category> allCategory = category.getAllCategory(1, 10000);
+        Page<Category> allCategory = categoryService.getAllCategory(1, 10000);
         modelAndView.addObject("allCategory", allCategory);
         modelAndView.setViewName("blog/post");
         return modelAndView;

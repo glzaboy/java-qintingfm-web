@@ -1,6 +1,8 @@
 package com.qintingfm.web.config;
 
 import com.qintingfm.web.common.AjaxDto;
+import com.qintingfm.web.common.exception.Business;
+import com.qintingfm.web.common.exception.BusinessException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,11 +28,10 @@ public class WebControllerAdvice {
         AjaxDto ajaxDto = new AjaxDto();
         do {
             if (t instanceof ConstraintViolationException) {
-                Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
-                Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> k.getPropertyPath().toString(), ConstraintViolation::getMessage, (v1, v2) -> v1 + "," + v2));
-                ajaxDto.setError(collect);
-                ajaxDto.setAutoHide("3");
-                ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
+                ajaxDto=constraintViolationException((ConstraintViolationException)t);
+            }
+            if (t instanceof BusinessException) {
+                ajaxDto=businessException( (BusinessException) t );
             }
         } while ((t = t.getCause()) != null);
         return ajaxDto;
@@ -43,6 +44,19 @@ public class WebControllerAdvice {
         if (ex != null) {
             Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
             Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> k.getPropertyPath().toString(), ConstraintViolation::getMessage, (v1, v2) -> v1 + "," + v2));
+            ajaxDto.setError(collect);
+            ajaxDto.setAutoHide("3");
+            ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
+        }
+        return ajaxDto;
+    }
+    @ExceptionHandler(BusinessException.class)
+    @ResponseBody
+    public AjaxDto businessException(final BusinessException ex) {
+        AjaxDto ajaxDto = new AjaxDto();
+        if (ex != null) {
+            Set<Business> businesses = ex.getBusinesses();
+            Map<String, String> collect = businesses.stream().collect(Collectors.toMap(Business::getField, Business::getMessage, (v1, v2) -> v1 + "," + v2));
             ajaxDto.setError(collect);
             ajaxDto.setAutoHide("3");
             ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
