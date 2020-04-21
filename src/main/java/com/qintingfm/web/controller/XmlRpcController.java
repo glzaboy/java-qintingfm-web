@@ -37,7 +37,7 @@ public class XmlRpcController {
 
     @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.OPTIONS}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {MediaType.ALL_VALUE})
     public ResponseEntity<String> xmlRpcServerOption(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
-        return ResponseEntity.ok().header("Allow", "GET,HEAD,POST,OPTIONS").header("PowerBy", "qintingfm.com").body("");
+        return ResponseEntity.ok().header("Allow", "GET,POST,OPTIONS").header("PowerBy", "qintingfm.com").body("");
     }
 
     @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.POST}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml"})
