@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.xmlrpc.XmlRpcException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 网站 XMlRPC 接口，支持 MetaWebLog
+ *
  * @author guliuzhong
+ * @since 1.0
  */
 @Controller
 @Slf4j
@@ -31,7 +35,12 @@ public class XmlRpcController {
         this.metaWebLogServer = metaWebLogServer;
     }
 
-    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.POST}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml", MediaType.ALL_VALUE})
+    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.OPTIONS}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {MediaType.ALL_VALUE})
+    public ResponseEntity<String> xmlRpcServerOption(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
+        return ResponseEntity.ok().header("Allow", "GET,HEAD,POST,OPTIONS").header("PowerBy", "qintingfm.com").body("");
+    }
+
+    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.POST}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml"})
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
