@@ -31,7 +31,7 @@ public class XmlRpcController {
         this.metaWebLogServer = metaWebLogServer;
     }
 
-    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.POST, RequestMethod.OPTIONS}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml", MediaType.ALL_VALUE})
+    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.POST}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml", MediaType.ALL_VALUE})
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
