@@ -1,6 +1,7 @@
 package com.qintingfm.web.common;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.Collection;
  * @author guliuzhong
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AjaxPageDto<T extends Serializable> extends AjaxDto {
     /**
      * 当前页数
@@ -32,6 +34,7 @@ public class AjaxPageDto<T extends Serializable> extends AjaxDto {
 
 
     public AjaxPageDto(Collection<T> data, long page, long total, long totalPage) {
+        super();
         this.page = page;
         this.data = data;
         this.total = total;

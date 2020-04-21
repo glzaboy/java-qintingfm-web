@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author guliuzhong
  */
 @SpringBootApplication
-@EnableScheduling
-@EnableAsync
+//@EnableScheduling
+//@EnableAsync
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.qintingfm.web.jpa")
 public class Application {

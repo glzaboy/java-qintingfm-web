@@ -18,7 +18,7 @@
         </a>
         <!--Submenu-->
         <ul class="collapse">
-            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post}">发布文章</a>
+            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post/{postId}(postId=0)}">新文章</a>
             </li>
             <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html"
                                                                         th:href="@{/blog/category}">分类</a></li>
