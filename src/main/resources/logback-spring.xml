@@ -3,7 +3,7 @@
     <!--<variable resource="props/common.properties" /> -->
     <property name="logger.root" value="${user.home}/appdata/logs"/>
     <property name="app.name" value="java-qintingfm-web"/>
-    <property name="MY_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%thread] %logger{36}:%L - %msg%n"/>
+    <property name="MY_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%thread] %logger{36}:%L %M - %msg%n"/>
     <!-- contextName主要是为了区分在一个web容器下部署多个应用启用jmx时，不会出现混乱 -->
     <contextName>${app.name}</contextName>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -12,6 +12,7 @@
             <pattern>${MY_PATTERN}</pattern>
         </encoder>
     </appender>
+
 
 
     <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -28,6 +29,21 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
+    <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logger.root}/${app.name}-debug.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logger.root}/backup/${app.name}-debug.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>365</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${MY_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logger.root}/${app.name}-error.log</file>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -45,6 +61,8 @@
     <root level="info">
         <appender-ref ref="error"/>
         <appender-ref ref="info"/>
-        <appender-ref ref="STDOUT"/>
     </root>
+    <logger name="org.hibernate.SQL" level="DEBUG">
+        <appender-ref ref="debug"/>
+    </logger>
 </configuration>
