@@ -114,22 +114,13 @@ public class NetClient {
         Response execute = null;
         try {
             execute = okHttpClient.newCall(builder.build()).execute();
+            log.info("http return httpCode {},BODY {}", execute.code(),execute.body().string());
+            if (execute.isSuccessful()) {
+                String resp = execute.body().string();
+                return resp;
+            }
         } catch (IOException e) {
             log.error("request http error {}", e.getMessage());
-        }
-        try {
-            log.info("http return httpCode {},BODY {}", execute.code(),execute.body().string());
-        } catch (IOException e) {
-            log.error("read http data error");
-        }
-        if (execute.isSuccessful()) {
-            String resp = null;
-            try {
-                resp = execute.body().string();
-            } catch (IOException e) {
-                log.error("read http data error");
-            }
-            return resp;
         }
         return null;
     }
