@@ -114,7 +114,9 @@ public class NetClient {
         Response execute = null;
         try {
             execute = okHttpClient.newCall(builder.build()).execute();
-            log.info("http return httpCode {},BODY {}", execute.code(),execute.body().string());
+            if (!execute.isSuccessful()){
+                log.info("http return httpCode {},BODY {}", execute.code(),execute.body().string());
+            }
             if (execute.isSuccessful()) {
                 String resp = execute.body().string();
                 return resp;
