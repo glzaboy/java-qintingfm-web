@@ -125,7 +125,7 @@ public class UserService extends BaseService {
                     Method detail = UserController.class.getDeclaredMethod("active", ModelAndView.class, String.class);
                     Map<String, String> buildAgr = new HashMap<>(2);
                     buildAgr.put("activeKey", save.getActiveKey().toString());
-                    activeUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, null, null).buildAndExpand(buildAgr).toUriString();
+                    activeUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, null, save.getActiveKey().toString()).encode().toUriString();
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 }

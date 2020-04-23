@@ -31,13 +31,13 @@ public class UserServiceTests {
     }
 
     @Test
-    @Rollback(value = false)
+    @Rollback(value = true)
     @Transactional(rollbackFor = {Exception.class})
     public void userRegister() throws MessagingException {
         UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
         builder.tel("123456");
-        builder.userName("123456");
-        builder.email("glzaboy@163.com");
+        builder.userName("12345679");
+        builder.email("glzaboy18@163.com");
         userService.register(builder.build());
 
     }
