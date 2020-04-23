@@ -143,6 +143,7 @@ public class BlogService extends BaseService {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
             String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, blog.getPostId(), null).build().toString();
             pushUrl.add(s);
+            log.error("当前推送地址{}",s);
             baiduSpider.pushUrlToSpider(pushUrl);
         } catch (NoSuchMethodException e) {
             log.error("找不到博客文档的url");
