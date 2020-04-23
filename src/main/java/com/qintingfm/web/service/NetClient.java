@@ -110,14 +110,18 @@ public class NetClient {
         builder.url(url);
     }
 
-    public String requestToString() {
+    public String requestToString()  {
         Response execute = null;
         try {
             execute = okHttpClient.newCall(builder.build()).execute();
         } catch (IOException e) {
             log.error("request http error {}", e.getMessage());
         }
-        log.info("http return httpCode {}", execute.code());
+        try {
+            log.info("http return httpCode {},BODY {}", execute.code(),execute.body().string());
+        } catch (IOException e) {
+            log.error("read http data error");
+        }
         if (execute.isSuccessful()) {
             String resp = null;
             try {
