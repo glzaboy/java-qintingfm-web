@@ -39,7 +39,7 @@ public class AppUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         if (userName == null || userName.isEmpty()) {
-            return null;
+            throw new UsernameNotFoundException("用户不存在");
         }
 //        User user=new User();
         Optional<User> one = userJpa.findByUsername(userName);
@@ -60,8 +60,9 @@ public class AppUserDetailsServiceImpl implements UserDetailsService {
         Role role = new Role();
         role.setUserId(user1.getId());
         List<Role> all = roleJpa.findAll(Example.of(role));
-        Collection<GrantedAuthority> grantedAuthorities = new LinkedList<>();
-        grantedAuthorities.addAll(all);
+
+        Collection<GrantedAuthority> grantedAuthorities = new LinkedList<>(all);
+
         webUserDetails.setAuthorities(grantedAuthorities);
         return webUserDetails;
     }

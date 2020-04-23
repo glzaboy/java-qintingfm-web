@@ -56,7 +56,7 @@ public class BaseService {
             }).findFirst();
             Business.BusinessBuilder builder = Business.builder();
             builder.message(setItem.getMessage());
-            builder.field( first.orElseGet(()->{return setItem.getField();}));
+            builder.field( first.orElseGet(()-> setItem.getField()));
             businessSet.add(builder.build());
         });
         return businessSet;

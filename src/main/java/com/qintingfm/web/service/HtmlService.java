@@ -155,10 +155,9 @@ public class HtmlService  implements ApplicationContextAware {
         renderModelAndView(mv,stringWriter);
         return stringWriter.toString();
     }
-    public Writer renderModelAndView(ModelAndView mv, final Writer writer){
+    public void renderModelAndView(ModelAndView mv, final Writer writer){
         Context context=new Context();
         context.setVariables(mv.getModel());
         springTemplateEngine.process(Objects.requireNonNull(mv.getViewName(),"HtmlService render Template must set variable viewName."),context,writer);
-        return writer;
     }
 }

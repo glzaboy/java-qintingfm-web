@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +42,6 @@ public class CategoryService {
     }
 
     public List<Category> getCategory(Collection<String> categoryNameList) {
-        return categoryJpa.findAllByTitleIn(categoryNameList.stream().collect(Collectors.toList()));
+        return categoryJpa.findAllByTitleIn(new ArrayList<>(categoryNameList));
     }
 }
