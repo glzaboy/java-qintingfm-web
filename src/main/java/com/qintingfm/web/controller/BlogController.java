@@ -139,7 +139,7 @@ public class BlogController {
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
     @Transactional(rollbackFor = {Exception.class})
-    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNameList", required = false) List<String> catNameList, @RequestParam(value = "state", required = false) String state) {
+    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNames", required = false) List<String> catNames, @RequestParam(value = "state", required = false) String state) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
@@ -159,7 +159,7 @@ public class BlogController {
         builder.postId(postId>0?postId:null);
         builder.title(title);
         builder.cont(cont);
-        builder.catNames(catNameList);
+        builder.catNames(catNames);
         WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
         builder.authorId(principal.getUserId());
         if (state != null) {

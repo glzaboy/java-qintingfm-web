@@ -1,10 +1,12 @@
 package com.qintingfm.web.common.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class BusinessException extends RuntimeException{
     private final Set<Business> businesses;
 
