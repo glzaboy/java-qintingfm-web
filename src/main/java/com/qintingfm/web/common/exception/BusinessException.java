@@ -5,6 +5,10 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Set;
 
+/**
+ * 业务异常类
+ * @author guliuzhong
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class BusinessException extends RuntimeException{

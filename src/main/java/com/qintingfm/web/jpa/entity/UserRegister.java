@@ -9,6 +9,10 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * 用户注册信息
+ * @author guliuzhong
+ */
 @Entity
 @Data
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames ={"userName"})})

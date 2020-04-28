@@ -65,7 +65,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
-    public ModelAndView detail(ModelAndView modelAndView, @PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex) {
+    public ModelAndView detail(ModelAndView modelAndView, @PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex)  throws ResourceNotFoundException {
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
                     item.setTitle(htmlService.decodeEntityHtml(item.getTitle()));

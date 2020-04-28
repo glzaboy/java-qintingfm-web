@@ -6,6 +6,10 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+/**
+ * 用户注册表单
+ * @author guliuzhong
+ */
 @Data
 @Builder
 public class UserRegisterPojo {
