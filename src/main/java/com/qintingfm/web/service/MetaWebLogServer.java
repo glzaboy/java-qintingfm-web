@@ -1,6 +1,7 @@
 package com.qintingfm.web.service;
 
 import com.qintingfm.web.common.AjaxDto;
+import com.qintingfm.web.controller.BlogController;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.User;
@@ -19,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
@@ -40,7 +43,6 @@ import java.util.stream.Stream;
 public class MetaWebLogServer extends XmlRpcServer {
     public static final List<String> NO_LOGIN_METHOD = Stream.of("system.listMethods").collect(Collectors.toList());
     final Map<String, String> methodMap = new HashMap<>();
-    PasswordEncoder passwordEncoder;
     CategoryService categoryService;
     Manager manager;
     BlogService blogServer;
@@ -63,12 +65,6 @@ public class MetaWebLogServer extends XmlRpcServer {
         methodMap.put("wp.newCategory", "newCategory");
         methodMap.put("system.listMethods", "listMethods");
 
-    }
-
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -110,13 +106,13 @@ public class MetaWebLogServer extends XmlRpcServer {
                         responseError(outputStream, 403, "无权限调用");
                     }
                     if (params != null) {
-                        String username = xmlRequestParser.getParams().get(1).toString();
+                        String userName = xmlRequestParser.getParams().get(1).toString();
                         String password = xmlRequestParser.getParams().get(2).toString();
                         if ("blogger.deletePost".equals(methodName)) {
-                            username = xmlRequestParser.getParams().get(2).toString();
+                            userName = xmlRequestParser.getParams().get(2).toString();
                             password = xmlRequestParser.getParams().get(3).toString();
                         }
-                        Optional<User> login = login(username, password);
+                        Optional<User> login = userService.validPassword(userName, password);
                         if (!login.isPresent()) {
                             responseError(outputStream, 403, "无权限执行");
                             return;
@@ -160,8 +156,8 @@ public class MetaWebLogServer extends XmlRpcServer {
         return methodMap.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
-    private Vector<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {
-        Vector<Map<String, String>> mapVector = new Vector<>();
+    private ArrayList<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {
+        ArrayList<Map<String, String>> mapVector = new ArrayList<>();
         Map<String, String> userBlog = new HashMap<>(10);
         userBlog.put("blogid", "1");
         userBlog.put("blogName", "qintingfm");
@@ -172,8 +168,8 @@ public class MetaWebLogServer extends XmlRpcServer {
         return mapVector;
     }
 
-    private Vector<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, User userDetails) {
-        Vector<Map<String, String>> mapVector = new Vector<>();
+    private ArrayList<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, User userDetails) {
+        ArrayList<Map<String, String>> mapVector = new ArrayList<>();
         categoryService.getAllCategory(1, 10000).stream().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
             caterories.put("title", item.getTitle());
@@ -219,8 +215,8 @@ public class MetaWebLogServer extends XmlRpcServer {
         return postMap;
     }
 
-    Vector<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, User userDetails) {
-        Vector<Map<String, Object>> mapVector = new Vector<>();
+    ArrayList<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, User userDetails) {
+        ArrayList<Map<String, Object>> mapVector = new ArrayList<>();
         Integer pageSize = Integer.valueOf(xmlRequestParser.getParams().get(3).toString());
         if (pageSize >= 100) {
             pageSize = 100;
@@ -240,7 +236,14 @@ public class MetaWebLogServer extends XmlRpcServer {
             } else {
                 post.put("description", "");
             }
-            post.put("link", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("/xmlrpc[\\S]{0,}[\\.]{0,}", "/") + "blog/view/" + item.getPostId());
+            Method detail = null;
+            try {
+                detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
+                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, item.getPostId(), null).build().toString();
+                post.put("link", s);
+            } catch (NoSuchMethodException e) {
+                logger.error("获取文章地址出错{}",e.getMessage());
+            }
             mapVector.add(post);
         });
         return mapVector;
@@ -263,7 +266,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         }
         builder.authorId(userDetails.getId());
         builder.state("publish");
-        Blog save = blogServer.save(builder.build());
+        blogServer.save(builder.build());
         return "";
     }
 
@@ -284,18 +287,5 @@ public class MetaWebLogServer extends XmlRpcServer {
         builder.state("publish");
         Blog save = blogServer.save(builder.build());
         return save.getPostId().toString();
-    }
-
-
-    private Optional<User> login(String username, String password) {
-        User user = userService.getUser(username);
-        if (user == null) {
-            return Optional.empty();
-        }
-        boolean matches = passwordEncoder.matches(password, user.getPassword());
-        if (matches) {
-            return Optional.of(user);
-        }
-        return Optional.empty();
     }
 }

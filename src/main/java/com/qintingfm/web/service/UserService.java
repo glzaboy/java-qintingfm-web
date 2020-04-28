@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,6 +45,8 @@ public class UserService extends BaseService {
 
     HtmlService htmlService;
 
+    PasswordEncoder passwordEncoder;
+
     @Autowired
     public void setHtmlService(HtmlService htmlService) {
         this.htmlService = htmlService;
@@ -68,6 +71,10 @@ public class UserService extends BaseService {
     public void setMailSender(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public User getUser(String userName) {
         if (userName == null || userName.isEmpty()) {
@@ -85,6 +92,19 @@ public class UserService extends BaseService {
         return one.orElse(null);
     }
 
+    public Optional<User> validPassword(String userName,String password){
+        User user = getUser(userName);
+        if (user == null) {
+            return Optional.empty();
+        }
+        boolean matches = passwordEncoder.matches(password, user.getPassword());
+        if (matches) {
+            User user1=new User();
+            BeanUtils.copyProperties(user,user1,"password");
+            return Optional.of(user1);
+        }
+        return Optional.empty();
+    }
     /**
      * 注册用户
      *

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -84,9 +83,7 @@ public class NetClient {
     public void setUrl(String url, Map<String, String> queries) {
         StringBuilder sb = new StringBuilder();
         if (queries != null && queries.size() > 0) {
-            Iterator<Map.Entry<String, String>> iterator = queries.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, String> next = iterator.next();
+            for (Map.Entry<String, String> next : queries.entrySet()) {
                 String key = next.getKey();
                 Pattern pattern = Pattern.compile("\\{" + key + "\\}");
                 if (pattern.matcher(url).find()) {
@@ -110,16 +107,17 @@ public class NetClient {
         builder.url(url);
     }
 
-    public String requestToString()  {
-        Response execute = null;
+    public String requestToString() {
+        Response execute;
         try {
             execute = okHttpClient.newCall(builder.build()).execute();
-            if (!execute.isSuccessful()){
-                log.info("http return httpCode {},BODY {}", execute.code(),execute.body().string());
+            if (!execute.isSuccessful()) {
+                assert execute.body() != null;
+                log.info("http return httpCode {},BODY {}", execute.code(), execute.body().string());
             }
             if (execute.isSuccessful()) {
-                String resp = execute.body().string();
-                return resp;
+                assert execute.body() != null;
+                return execute.body().string();
             }
         } catch (IOException e) {
             log.error("request http error {}", e.getMessage());
