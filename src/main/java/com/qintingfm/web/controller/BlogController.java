@@ -73,7 +73,7 @@ public class BlogController {
                     modelAndView.addObject("blogComment", blogServer.getBlogComment(item, pageIndex, null, 10));
                 }
         );
-        blog.orElseThrow(()->{throw new ResourceNotFoundException("您要查看的内容已经不存在，请查看其它内容。");});
+        blog.orElseThrow(()->{return new ResourceNotFoundException("您要查看的内容已经不存在，请查看其它内容。");});
         modelAndView.setViewName("blog/view");
         return modelAndView;
     }
