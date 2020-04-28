@@ -157,9 +157,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     private List<String> listMethods(XmlRpcRequestParser xmlRpcRequestParser) {
-        return methodMap.entrySet().stream().map(item -> {
-            return item.getKey();
-        }).collect(Collectors.toList());
+        return methodMap.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
     }
 
     private Vector<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {

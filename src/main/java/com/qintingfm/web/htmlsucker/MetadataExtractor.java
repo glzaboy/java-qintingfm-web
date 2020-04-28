@@ -118,8 +118,6 @@ public class MetadataExtractor {
         if (hasKeyWords) {
             return Arrays.asList(split);
         }
-
-
         return Collections.emptyList();
     }
 

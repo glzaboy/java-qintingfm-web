@@ -82,7 +82,7 @@ public class NetClient {
     }
 
     public void setUrl(String url, Map<String, String> queries) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (queries != null && queries.size() > 0) {
             Iterator<Map.Entry<String, String>> iterator = queries.entrySet().iterator();
             while (iterator.hasNext()) {

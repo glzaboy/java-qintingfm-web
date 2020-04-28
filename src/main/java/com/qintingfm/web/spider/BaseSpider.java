@@ -19,7 +19,7 @@ public abstract class BaseSpider implements Spider {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,rollbackFor = {Exception.class})
     public Stream<SettingItem> getSpiderSettings(String spiderName) {
         return settingService.getSettings(spiderName);
     }

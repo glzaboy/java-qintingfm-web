@@ -127,10 +127,8 @@ public class UserService extends BaseService {
                     buildAgr.put("activeKey", save.getActiveKey().toString());
                     activeUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, null, save.getActiveKey().toString()).encode().toUriString();
                 } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
+                    log.error("用户注册激活地址生成出错没有找到激活地址");
                 }
-
-
                 String mailText = "您好您已经成功注册我们的网站请点击下面的地址进行激活。<a href=\"" + activeUrl + "\">" + activeUrl + "</a>";
 
                 modelAndView.addObject("mail_text", mailText);

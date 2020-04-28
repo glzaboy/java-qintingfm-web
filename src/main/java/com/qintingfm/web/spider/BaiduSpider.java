@@ -27,24 +27,16 @@ public class BaiduSpider extends BaseSpider {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,rollbackFor = Exception.class)
     public String pushUrlToSpider(Collection<String> url) {
         Stream<SettingItem> spiderSettings = getSpiderSettings(SpiderName);
         Map<String, String> collect1 = spiderSettings.collect(Collectors.toMap(SettingItem::getKey, SettingItem::getValue));
         boolean enable = settingService.isEnable(collect1);
         if (enable) {
-            Map<String, String> collect = collect1.entrySet().stream().filter(item -> {
-                return postMap.contains(item.getKey());
-            }).collect(Collectors.toMap(stringStringEntry -> {
-                return stringStringEntry.getKey();
-            }, stringStringEntry -> {
-                return stringStringEntry.getValue();
-            }));
+            Map<String, String> collect = collect1.entrySet().stream().filter(item -> postMap.contains(item.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             netClient.setUrl("http://data.zz.baidu.com/urls", collect);
-            StringBuffer postData = new StringBuffer();
-            url.stream().forEach(item -> {
-                postData.append(item).append("\n");
-            });
+            StringBuilder postData = new StringBuilder();
+            url.forEach(item -> postData.append(item).append("\n"));
             Map<String, String> headerMap = new HashMap<>(4);
             headerMap.put("Content-Type", "text/plain");
             netClient.setHeaderMap(headerMap);

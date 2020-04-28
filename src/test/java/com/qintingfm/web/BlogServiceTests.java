@@ -2,7 +2,6 @@ package com.qintingfm.web;
 
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.BlogService;
-import com.qintingfm.web.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,14 @@ import java.util.stream.Stream;
 @Slf4j
 public class BlogServiceTests {
     BlogService blogService;
+
     @Autowired
     public void setBlogService(BlogService blogService) {
         this.blogService = blogService;
     }
 
     @Test
-    public void validBlogPojo(){
+    public void validBlogPojo() {
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
         builder.title("test");
         builder.cont("这里是内容");
@@ -30,8 +30,9 @@ public class BlogServiceTests {
         builder.catNames(Stream.of("a").collect(Collectors.toList()));
         blogService.validatePojoAndThrow(builder.build());
     }
+
     @Test
-    public void saveBlogPojo(){
+    public void saveBlogPojo() {
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
         builder.title("test");
         builder.cont("这里是内容");

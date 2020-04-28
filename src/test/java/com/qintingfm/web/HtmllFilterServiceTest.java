@@ -36,7 +36,7 @@ public class HtmllFilterServiceTest {
         modelAndView.addObject("mail_text","您好你的密码123456");
         String s = htmlFilterService.renderModelAndViewToString(modelAndView);
         String s1 = htmlFilterService.filterSimpleText(s);
-        System.out.println(s);
-        System.out.println(s1);
+        log.info(s);
+        log.info(s1);
     }
 }
