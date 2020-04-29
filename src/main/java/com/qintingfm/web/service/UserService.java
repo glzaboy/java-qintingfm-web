@@ -173,4 +173,80 @@ public class UserService extends BaseService {
 
         return save;
     }
+    @Transactional(rollbackFor = {BusinessException.class})
+    public User active(String activeKey){
+        UserRegister userRegisterExam = new UserRegister();
+        userRegisterExam.setActiveKey(UUID.fromString(activeKey));
+        Optional<UserRegister> one = userRegisterJpa.findOne(Example.of(userRegisterExam));
+        one.orElseThrow(()->{return new BusinessException("激活 key 不存在",null);});
+        UserRegister userRegister = one.get();
+        if(userRegister.getIsActive()){
+            throw new BusinessException("帐号已经被激活，如果还有问题请联系管理员",null);
+        }
+        userRegister.setIsActive(true);
+        userRegister.setActiveDate(new Date());
+        userRegisterJpa.save(userRegister);
+        User user=new User();
+        user.setUsername(userRegister.getUserName());
+        user.setEnabled(true);
+        user.setCredentialsNonExpired(true);
+        user.setAccountNonExpired(true);
+        user.setCredentialsNonExpired(true);
+        String password = generalPassword(8, true);
+        user.setPassword(passwordEncoder.encode(password));
+        User save = userJpa.save(user);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("mail/mail");
+        String loginUrl = null;
+        try {
+            Method detail = UserController.class.getDeclaredMethod("loginPage", ModelAndView.class);
+            Object[] args={null};
+            loginUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail,args).encode().toUriString();
+        } catch (NoSuchMethodException e) {
+            log.error("用户注册激活地址生成出错没有找到激活地址");
+        }
+        String mailText = "您好您的帐号已经激活，您的密码为 "+password+"。请立即进行登录并修改密码。登录地址<a href=\"" + loginUrl + "\">" + loginUrl + "</a>";
+        modelAndView.addObject("mail_text", mailText);
+
+        String html = htmlService.renderModelAndViewToString(modelAndView);
+        String text = htmlService.filterSimpleText(html);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper;
+        try {
+            helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setFrom(mailUser);
+            helper.setText(text, html);
+            helper.setTo(userRegister.getEmail());
+            helper.setSubject("您的帐号成功激活");
+        } catch (MessagingException e) {
+            log.error("激活用户发送邮件失败。");
+        }
+        mailSender.send(mimeMessage);
+        return save;
+    }
+
+    /**
+     * 生成用户密码
+     * @param len
+     * @param readAble
+     * @return
+     */
+    public String generalPassword(int len,boolean readAble){
+        StringBuilder stringTab=new StringBuilder() ;
+        if(readAble){
+            stringTab.append("BCEFGHJKMPQRTVWXY2346789");
+        }else{
+            stringTab.append("ABCDEFGHJKMNPQRSTUVWXY0123456789abcdefghjkmnrstuvwxyz");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            double random = Math.random()*10000;
+            int offset = ((int)random) % stringTab.length();
+            stringBuilder.append(stringTab.substring(offset, offset + 1));
+        }
+        return stringBuilder.toString();
+    }
+
 }
