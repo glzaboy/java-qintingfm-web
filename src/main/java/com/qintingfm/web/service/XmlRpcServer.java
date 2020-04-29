@@ -29,7 +29,7 @@ import java.io.OutputStream;
 public class XmlRpcServer {
     StreamConfig streamConfig;
     RpcController rpcController;
-    final Logger logger = LoggerFactory.getLogger(XmlRpcServer.class);
+    final static  Logger logger = LoggerFactory.getLogger(XmlRpcServer.class);
 
     public StreamConfig getStreamConfig() {
         return streamConfig;
