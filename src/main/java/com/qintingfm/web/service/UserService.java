@@ -9,6 +9,7 @@ import com.qintingfm.web.jpa.entity.SettingItem;
 import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.jpa.entity.UserRegister;
 import com.qintingfm.web.pojo.request.UserRegisterPojo;
+import com.qintingfm.web.settings.SettingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

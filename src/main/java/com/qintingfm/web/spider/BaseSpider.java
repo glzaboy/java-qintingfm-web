@@ -1,7 +1,7 @@
 package com.qintingfm.web.spider;
 
 import com.qintingfm.web.jpa.entity.SettingItem;
-import com.qintingfm.web.service.SettingService;
+import com.qintingfm.web.settings.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
