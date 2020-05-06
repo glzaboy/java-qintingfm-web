@@ -1,5 +1,6 @@
-package com.qintingfm.web.settings;
+package com.qintingfm.web.spider;
 
+import com.qintingfm.web.settings.SettingData;
 import lombok.Data;
 import lombok.ToString;
 
@@ -8,7 +9,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-public class BaiduSpiderSetting  extends SettingData{
+public class BaiduSpiderSetting  extends SettingData {
     String site;
     String token;
 }

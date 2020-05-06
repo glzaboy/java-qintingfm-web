@@ -5,14 +5,13 @@ import com.qintingfm.web.jpa.entity.SettingItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,37 +34,18 @@ public class SettingService {
     public void setSettingJpa(SettingJpa settingJpa) {
         this.settingJpa = settingJpa;
     }
-
-    public Stream<SettingItem> getSettings(String name) {
-        return settingJpa.findByName(name);
-    }
-
-    public <T extends SettingData> T getConfig(String settingName, Class<T> classzz) {
-        Stream<SettingItem> settings = getSettings(settingName);
-        Constructor declaredConstructor = null;
+    @Transactional(readOnly = true)
+    public synchronized <T extends SettingData> Optional<T> getSettingBean(String settingName, Class<T> classic) {
+        Stream<SettingItem> settings = settingJpa.findByName(settingName);
         try {
-            declaredConstructor = classzz.getDeclaredConstructor();
+            Constructor declaredConstructor = classic.getDeclaredConstructor();
             declaredConstructor.setAccessible(true);
             T t = (T) declaredConstructor.newInstance();
-//            Field[] declaredFields = classzz.getDeclaredFields();
             Map<String, String> collect = settings.collect(Collectors.toMap(SettingItem::getKey, SettingItem::getValue, (v1, v2) -> v2));
-
-//            for (int i = 0; i < declaredFields.length; i++) {
-//                Field declaredField = declaredFields[i];
-//                boolean accessible = declaredField.isAccessible();
-//                if (!accessible) {
-//                    declaredField.setAccessible(true);
-//                }
-//                declaredField.set(t, collect.get(declaredField.getName()));
-//                if (!accessible) {
-//                    declaredField.setAccessible(false);
-//                }
-//            }
-            Class<? super T> superclass = classzz;
+            Class<? super T> superclass = classic;
             while (superclass != null) {
                 Field[] declaredFields2 = superclass.getDeclaredFields();
-                for (int i = 0; i < declaredFields2.length; i++) {
-                    Field declaredField2 = declaredFields2[i];
+                for (Field declaredField2 : declaredFields2) {
                     boolean accessible = declaredField2.isAccessible();
                     if (!accessible) {
                         declaredField2.setAccessible(true);
@@ -74,7 +54,7 @@ public class SettingService {
                         boolean b = YES.equalsIgnoreCase(collect.get(declaredField2.getName())) || Y.equalsIgnoreCase(collect.get(declaredField2.getName())) || TRUE.equalsIgnoreCase(collect.get(declaredField2.getName())) || NUM_Y.equalsIgnoreCase(collect.get(declaredField2.getName()));
                         if (b) {
                             declaredField2.set(t, true);
-                        }else {
+                        } else {
                             declaredField2.set(t, false);
                         }
                     } else {
@@ -83,43 +63,22 @@ public class SettingService {
                     if (!accessible) {
                         declaredField2.setAccessible(false);
                     }
-
                 }
-
                 if (superclass == SettingData.class) {
                     break;
                 }
-                superclass= superclass.getSuperclass();
+                superclass = superclass.getSuperclass();
             }
-//            for (Iterator<SettingItem> it = settings.iterator(); it.hasNext(); ) {
-//                SettingItem settingItem = it.next();
-//                Field declaredField = T.getDeclaredField(settingItem.getKey());
-//                declaredField.set(t,settingItem.getValue());
-//            }
-            return (T) t;
+            return Optional.of(t);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            log.error("创建Bean 实例出错{}",e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error("设置Bean 属性出错{}",e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            log.error("创建Bean 实例出错1{}",e.getMessage());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            log.error("创建Bean 实例出错,反射异常{}",e.getMessage());
         }
-        return null;
-    }
-
-    public boolean isEnable(Map<String, String> settingItems) {
-        Optional<Map.Entry<String, String>> first = settingItems.entrySet().stream().filter(settingItem ->
-                settingItem.getKey().equalsIgnoreCase(ENABLE)
-        ).findFirst();
-        AtomicBoolean ret = new AtomicBoolean(false);
-        ret.set(false);
-        first.ifPresent(item -> {
-            if (NUM_Y.equals(item.getValue()) || TRUE.equalsIgnoreCase(item.getValue()) || Y.equalsIgnoreCase(item.getValue()) || YES.equalsIgnoreCase(item.getValue())) {
-                ret.set(true);
-            }
-        });
-        return ret.get();
+        return Optional.empty();
     }
 }

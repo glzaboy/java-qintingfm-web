@@ -17,12 +17,4 @@ public abstract class BaseSpider implements Spider {
     public void setSettingService(SettingService settingService) {
         this.settingService = settingService;
     }
-
-    @Override
-    @Transactional(readOnly = true,rollbackFor = {Exception.class})
-    public Stream<SettingItem> getSpiderSettings(String spiderName) {
-        return settingService.getSettings(spiderName);
-    }
-
-
 }

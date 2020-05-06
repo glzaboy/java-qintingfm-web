@@ -28,8 +28,8 @@ public class SettingController {
     public ModelAndView viewSetting(ModelAndView modelAndView, @PathVariable(value = "name") String name) {
         modelAndView.setViewName("admin/setting");
         modelAndView.addObject("name", name);
-        Stream<SettingItem> settings = settingService.getSettings(name);
-        modelAndView.addObject("settings", settings);
+//        Stream<SettingItem> settings = settingService.getSettings(name);
+//        modelAndView.addObject("settings", settings);
         return modelAndView;
     }
 }

@@ -1,7 +1,6 @@
 package com.qintingfm.web;
 
-import com.qintingfm.web.jpa.entity.SettingItem;
-import com.qintingfm.web.settings.BaiduSpiderSetting;
+import com.qintingfm.web.spider.BaiduSpiderSetting;
 import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
 import org.junit.jupiter.api.Test;
@@ -9,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.Optional;
 
 @SpringBootTest
 public class SettingTest {
@@ -19,9 +17,9 @@ public class SettingTest {
     @Test
     @Transactional
     void test() {
-        BaiduSpiderSetting baidu1 = settingService.getConfig("baidu", BaiduSpiderSetting.class);
-        System.out.println(baidu1.toString());
-        SettingData baidu2 = settingService.getConfig("register", SettingData.class);
-        System.out.println(baidu2.toString());
+        Optional<BaiduSpiderSetting> baidu = settingService.getSettingBean("baidu", BaiduSpiderSetting.class);
+        System.out.println(baidu.toString());
+        Optional<SettingData> register = settingService.getSettingBean("register", SettingData.class);
+        System.out.println(register.toString());
     }
 }

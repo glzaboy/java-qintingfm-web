@@ -9,6 +9,7 @@ import com.qintingfm.web.jpa.entity.SettingItem;
 import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.jpa.entity.UserRegister;
 import com.qintingfm.web.pojo.request.UserRegisterPojo;
+import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -136,9 +137,9 @@ public class UserService extends BaseService {
         UserRegister save = userRegisterJpa.saveAndFlush(userRegister);
 
         if (save.getRegisterId() != null) {
-            Stream<SettingItem> register = settingService.getSettings("register");
-            Map<String, String> collect = register.collect(Collectors.toMap(SettingItem::getKey, SettingItem::getValue));
-            if (settingService.isEnable(collect)) {
+            Optional<SettingData> register1 = settingService.getSettingBean("register", SettingData.class);
+            SettingData settingData = register1.orElse(null);
+            if (settingData!=null && settingData.getEnable()) {
                 ModelAndView modelAndView = new ModelAndView();
                 modelAndView.setViewName("mail/mail");
                 String activeUrl = "";
