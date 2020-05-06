@@ -11,8 +11,8 @@ public interface Spider {
     /**
      * 推送到spider
      *
-     * @param url
-     * @return
+     * @param url 推送的 url
+     * @return 返回推送结果
      */
     String pushUrlToSpider(Collection<String> url);
 }

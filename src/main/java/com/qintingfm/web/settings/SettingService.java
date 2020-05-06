@@ -38,9 +38,9 @@ public class SettingService {
     public synchronized <T extends SettingData> Optional<T> getSettingBean(String settingName, Class<T> classic) {
         Stream<SettingItem> settings = settingJpa.findByName(settingName);
         try {
-            Constructor declaredConstructor = classic.getDeclaredConstructor();
+            Constructor<T> declaredConstructor = classic.getDeclaredConstructor();
             declaredConstructor.setAccessible(true);
-            T t = (T) declaredConstructor.newInstance();
+            T t = declaredConstructor.newInstance();
             Map<String, String> collect = settings.collect(Collectors.toMap(SettingItem::getKey, SettingItem::getValue, (v1, v2) -> v2));
             Class<? super T> superclass = classic;
             while (superclass != null) {

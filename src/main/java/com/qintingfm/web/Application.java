@@ -15,15 +15,15 @@ import java.util.Properties;
  * @author guliuzhong
  */
 @SpringBootApplication
-//@EnableScheduling
-//@EnableAsync
+@EnableScheduling
+@EnableAsync
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.qintingfm.web.jpa")
 public class Application {
     public static void main(String[] args) {
-        Properties properties = System.getProperties();
-        properties.setProperty("spring.profiles.active","test");
-        System.setProperties(properties);
+//        Properties properties = System.getProperties();
+//        properties.setProperty("spring.profiles.active","test");
+//        System.setProperties(properties);
         SpringApplication.run(Application.class, args);
     }
 }
