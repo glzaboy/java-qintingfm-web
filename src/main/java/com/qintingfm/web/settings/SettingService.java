@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +27,8 @@ public class SettingService {
     public final String ENABLE = "ENABLE";
     public final String YES = "YES";
     public final String Y = "Y";
-    public final String TRUE = "TRUE";
+    public final String STRING_TRUE = "TRUE";
+    public final String STRING_FALSE = "FALSE";
     public final String NUM_Y = "1";
     SettingJpa settingJpa;
 
@@ -34,6 +36,61 @@ public class SettingService {
     public void setSettingJpa(SettingJpa settingJpa) {
         this.settingJpa = settingJpa;
     }
+
+    /**
+     * 保存对象到设置数据库
+     *
+     * @param settingName 对象名称
+     * @param bean  需要保存的对象要求此对象继承自 SettingData或其子类
+     * @param <T> 类型限定为 SettingData 的子类
+     * @return 返回设置的对象值
+     */
+    public synchronized  <T extends SettingData> T saveSettingBean(String settingName,T bean) {
+        Class<? extends SettingData> aClass1 = bean.getClass();
+        Class<? super T> superclass = (Class<? super T>) aClass1;
+        ArrayList<SettingItem> settingItems=new ArrayList<>();
+        while (superclass!=null){
+            Field[] declaredFields = superclass.getDeclaredFields();
+            for (Field field:declaredFields){
+                SettingItem settingItem=new SettingItem();
+                settingItem.setName(settingName);
+                field.setAccessible(true);
+                try {
+                    Object o = field.get(bean);
+                    if(o instanceof Boolean){
+                        if ((Boolean) o){
+                            settingItem.setValue(NUM_Y);
+                        }else{
+                            settingItem.setValue(STRING_FALSE);
+                        }
+                    }else{
+                        settingItem.setValue((String) field.get(bean));
+                    }
+                    settingItem.setKey(field.getName());
+                    settingItems.add(settingItem);
+                } catch (IllegalAccessException e) {
+                    log.warn("保存设置{}失败，字段不可读{},跳过些字段保存。",settingName,field.getName());
+                }
+            }
+            if (superclass == SettingData.class) {
+                break;
+            }
+            superclass=superclass.getSuperclass();
+        }
+        settingJpa.deleteInBatch(settingJpa.findByName(settingName).collect(Collectors.toList()));
+        settingJpa.saveAll(settingItems);
+        settingJpa.flush();
+        return bean;
+    }
+
+    /**
+     * 读取设置的对象到类
+     *
+     * @param settingName 对象名称
+     * @param classic 读取后返回的对象类型 SettingData或其子类
+     * @param <T> 类型限定为 SettingData 的子类
+     * @return  读取后返回的对象
+     */
     @Transactional(readOnly = true)
     public synchronized <T extends SettingData> Optional<T> getSettingBean(String settingName, Class<T> classic) {
         Stream<SettingItem> settings = settingJpa.findByName(settingName);
@@ -41,7 +98,7 @@ public class SettingService {
             Constructor<T> declaredConstructor = classic.getDeclaredConstructor();
             declaredConstructor.setAccessible(true);
             T t = declaredConstructor.newInstance();
-            Map<String, String> collect = settings.collect(Collectors.toMap(SettingItem::getKey, SettingItem::getValue, (v1, v2) -> v2));
+            Map<String, String> collect = settings.collect(Collectors.toMap(SettingItem::getKey, item-> item.getValue()!=null?item.getValue():"", (v1, v2) -> v2));
             Class<? super T> superclass = classic;
             while (superclass != null) {
                 Field[] declaredFields2 = superclass.getDeclaredFields();
@@ -51,7 +108,7 @@ public class SettingService {
                         declaredField2.setAccessible(true);
                     }
                     if (declaredField2.getName().equalsIgnoreCase(ENABLE)) {
-                        boolean b = YES.equalsIgnoreCase(collect.get(declaredField2.getName())) || Y.equalsIgnoreCase(collect.get(declaredField2.getName())) || TRUE.equalsIgnoreCase(collect.get(declaredField2.getName())) || NUM_Y.equalsIgnoreCase(collect.get(declaredField2.getName()));
+                        boolean b = YES.equalsIgnoreCase(collect.get(declaredField2.getName())) || Y.equalsIgnoreCase(collect.get(declaredField2.getName())) || STRING_TRUE.equalsIgnoreCase(collect.get(declaredField2.getName())) || NUM_Y.equalsIgnoreCase(collect.get(declaredField2.getName()));
                         if (b) {
                             declaredField2.set(t, true);
                         } else {
@@ -68,6 +125,9 @@ public class SettingService {
                     break;
                 }
                 superclass = superclass.getSuperclass();
+            }
+            if(t.getSettingName()==null){
+                t.setSettingName(settingName);
             }
             return Optional.of(t);
         } catch (NoSuchMethodException e) {
