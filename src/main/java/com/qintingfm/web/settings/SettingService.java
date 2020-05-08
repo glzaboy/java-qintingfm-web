@@ -24,19 +24,18 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class SettingService {
-    public final String ENABLE = "ENABLE";
-    public final String YES = "YES";
-    public final String Y = "Y";
-    public final String STRING_TRUE = "TRUE";
-    public final String STRING_FALSE = "FALSE";
-    public final String NUM_Y = "1";
+    private final String ENABLE = "ENABLE";
+    private final String YES = "YES";
+    private final String Y = "Y";
+    private final String STRING_TRUE = "TRUE";
+    private final String STRING_FALSE = "FALSE";
+    private final String NUM_Y = "1";
     SettingJpa settingJpa;
 
     @Autowired
     public void setSettingJpa(SettingJpa settingJpa) {
         this.settingJpa = settingJpa;
     }
-
     /**
      * 保存对象到设置数据库
      *
@@ -47,7 +46,7 @@ public class SettingService {
      */
     public synchronized  <T extends SettingData> T saveSettingBean(String settingName,T bean) {
         Class<? extends SettingData> aClass1 = bean.getClass();
-        Class<? super T> superclass = (Class<? super T>) aClass1;
+        Class<?> superclass = aClass1;
         ArrayList<SettingItem> settingItems=new ArrayList<>();
         while (superclass!=null){
             Field[] declaredFields = superclass.getDeclaredFields();
@@ -59,7 +58,7 @@ public class SettingService {
                     Object o = field.get(bean);
                     if(o instanceof Boolean){
                         if ((Boolean) o){
-                            settingItem.setValue(NUM_Y);
+                            settingItem.setValue(STRING_TRUE);
                         }else{
                             settingItem.setValue(STRING_FALSE);
                         }
