@@ -24,12 +24,7 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class SettingService {
-    private final String ENABLE = "ENABLE";
-    private final String YES = "YES";
-    private final String Y = "Y";
-    private final String STRING_TRUE = "TRUE";
-    private final String STRING_FALSE = "FALSE";
-    private final String NUM_Y = "1";
+    private final String stringTrue = "TRUE";
     SettingJpa settingJpa;
 
     @Autowired
@@ -45,8 +40,7 @@ public class SettingService {
      * @return 返回设置的对象值
      */
     public synchronized  <T extends SettingData> T saveSettingBean(String settingName,T bean) {
-        Class<? extends SettingData> aClass1 = bean.getClass();
-        Class<?> superclass = aClass1;
+        Class<?> superclass = bean.getClass();
         ArrayList<SettingItem> settingItems=new ArrayList<>();
         while (superclass!=null){
             Field[] declaredFields = superclass.getDeclaredFields();
@@ -58,9 +52,10 @@ public class SettingService {
                     Object o = field.get(bean);
                     if(o instanceof Boolean){
                         if ((Boolean) o){
-                            settingItem.setValue(STRING_TRUE);
+                            settingItem.setValue(stringTrue);
                         }else{
-                            settingItem.setValue(STRING_FALSE);
+                            String stringFalse = "FALSE";
+                            settingItem.setValue(stringFalse);
                         }
                     }else{
                         settingItem.setValue((String) field.get(bean));
@@ -106,8 +101,14 @@ public class SettingService {
                     if (!accessible) {
                         declaredField2.setAccessible(true);
                     }
-                    if (declaredField2.getName().equalsIgnoreCase(ENABLE)) {
-                        boolean b = YES.equalsIgnoreCase(collect.get(declaredField2.getName())) || Y.equalsIgnoreCase(collect.get(declaredField2.getName())) || STRING_TRUE.equalsIgnoreCase(collect.get(declaredField2.getName())) || NUM_Y.equalsIgnoreCase(collect.get(declaredField2.getName()));
+                    String enable = "ENABLE";
+                    if (declaredField2.getName().equalsIgnoreCase(enable)) {
+                        String yes = "yes";
+                        String num1 = "1";
+                        String y = "Y";
+                        String stringValue = collect.get(declaredField2.getName());
+
+                        boolean b = yes.equalsIgnoreCase(stringValue) || y.equalsIgnoreCase(stringValue) || stringTrue.equalsIgnoreCase(stringValue) || num1.equalsIgnoreCase(stringValue);
                         if (b) {
                             declaredField2.set(t, true);
                         } else {
