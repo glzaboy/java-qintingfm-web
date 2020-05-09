@@ -97,6 +97,7 @@ public class SettingService {
             while (superclass != null) {
                 Field[] declaredFields2 = superclass.getDeclaredFields();
                 for (Field declaredField2 : declaredFields2) {
+                    @SuppressWarnings("deprecation")
                     boolean accessible = declaredField2.isAccessible();
                     if (!accessible) {
                         declaredField2.setAccessible(true);

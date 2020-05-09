@@ -5,7 +5,6 @@ import com.qintingfm.web.common.exception.BusinessException;
 import com.qintingfm.web.controller.UserController;
 import com.qintingfm.web.jpa.UserJpa;
 import com.qintingfm.web.jpa.UserRegisterJpa;
-import com.qintingfm.web.jpa.entity.SettingItem;
 import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.jpa.entity.UserRegister;
 import com.qintingfm.web.pojo.request.UserRegisterPojo;
@@ -27,9 +26,11 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author guliuzhong
@@ -145,8 +146,6 @@ public class UserService extends BaseService {
                 String activeUrl = "";
                 try {
                     Method detail = UserController.class.getDeclaredMethod("active", ModelAndView.class, String.class);
-                    Map<String, String> buildAgr = new HashMap<>(2);
-                    buildAgr.put("activeKey", save.getActiveKey().toString());
                     activeUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, null, save.getActiveKey().toString()).encode().toUriString();
                 } catch (NoSuchMethodException e) {
                     log.error("用户注册激活地址生成出错没有找到激活地址");
@@ -180,7 +179,7 @@ public class UserService extends BaseService {
         UserRegister userRegisterExam = new UserRegister();
         userRegisterExam.setActiveKey(UUID.fromString(activeKey));
         Optional<UserRegister> one = userRegisterJpa.findOne(Example.of(userRegisterExam));
-        one.orElseThrow(()->{return new BusinessException("激活 key 不存在",null);});
+        one.orElseThrow(()-> new BusinessException("激活 key 不存在",null));
         UserRegister userRegister = one.get();
         if(userRegister.getIsActive()){
             throw new BusinessException("帐号已经被激活，如果还有问题请联系管理员",null);
@@ -231,9 +230,9 @@ public class UserService extends BaseService {
 
     /**
      * 生成用户密码
-     * @param len
-     * @param readAble
-     * @return
+     * @param len 密码长度
+     * @param readAble 是否可读
+     * @return 生成的密码
      */
     public String generalPassword(int len,boolean readAble){
         StringBuilder stringTab=new StringBuilder() ;

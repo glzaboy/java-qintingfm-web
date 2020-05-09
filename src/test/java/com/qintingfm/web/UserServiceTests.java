@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
-
 @SpringBootTest
 @Slf4j
 public class UserServiceTests {
@@ -22,9 +20,9 @@ public class UserServiceTests {
     }
 
     @Test
-    @Rollback(value = true)
+    @Rollback()
     @Transactional(rollbackFor = {Exception.class})
-    public void userRegister() throws MessagingException {
+    public void userRegister() {
         UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
         builder.tel("123456");
         builder.userName("12345679");

@@ -25,7 +25,7 @@ public class BlogServiceTests {
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
         builder.title("test");
         builder.cont("这里是内容");
-        builder.authorId(1l);
+        builder.authorId(1L);
         builder.state("draft");
         builder.catNames(Stream.of("a").collect(Collectors.toList()));
         blogService.validatePojoAndThrow(builder.build());
@@ -36,7 +36,7 @@ public class BlogServiceTests {
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
         builder.title("test");
         builder.cont("这里是内容");
-        builder.authorId(1l);
+        builder.authorId(1L);
         builder.state("draft");
         builder.catNames(Stream.of("a").collect(Collectors.toList()));
         blogService.save(builder.build());

@@ -4,7 +4,11 @@ import org.jsoup.nodes.Document;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * 网页的元数据抽取

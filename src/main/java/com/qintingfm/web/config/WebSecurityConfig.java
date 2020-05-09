@@ -25,7 +25,7 @@ import java.util.UUID;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    UUID key = UUID.randomUUID();
+    final UUID key = UUID.randomUUID();
     AppUserDetailsServiceImpl appUserDetailsService;
 
     @Autowired

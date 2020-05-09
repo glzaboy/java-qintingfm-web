@@ -10,9 +10,12 @@ import com.qintingfm.web.service.BingImageService;
 import com.qintingfm.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -64,7 +67,7 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxDto registerPost(ModelAndView modelAndView, @RequestParam(value = "email",required = true) String email,@RequestParam(value = "userName",required = true) String userName,@RequestParam(value = "tel",required = true) String tel) {
+    public AjaxDto registerPost(ModelAndView modelAndView, @RequestParam(value = "email") String email, @RequestParam(value = "userName") String userName, @RequestParam(value = "tel") String tel) {
         AjaxDto ajaxDto = new AjaxDto();
         UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
         builder.email(email).userName(userName).tel(tel);

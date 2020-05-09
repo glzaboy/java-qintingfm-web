@@ -83,8 +83,6 @@ public class QiniuOssImpl implements Oss {
             String key = (String) stringMap.get("key");
             storageObject.setObjectName(key);
             storageObject.setUrl(config.getRootPath() + key);
-        } catch (QiniuException e) {
-            throw new ManagerException(e.getMessage(), e.getCause());
         } catch (IOException e) {
             throw new ManagerException(e.getMessage(), e.getCause());
         }
@@ -93,11 +91,9 @@ public class QiniuOssImpl implements Oss {
 
     @Override
     public Boolean delete(String objName) throws ManagerException {
-        UploadManager uploadManager = new UploadManager(new Configuration(AutoRegion.autoRegion()));
-        StorageObject storageObject = new StorageObject();
         try {
             BucketManager bucketManager = new BucketManager(getAuth(), new Configuration(AutoRegion.autoRegion()));
-            Response delete = bucketManager.delete(config.getBucket(), objName);
+            bucketManager.delete(config.getBucket(), objName);
         } catch (QiniuException e) {
             throw new ManagerException(e.getMessage(), e.getCause());
         }

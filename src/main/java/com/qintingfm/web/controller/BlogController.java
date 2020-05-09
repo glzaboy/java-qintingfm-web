@@ -73,7 +73,7 @@ public class BlogController {
                     modelAndView.addObject("blogComment", blogServer.getBlogComment(item, pageIndex, null, 10));
                 }
         );
-        blog.orElseThrow(()->{return new ResourceNotFoundException("您要查看的内容已经不存在，请查看其它内容。");});
+        blog.orElseThrow(()-> new ResourceNotFoundException("您要查看的内容已经不存在，请查看其它内容。"));
         modelAndView.setViewName("blog/view");
         return modelAndView;
     }
@@ -81,7 +81,7 @@ public class BlogController {
     @RequestMapping(value = {"/postComment/{postId}"}, method = {RequestMethod.POST})
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public AjaxDto postComment(@PathVariable("postId") Integer postId, @PathVariable(value = "pageIndex", required = false) Integer pageIndex, @RequestParam("cont") String cont) {
+    public AjaxDto postComment(@PathVariable("postId") Integer postId, @RequestParam("cont") String cont) {
         AjaxDto ajaxDto = new AjaxDto();
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
@@ -128,7 +128,7 @@ public class BlogController {
         Blog blog = blogDb.orElse(blogtmp);
         blog.setTitle(htmlService.decodeEntityHtml(blog.getTitle()));
         modelAndView.addObject("blog", blog);
-        List<Integer> collect = blog.getBlogCategory().stream().map(category -> category.getCatId()).collect(Collectors.toList());
+        List<Integer> collect = blog.getBlogCategory().stream().map(Category::getCatId).collect(Collectors.toList());
         modelAndView.addObject("blogCatList", collect);
         Page<Category> allCategory = categoryService.getAllCategory(1, 10000);
         modelAndView.addObject("allCategory", allCategory);
@@ -171,7 +171,7 @@ public class BlogController {
         ajaxDto.setMessage("操作成功");
         try {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, Integer.valueOf(save.getPostId()), null).build().toString();
+            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, save.getPostId(), null).build().toString();
             ajaxDto.setLink(s);
         } catch (NoSuchMethodException e) {
             log.error("找不到博客文档的url");
@@ -181,7 +181,7 @@ public class BlogController {
     }
 
 
-    @RequestMapping(value = {"/category"}, method = {RequestMethod.GET})
+    @RequestMapping(value = {"/category","/category/{page}"}, method = {RequestMethod.GET})
     public ModelAndView categoryList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex) {
         Page<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(pageIndex, null, 100);
         modelAndView.addObject("allCategory", category.toList());
@@ -190,7 +190,7 @@ public class BlogController {
     }
 
     @RequestMapping(value = {"/category/{catName}", "/category/{catName}/{page}"})
-    public ModelAndView categoryArticleList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex, @PathVariable(value = "catName", required = true) String catName) {
+    public ModelAndView categoryArticleList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex, @PathVariable(value = "catName") String catName) {
         ArrayList<String> catNames = new ArrayList<>();
         catNames.add(catName);
         List<Category> category = categoryService.getCategory(catNames);

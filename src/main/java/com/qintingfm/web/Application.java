@@ -7,8 +7,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.Properties;
-
 /**
  * 应用程序启动类
  *

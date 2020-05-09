@@ -17,9 +17,9 @@ public interface BlogCommentJpa extends JpaRepository<BlogComment, Integer> {
     /**
      * 根据blog标题查询评论
      *
-     * @param blog
-     * @param pageable
-     * @return
+     * @param blog 博客内容
+     * @param pageable 评论分页
+     * @return 带分页的评论
      */
     Page<BlogComment> findByBlog(Blog blog, Pageable pageable);
 }

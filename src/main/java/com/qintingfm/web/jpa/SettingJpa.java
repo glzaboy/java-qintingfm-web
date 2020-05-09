@@ -13,7 +13,7 @@ public interface SettingJpa extends JpaRepository<SettingItem, Integer> {
      * 获取指定的系统设置
      *
      * @param settingName 系统名称
-     * @return
+     * @return 系统配置
      */
     Stream<SettingItem> findByName(String settingName);
 }

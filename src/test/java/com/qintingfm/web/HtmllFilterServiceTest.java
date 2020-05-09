@@ -30,7 +30,7 @@ public class HtmllFilterServiceTest {
         log.info(htmlFilterService.filter(parse.getContent()));
     }
     @Test
-    public void testHtmlTemplate() throws IOException {
+    public void testHtmlTemplate() {
         ModelAndView modelAndView=new ModelAndView();
         modelAndView.setViewName("mail/mail");
         modelAndView.addObject("mail_text","您好你的密码123456");

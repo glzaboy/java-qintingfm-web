@@ -3,7 +3,12 @@ package com.qintingfm.web.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +27,7 @@ public class NetClient {
     public static final String URL_START = "?";
     private static final String URL_SPLIT = "&";
     ObjectMapper objectMapper;
-    Request.Builder builder = new Request.Builder();
+    private final Request.Builder builder = new Request.Builder();
     private OkHttpClient okHttpClient;
 
     @Autowired

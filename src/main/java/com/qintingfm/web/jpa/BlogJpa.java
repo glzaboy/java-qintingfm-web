@@ -21,7 +21,7 @@ public interface BlogJpa extends JpaRepository<Blog, Integer> {
      *
      * @param categories 分类
      * @param pageable   分页
-     * @return
+     * @return 分页后的博客内容
      */
     Page<Blog> findAllByBlogCategoryIn(List<Category> categories, Pageable pageable);
 }

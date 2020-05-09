@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
+ * 404 NOT found页异常
  * @author guliuzhong
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)

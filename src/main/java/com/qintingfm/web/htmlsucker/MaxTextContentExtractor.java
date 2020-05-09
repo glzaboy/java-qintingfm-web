@@ -3,7 +3,11 @@ package com.qintingfm.web.htmlsucker;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 基于最大文本块的内容提取算法
@@ -35,8 +39,8 @@ public class MaxTextContentExtractor implements ContentExtractor {
     /**
      * 找出所有的内容节点
      *
-     * @param element
-     * @return
+     * @param element 需要获取的节点
+     * @return 带内容的节点
      */
     private static List<Elements> findTextNode(Element element) {
         List<Elements> list = new ArrayList<>();

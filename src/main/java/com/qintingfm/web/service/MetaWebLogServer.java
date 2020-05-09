@@ -16,7 +16,6 @@ import org.apache.xmlrpc.parser.XmlRpcRequestParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -97,10 +96,9 @@ public class MetaWebLogServer extends XmlRpcServer {
 
         first.ifPresent(findMethod -> {
             try {
-                if (NO_LOGIN_METHOD.stream().filter(item -> {
-                    return item.equals(findMethod.getKey());
-                }).count() == 0) {
+                if (NO_LOGIN_METHOD.stream().noneMatch(item -> item.equals(findMethod.getKey()))) {
                     //需要登录
+                    @SuppressWarnings("rawtypes")
                     List params = xmlRequestParser.getParams();
                     if (params == null) {
                         responseError(outputStream, 403, "无权限调用");
@@ -128,10 +126,8 @@ public class MetaWebLogServer extends XmlRpcServer {
                 }
             } catch (NoSuchMethodException e) {
                 responseError(outputStream, 404, "服务不存在");
-                return;
             } catch (IllegalAccessException e) {
                 responseError(outputStream, 404, "服务执行出错 IllegalAccessException");
-                return;
             } catch (InvocationTargetException e) {
                 Throwable t = e.getCause();
                 AjaxDto ajaxDto = new AjaxDto();
@@ -139,21 +135,18 @@ public class MetaWebLogServer extends XmlRpcServer {
                     if (t instanceof ConstraintViolationException) {
                         Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
                         logger.error(constraintViolations.toString());
-                        Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> {
-                            return k.getPropertyPath().toString();
-                        }, i -> i.getMessage(), (v1, v2) -> v1 + "," + v2));
+                        Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> k.getPropertyPath().toString(), ConstraintViolation::getMessage, (v1, v2) -> v1 + "," + v2));
                         responseError(outputStream, 500, "服务执行出错" + collect.toString());
                         return;
                     }
                 } while ((t = t.getCause()) != null);
                 responseError(outputStream, 500, "服务执行出错 InvocationTargetException");
-                return;
             }
         });
     }
 
     private List<String> listMethods(XmlRpcRequestParser xmlRpcRequestParser) {
-        return methodMap.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+        return new ArrayList<>(methodMap.keySet());
     }
 
     private ArrayList<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {
@@ -217,7 +210,7 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     ArrayList<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         ArrayList<Map<String, Object>> mapVector = new ArrayList<>();
-        Integer pageSize = Integer.valueOf(xmlRequestParser.getParams().get(3).toString());
+        int pageSize = Integer.parseInt(xmlRequestParser.getParams().get(3).toString());
         if (pageSize >= 100) {
             pageSize = 100;
         }
@@ -236,7 +229,7 @@ public class MetaWebLogServer extends XmlRpcServer {
             } else {
                 post.put("description", "");
             }
-            Method detail = null;
+            Method detail;
             try {
                 detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
                 String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, item.getPostId(), null).build().toString();
