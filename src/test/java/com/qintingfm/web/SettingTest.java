@@ -35,7 +35,6 @@ public class SettingTest {
             baiduSpiderSetting.setSettingName("现在时间");
             baiduSpiderSetting.setEnable(true);
             BaiduSpiderSetting baidu1 = settingService.saveSettingBean("baidu1", baiduSpiderSetting);
-            System.out.println(baidu1);
             log.debug(baidu1.toString());
         });
         Optional<SettingData> register = settingService.getSettingBean("register", SettingData.class);
