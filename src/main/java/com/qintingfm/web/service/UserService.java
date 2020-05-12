@@ -26,6 +26,8 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -241,13 +243,18 @@ public class UserService extends BaseService {
         }else{
             stringTab.append("ABCDEFGHJKMNPQRSTUVWXY0123456789abcdefghjkmnrstuvwxyz");
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            double random = Math.random()*10000;
-            int offset = ((int)random) % stringTab.length();
-            stringBuilder.append(stringTab.substring(offset, offset + 1));
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+            for (int i = 0; i < len; i++) {
+                int number = secureRandom.nextInt(stringTab.length());
+                stringBuilder.append(stringTab.substring(number, number + 1));
+            }
+            return stringBuilder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            log.error("生成密码出错");
         }
-        return stringBuilder.toString();
+        return null;
     }
 
 }

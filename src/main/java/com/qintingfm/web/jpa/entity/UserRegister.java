@@ -24,7 +24,7 @@ import java.util.UUID;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames ={"userName"})})
 public class UserRegister {
     @Id
-    @SequenceGenerator(sequenceName = "User_Register_id", name = "genUserRegisterId", allocationSize = 1)
+    @SequenceGenerator(sequenceName = "user_register_id_seq", name = "genUserRegisterId", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genUserRegisterId")
     Long registerId;
     String userName;

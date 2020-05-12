@@ -27,7 +27,7 @@ import java.util.Date;
 @Table(name = "qt_blog_comment")
 public class BlogComment {
     @Id
-    @SequenceGenerator(sequenceName = "qt_blog_comment_id_seq", name = "genCommentId", allocationSize = 1)
+    @SequenceGenerator(sequenceName = "blog_comment_id_seq", name = "genCommentId", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genCommentId")
     Long id;
     @NotNull(message = "评论人不合法")

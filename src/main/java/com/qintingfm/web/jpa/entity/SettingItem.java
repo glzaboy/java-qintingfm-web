@@ -19,12 +19,10 @@ import javax.persistence.Table;
 @Data
 public class SettingItem {
     @Id
-    @SequenceGenerator(sequenceName = "setting_id", name = "genSettingId", allocationSize = 1)
+    @SequenceGenerator(sequenceName = "setting_id_seq", name = "genSettingId", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genSettingId")
     Integer id;
     String name;
-    String fields;
-    String tip;
     String key;
     String value;
 }

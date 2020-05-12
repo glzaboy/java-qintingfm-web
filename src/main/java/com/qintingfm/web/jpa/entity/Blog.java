@@ -27,7 +27,7 @@ import java.util.List;
 @Table(name = "qt_blog")
 public class Blog implements Serializable {
     @Id
-    @SequenceGenerator(sequenceName = "qt_blog_cat_id_seq", name = "genBlogId", allocationSize = 1)
+    @SequenceGenerator(sequenceName = "blog_id_seq", name = "genBlogId", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genBlogId")
     private Integer postId;
     String title;
