@@ -72,10 +72,12 @@ public class UserService extends BaseService {
     public void setSettingService(SettingService settingService) {
         this.settingService = settingService;
     }
+
     @Autowired
     public void setMailSender(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
+
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -97,19 +99,20 @@ public class UserService extends BaseService {
         return one.orElse(null);
     }
 
-    public Optional<User> validPassword(String userName,String password){
+    public Optional<User> validPassword(String userName, String password) {
         User user = getUser(userName);
         if (user == null) {
             return Optional.empty();
         }
         boolean matches = passwordEncoder.matches(password, user.getPassword());
         if (matches) {
-            User user1=new User();
-            BeanUtils.copyProperties(user,user1,"password");
+            User user1 = new User();
+            BeanUtils.copyProperties(user, user1, "password");
             return Optional.of(user1);
         }
         return Optional.empty();
     }
+
     /**
      * 注册用户
      *
@@ -118,20 +121,24 @@ public class UserService extends BaseService {
      */
     @Transactional(rollbackFor = {BusinessException.class})
     public UserRegister register(UserRegisterPojo userRegisterPojo) {
+        Optional<SettingData> register1 = settingService.getSettingBean("register", SettingData.class);
+        SettingData settingData = register1.orElse(null);
+        Business.BusinessBuilder builder = Business.builder();
+        Set<Business> businessSet = new HashSet<>();
+        if (settingData == null || !settingData.getEnable()) {
+            builder.field("username").message("暂时不开放注册，您可以直接联系站长。");
+            businessSet.add(builder.build());
+            buildAndThrowBusinessException(userRegisterPojo.getClass(), businessSet);
+        }
         this.validatePojoAndThrow(userRegisterPojo);
         UserRegister userRegisterExam = new UserRegister();
         userRegisterExam.setUserName(userRegisterPojo.getUserName());
         long count = userRegisterJpa.count(Example.of(userRegisterExam));
         if (count > 0) {
-            Business.BusinessBuilder builder = Business.builder();
-            Set<Business> businessSet = new HashSet<>();
             builder.field("username").message("用户已经被占用，不能注册");
             businessSet.add(builder.build());
-
             buildAndThrowBusinessException(userRegisterPojo.getClass(), businessSet);
         }
-
-
         UserRegister userRegister = new UserRegister();
         BeanUtils.copyProperties(userRegisterPojo, userRegister);
         userRegister.setCreateDate(new Date());
@@ -140,56 +147,53 @@ public class UserService extends BaseService {
         UserRegister save = userRegisterJpa.saveAndFlush(userRegister);
 
         if (save.getRegisterId() != null) {
-            Optional<SettingData> register1 = settingService.getSettingBean("register", SettingData.class);
-            SettingData settingData = register1.orElse(null);
-            if (settingData!=null && settingData.getEnable()) {
-                ModelAndView modelAndView = new ModelAndView();
-                modelAndView.setViewName("mail/mail");
-                String activeUrl = "";
-                try {
-                    Method detail = UserController.class.getDeclaredMethod("active", ModelAndView.class, String.class);
-                    activeUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, null, save.getActiveKey().toString()).encode().toUriString();
-                } catch (NoSuchMethodException e) {
-                    log.error("用户注册激活地址生成出错没有找到激活地址");
-                }
-                String mailText = "您好您已经成功注册我们的网站请点击下面的地址进行激活。<a href=\"" + activeUrl + "\">" + activeUrl + "</a>";
-
-                modelAndView.addObject("mail_text", mailText);
-
-                String html = htmlService.renderModelAndViewToString(modelAndView);
-                String text = htmlService.filterSimpleText(html);
-
-                MimeMessage mimeMessage = mailSender.createMimeMessage();
-                MimeMessageHelper helper;
-                try {
-                    helper = new MimeMessageHelper(mimeMessage, true);
-                    helper.setFrom(mailUser);
-                    helper.setText(text, html);
-                    helper.setTo(save.getEmail());
-                    helper.setSubject("您的帐号需要激活");
-                } catch (MessagingException e) {
-                    log.error("注册用户发送邮件失败。");
-                }
-                mailSender.send(mimeMessage);
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("mail/mail");
+            String activeUrl = "";
+            try {
+                Method detail = UserController.class.getDeclaredMethod("active", ModelAndView.class, String.class);
+                activeUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, null, save.getActiveKey().toString()).encode().toUriString();
+            } catch (NoSuchMethodException e) {
+                log.error("用户注册激活地址生成出错没有找到激活地址");
             }
+            String mailText = "您好您已经成功注册我们的网站请点击下面的地址进行激活。<a href=\"" + activeUrl + "\">" + activeUrl + "</a>";
+
+            modelAndView.addObject("mail_text", mailText);
+
+            String html = htmlService.renderModelAndViewToString(modelAndView);
+            String text = htmlService.filterSimpleText(html);
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper;
+            try {
+                helper = new MimeMessageHelper(mimeMessage, true);
+                helper.setFrom(mailUser);
+                helper.setText(text, html);
+                helper.setTo(save.getEmail());
+                helper.setSubject("您的帐号需要激活");
+            } catch (MessagingException e) {
+                log.error("注册用户发送邮件失败。");
+            }
+            mailSender.send(mimeMessage);
         }
 
         return save;
     }
+
     @Transactional(rollbackFor = {BusinessException.class})
-    public User active(String activeKey){
+    public User active(String activeKey) {
         UserRegister userRegisterExam = new UserRegister();
         userRegisterExam.setActiveKey(UUID.fromString(activeKey));
         Optional<UserRegister> one = userRegisterJpa.findOne(Example.of(userRegisterExam));
-        one.orElseThrow(()-> new BusinessException("激活 key 不存在",null));
+        one.orElseThrow(() -> new BusinessException("激活 key 不存在", null));
         UserRegister userRegister = one.get();
-        if(userRegister.getIsActive()){
-            throw new BusinessException("帐号已经被激活，如果还有问题请联系管理员",null);
+        if (userRegister.getIsActive()) {
+            throw new BusinessException("帐号已经被激活，如果还有问题请联系管理员", null);
         }
         userRegister.setIsActive(true);
         userRegister.setActiveDate(new Date());
         userRegisterJpa.save(userRegister);
-        User user=new User();
+        User user = new User();
         user.setUsername(userRegister.getUserName());
         user.setEnabled(true);
         user.setCredentialsNonExpired(true);
@@ -204,12 +208,12 @@ public class UserService extends BaseService {
         String loginUrl = null;
         try {
             Method detail = UserController.class.getDeclaredMethod("loginPage", ModelAndView.class);
-            Object[] args={null};
-            loginUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail,args).encode().toUriString();
+            Object[] args = {null};
+            loginUrl = MvcUriComponentsBuilder.fromMethod(UserController.class, detail, args).encode().toUriString();
         } catch (NoSuchMethodException e) {
             log.error("用户注册激活地址生成出错没有找到激活地址");
         }
-        String mailText = "您好您的帐号已经激活，您的密码为 "+password+"。请立即进行登录并修改密码。登录地址<a href=\"" + loginUrl + "\">" + loginUrl + "</a>";
+        String mailText = "您好您的帐号已经激活，您的密码为 " + password + "。请立即进行登录并修改密码。登录地址<a href=\"" + loginUrl + "\">" + loginUrl + "</a>";
         modelAndView.addObject("mail_text", mailText);
 
         String html = htmlService.renderModelAndViewToString(modelAndView);
@@ -232,15 +236,16 @@ public class UserService extends BaseService {
 
     /**
      * 生成用户密码
-     * @param len 密码长度
+     *
+     * @param len      密码长度
      * @param readAble 是否可读
      * @return 生成的密码
      */
-    public String generalPassword(int len,boolean readAble){
-        StringBuilder stringTab=new StringBuilder() ;
-        if(readAble){
+    public String generalPassword(int len, boolean readAble) {
+        StringBuilder stringTab = new StringBuilder();
+        if (readAble) {
             stringTab.append("BCEFGHJKMPQRTVWXY2346789");
-        }else{
+        } else {
             stringTab.append("ABCDEFGHJKMNPQRSTUVWXY0123456789abcdefghjkmnrstuvwxyz");
         }
         try {

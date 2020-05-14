@@ -1,5 +1,6 @@
 package com.qintingfm.web.settings;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**

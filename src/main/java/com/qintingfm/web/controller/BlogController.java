@@ -181,9 +181,9 @@ public class BlogController {
     }
 
 
-    @RequestMapping(value = {"/category","/category/{page}"}, method = {RequestMethod.GET})
-    public ModelAndView categoryList(ModelAndView modelAndView, @PathVariable(value = "page", required = false) Integer pageIndex) {
-        Page<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(pageIndex, null, 100);
+    @RequestMapping(value = {"/category"}, method = {RequestMethod.GET})
+    public ModelAndView categoryList(ModelAndView modelAndView) {
+        Page<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(null, null, 100);
         modelAndView.addObject("allCategory", category.toList());
         modelAndView.setViewName("blog/category");
         return modelAndView;
