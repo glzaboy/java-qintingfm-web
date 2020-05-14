@@ -90,7 +90,7 @@ public class UserController {
     public ModelAndView resetPage(ModelAndView modelAndView) {
         BingBgImage image = bingImageService.getImage();
         modelAndView.addObject("image", image.getImageList().get(0));
-        modelAndView.setViewName("reset");
+        modelAndView.setViewName("user/reset");
         return modelAndView;
     }
 
@@ -98,10 +98,10 @@ public class UserController {
     @ResponseBody
     public AjaxDto resetPost(ModelAndView modelAndView, @RequestParam(value = "email") String email, @RequestParam(value = "userName") String userName, @RequestParam(value = "tel") String tel) {
         AjaxDto ajaxDto = new AjaxDto();
-        UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
-        builder.email(email).userName(userName).tel(tel);
-        UserRegister register = userService.register(builder.build());
-        ajaxDto.setMessage("注册成功，我们已经发送一封邮件到您留下的邮箱，账号需要激活才能使用。");
+//        UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
+//        builder.email(email).userName(userName).tel(tel);
+//        UserRegister register = userService.register(builder.build());
+        ajaxDto.setMessage("即将开放，正在加紧开发中~~");
         return ajaxDto;
     }
 }
