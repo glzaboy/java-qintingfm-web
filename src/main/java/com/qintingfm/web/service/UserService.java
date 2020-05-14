@@ -126,9 +126,7 @@ public class UserService extends BaseService {
         Business.BusinessBuilder builder = Business.builder();
         Set<Business> businessSet = new HashSet<>();
         if (settingData == null || !settingData.getEnable()) {
-            builder.field("username").message("暂时不开放注册，您可以直接联系站长。");
-            businessSet.add(builder.build());
-            buildAndThrowBusinessException(userRegisterPojo.getClass(), businessSet);
+            buildAndThrowBusinessException("暂时不开放注册，您可以直接联系站长。");
         }
         this.validatePojoAndThrow(userRegisterPojo);
         UserRegister userRegisterExam = new UserRegister();
@@ -137,7 +135,7 @@ public class UserService extends BaseService {
         if (count > 0) {
             builder.field("username").message("用户已经被占用，不能注册");
             businessSet.add(builder.build());
-            buildAndThrowBusinessException(userRegisterPojo.getClass(), businessSet);
+            buildAndThrowBusinessException(userRegisterPojo.getClass(), businessSet,"注册失败，请检查表单出错提示。");
         }
         UserRegister userRegister = new UserRegister();
         BeanUtils.copyProperties(userRegisterPojo, userRegister);

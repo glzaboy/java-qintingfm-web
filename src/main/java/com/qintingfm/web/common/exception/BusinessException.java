@@ -3,6 +3,7 @@ package com.qintingfm.web.common.exception;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,7 +18,10 @@ public class BusinessException extends RuntimeException{
     public BusinessException(Set<Business> businesses) {
         this.businesses = businesses;
     }
-
+    public BusinessException(String message) {
+        super(message);
+        this.businesses = new HashSet<>();
+    }
     public BusinessException(String message, Set<Business> businesses) {
         super(message);
         this.businesses = businesses;

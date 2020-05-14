@@ -41,6 +41,15 @@ public class BaseService {
     }
 
 
+    public void buildAndThrowBusinessException(String exceptionString) {
+        throw new BusinessException(exceptionString);
+    }
+    public void buildAndThrowBusinessException(Class<?> classzz,Set<Business> exceptionSet,String exceptionString) {
+        Set<Business> businessSet = buildBusiness(classzz, exceptionSet);
+        if(businessSet!=null && businessSet.size()>0){
+            throw new BusinessException(exceptionString,exceptionSet);
+        }
+    }
 
     public void buildAndThrowBusinessException(Class<?> classzz,Set<Business> exceptionSet) {
         Set<Business> businessSet = buildBusiness(classzz, exceptionSet);
@@ -51,7 +60,6 @@ public class BaseService {
     public Set<Business> buildBusiness(Class<?> classzz,Set<Business> exceptionSet){
         List<String> collect = Stream.of(classzz.getDeclaredFields()).map(Field::getName).collect(Collectors.toList());
         Set<Business> businessSet=new HashSet<>();
-        //ConcurrentHashMap<String,String> concurrentHashMap=new ConcurrentHashMap<>(7);
         exceptionSet.forEach((setItem)->{
             Optional<String> first = collect.stream().filter(item -> item.toLowerCase().equalsIgnoreCase(setItem.getField().toLowerCase())).findFirst();
             Business.BusinessBuilder builder = Business.builder();

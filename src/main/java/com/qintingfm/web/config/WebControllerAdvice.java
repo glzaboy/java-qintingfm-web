@@ -59,7 +59,12 @@ public class WebControllerAdvice {
             Map<String, String> collect = businesses.stream().collect(Collectors.toMap(Business::getField, Business::getMessage, (v1, v2) -> v1 + "," + v2));
             ajaxDto.setError(collect);
             ajaxDto.setAutoHide("3");
-            ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
+            if(ex.getMessage()!=null){
+                ajaxDto.setMessage(ex.getMessage());
+            }else {
+                ajaxDto.setMessage("您的操作出错，请正确填写表单内容");
+            }
+
         }
         return ajaxDto;
     }

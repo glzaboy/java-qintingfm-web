@@ -96,7 +96,7 @@ public class UserController {
 
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxDto resetPost(ModelAndView modelAndView, @RequestParam(value = "email") String email, @RequestParam(value = "userName") String userName, @RequestParam(value = "tel") String tel) {
+    public AjaxDto resetPost(ModelAndView modelAndView, @RequestParam(value = "email") String email, @RequestParam(value = "userName") String userName) {
         AjaxDto ajaxDto = new AjaxDto();
 //        UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
 //        builder.email(email).userName(userName).tel(tel);
