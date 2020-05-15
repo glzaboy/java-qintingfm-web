@@ -23,10 +23,19 @@ public class SettingController {
 
     @RequestMapping("/viewSetting/{name}")
     public ModelAndView viewSetting(ModelAndView modelAndView, @PathVariable(value = "name") String name) {
-        modelAndView.setViewName("admin/setting");
         modelAndView.addObject("name", name);
-//        Stream<SettingItem> settings = settingService.getSettings(name);
-//        modelAndView.addObject("settings", settings);
+//        Class<?> aClass;
+//        try {
+//            aClass = Class.forName(name);
+//            Optional<T> settingBean = settingService.getSettingBean(name, aClass);
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
+
         return modelAndView;
     }
 }

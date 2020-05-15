@@ -1,7 +1,11 @@
 package com.qintingfm.web.settings;
 
+import com.qintingfm.web.common.exception.BusinessException;
+import com.qintingfm.web.jpa.SettingInfoJpa;
 import com.qintingfm.web.jpa.SettingJpa;
+import com.qintingfm.web.jpa.entity.SettingInfo;
 import com.qintingfm.web.jpa.entity.SettingItem;
+import com.qintingfm.web.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,14 +25,21 @@ import java.util.stream.Stream;
  */
 @Service
 @Slf4j
-public class SettingService {
+public class SettingService extends BaseService {
     private final String stringTrue = "TRUE";
     SettingJpa settingJpa;
+    SettingInfoJpa settingInfoJpa;
 
     @Autowired
     public void setSettingJpa(SettingJpa settingJpa) {
         this.settingJpa = settingJpa;
     }
+
+    @Autowired
+    public void setSettingInfoJpa(SettingInfoJpa settingInfoJpa) {
+        this.settingInfoJpa = settingInfoJpa;
+    }
+
     /**
      * 保存对象到设置数据库
      *
@@ -141,5 +150,30 @@ public class SettingService {
             log.error("创建Bean 实例出错,反射异常{}",e.getMessage());
         }
         return Optional.empty();
+    }
+    public <T extends SettingData> List<FromField<T>> getForm(String SettingName){
+        Optional<SettingInfo> byId = settingInfoJpa.findById(SettingName);
+        byId.orElseThrow(()->{return new BusinessException("没有获取到配置");});
+        SettingInfo settingInfo = byId.get();
+        return getForm(settingInfo.getClassName(),settingInfo.getName());
+    }
+
+    public <T extends SettingData> List<FromField<T>> getForm(String stringClass,String SettingName){
+        try {
+            Class<?> aClass = this.getClass().getClassLoader().loadClass(stringClass);
+            return getForm((T)aClass,SettingName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public <T extends SettingData> List<FromField<T>> getForm(Class<T> tClass){
+        List<FromField<T>> fromFields=new ArrayList<>();
+        Class<T> aClass=tClass;
+        getForm(tClass,null);
+        return fromFields;
+    }
+    private  <T extends SettingData> List<FromField<T>> getForm(Class<T> tClass,String SettingName){
+        List<FromField<T>> fromFields=new ArrayList<>();
+        return fromFields;
     }
 }
