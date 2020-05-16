@@ -8,13 +8,17 @@ import com.qintingfm.web.jpa.entity.SettingItem;
 import com.qintingfm.web.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,10 +65,9 @@ public class SettingService extends BaseService {
                     Object o = field.get(bean);
                     if(o instanceof Boolean){
                         if ((Boolean) o){
-                            settingItem.setValue(stringTrue);
+                            settingItem.setValue(boolTrue());
                         }else{
-                            String stringFalse = "FALSE";
-                            settingItem.setValue(stringFalse);
+                            settingItem.setValue(boolFalse());
                         }
                     }else{
                         settingItem.setValue((String) field.get(bean));
@@ -83,6 +86,12 @@ public class SettingService extends BaseService {
         settingJpa.deleteInBatch(settingJpa.findByName(settingName).collect(Collectors.toList()));
         settingJpa.saveAll(settingItems);
         settingJpa.flush();
+        Optional<SettingInfo> byId = settingInfoJpa.findById(settingName);
+        SettingInfo settingInfo = new SettingInfo();
+        settingInfo.setName(settingName);
+        settingInfo.setClassName(bean.getClass().getName());
+        SettingInfo settingInfo1 = byId.orElse(settingInfo);
+        settingInfoJpa.saveAndFlush(settingInfo1);
         return bean;
     }
 
@@ -111,19 +120,10 @@ public class SettingService extends BaseService {
                     if (!accessible) {
                         declaredField2.setAccessible(true);
                     }
-                    String enable = "ENABLE";
-                    if (declaredField2.getName().equalsIgnoreCase(enable)) {
-                        String yes = "yes";
-                        String num1 = "1";
-                        String y = "Y";
-                        String stringValue = collect.get(declaredField2.getName());
+                    if (declaredField2.getType()==Boolean.class) {
 
-                        boolean b = yes.equalsIgnoreCase(stringValue) || y.equalsIgnoreCase(stringValue) || stringTrue.equalsIgnoreCase(stringValue) || num1.equalsIgnoreCase(stringValue);
-                        if (b) {
-                            declaredField2.set(t, true);
-                        } else {
-                            declaredField2.set(t, false);
-                        }
+                        String stringValue = collect.get(declaredField2.getName());
+                        declaredField2.set(t, value2Boolean(stringValue));
                     } else {
                         declaredField2.set(t, collect.get(declaredField2.getName()));
                     }
@@ -151,29 +151,84 @@ public class SettingService extends BaseService {
         }
         return Optional.empty();
     }
-    public <T extends SettingData> List<FromField<T>> getForm(String SettingName){
-        Optional<SettingInfo> byId = settingInfoJpa.findById(SettingName);
-        byId.orElseThrow(()->{return new BusinessException("没有获取到配置");});
+    @Transactional(readOnly = true)
+    public Class<? extends SettingData> getSettingClass(String settingName){
+        Optional<SettingInfo> byId = settingInfoJpa.findById(settingName);
+        byId.orElseThrow(()-> new BusinessException("没有获取到配置"));
         SettingInfo settingInfo = byId.get();
-        return getForm(settingInfo.getClassName(),settingInfo.getName());
-    }
-
-    public <T extends SettingData> List<FromField<T>> getForm(String stringClass,String SettingName){
         try {
-            Class<?> aClass = this.getClass().getClassLoader().loadClass(stringClass);
-            return getForm((T)aClass,SettingName);
+            return (Class<? extends SettingData>)this.getClass().getClassLoader().loadClass(settingInfo.getClassName());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new BusinessException("没有获取配置相关数据定义！");
         }
     }
-    public <T extends SettingData> List<FromField<T>> getForm(Class<T> tClass){
-        List<FromField<T>> fromFields=new ArrayList<>();
-        Class<T> aClass=tClass;
-        getForm(tClass,null);
-        return fromFields;
+    @Transactional(readOnly = true)
+    public Form getFormBySettingName(String settingName){
+        Class<? extends SettingData> settingClass = getSettingClass(settingName);
+        Optional<? extends SettingData> settingBean = getSettingBean(settingName, settingClass);
+        return getForm(settingBean,settingName);
     }
-    private  <T extends SettingData> List<FromField<T>> getForm(Class<T> tClass,String SettingName){
-        List<FromField<T>> fromFields=new ArrayList<>();
-        return fromFields;
+    private  Form getForm(Optional<? extends SettingData> settingDataClass, String settingName){
+        Form.FormBuilder builder1 = Form.builder();
+        List<FormField> fromFields=new ArrayList<>();
+
+        SettingData settingData = settingDataClass.orElse(null);
+        Class<?> tmpClass=settingData.getClass();
+
+        SettingField classAnnotation = AnnotationUtils.getAnnotation(tmpClass, SettingField.class);
+        builder1.title(classAnnotation.title());
+        builder1.settingName(settingData.settingName != null ?settingData.settingName:settingName);
+        while (tmpClass!=null){
+
+            Field[] declaredFields = tmpClass.getDeclaredFields();
+            FormField.FormFieldBuilder builder = FormField.builder();
+            for (Field field:declaredFields) {
+                builder.fieldName(field.getName());
+                builder.className(field.getType().getSimpleName());
+                SettingField annotation1 = AnnotationUtils.getAnnotation(field, SettingField.class);
+                if (annotation1!=null){
+                    builder.title(annotation1.title());
+                }
+                if(settingData!=null){
+                    try {
+                        field.setAccessible(true);
+                        if(field.getType()==Boolean.class){
+                            Boolean o = (Boolean)field.get(settingData);
+                            if(o){
+                                builder.value(boolTrue());
+                            }else{
+                                builder.value(boolFalse());
+                            }
+                        }else {
+                            builder.value((String) field.get(settingData));
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+                fromFields.add(builder.build());
+            }
+
+
+            if (tmpClass == SettingData.class) {
+                break;
+            }
+            tmpClass=tmpClass.getSuperclass();
+        }
+        builder1.formFields(fromFields);
+        return builder1.build();
+    }
+    public Boolean value2Boolean(String value){
+        String stringTrue = "TRUE";
+        String yes = "yes";
+        String num1 = "1";
+        String y = "Y";
+        return yes.equalsIgnoreCase(value) || y.equalsIgnoreCase(value) || stringTrue.equalsIgnoreCase(value) || num1.equalsIgnoreCase(value);
+    }
+    public String boolTrue(){
+        return "TRUE";
+    }
+    public String boolFalse(){
+        return "FALSE";
     }
 }
