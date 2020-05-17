@@ -176,8 +176,13 @@ public class SettingService extends BaseService {
         Class<?> tmpClass=settingData.getClass();
 
         SettingField classAnnotation = AnnotationUtils.getAnnotation(tmpClass, SettingField.class);
-        builder1.title(classAnnotation.title());
-        builder1.settingName(settingData.settingName != null ?settingData.settingName:settingName);
+        if(classAnnotation==null){
+            builder1.title(settingName);
+            builder1.settingName(settingName);
+        }else{
+            builder1.title(classAnnotation.title());
+            builder1.settingName(settingData.settingName != null ?settingData.settingName:settingName);
+        }
         while (tmpClass!=null){
 
             Field[] declaredFields = tmpClass.getDeclaredFields();

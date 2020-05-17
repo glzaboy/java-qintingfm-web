@@ -90,6 +90,7 @@ public class SettingController {
             throw new BusinessException("保存配置出错！");
         }
         settingService.saveSettingBean(name, settingData);
+        ajaxDto.setMessage("更新完成");
         return ajaxDto;
     }
 }
