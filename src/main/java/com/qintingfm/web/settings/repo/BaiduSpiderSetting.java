@@ -16,8 +16,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @SettingField("百度推送")
 public class BaiduSpiderSetting extends SettingData {
-    @SettingField(value = "站点名称")
+    @SettingField(value = "启用")
+    Boolean enable;
+    @SettingField(value = "站点名称",tip = "请填写需要推送的域名，不包含http://，如您是通过http://baidu.com/xx.com进行访问，请填写baidu.com")
     String site;
     @SettingField(value = "推送KEY")
     String token;
+
 }

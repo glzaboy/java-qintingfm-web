@@ -30,7 +30,6 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class SettingService extends BaseService {
-    private final String stringTrue = "TRUE";
     SettingJpa settingJpa;
     SettingInfoJpa settingInfoJpa;
 
@@ -173,6 +172,9 @@ public class SettingService extends BaseService {
         List<FormField> fromFields=new ArrayList<>();
 
         SettingData settingData = settingDataClass.orElse(null);
+        if (settingData==null){
+            throw new BusinessException("获取配置娄出错，配置名"+settingName);
+        }
         Class<?> tmpClass=settingData.getClass();
 
         SettingField classAnnotation = AnnotationUtils.getAnnotation(tmpClass, SettingField.class);
@@ -193,29 +195,25 @@ public class SettingService extends BaseService {
                 SettingField annotation1 = AnnotationUtils.getAnnotation(field, SettingField.class);
                 if (annotation1!=null){
                     builder.title(annotation1.title());
+                    builder.tip(annotation1.tip());
                 }
-                builder.tip(annotation1.tip());
-                if(settingData!=null){
-                    try {
-                        field.setAccessible(true);
-                        if(field.getType()==Boolean.class){
-                            Boolean o = (Boolean)field.get(settingData);
-                            if(o){
-                                builder.value(boolTrue());
-                            }else{
-                                builder.value(boolFalse());
-                            }
-                        }else {
-                            builder.value((String) field.get(settingData));
+                try {
+                    field.setAccessible(true);
+                    if(field.getType()==Boolean.class){
+                        Boolean o = (Boolean)field.get(settingData);
+                        if(o){
+                            builder.value(boolTrue());
+                        }else{
+                            builder.value(boolFalse());
                         }
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                    }else {
+                        builder.value((String) field.get(settingData));
                     }
+                } catch (IllegalAccessException e) {
+                    log.warn("获取表单数据值出错{}",field.getName());
                 }
                 fromFields.add(builder.build());
             }
-
-
             if (tmpClass == SettingData.class) {
                 break;
             }
