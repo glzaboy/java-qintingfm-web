@@ -194,6 +194,7 @@ public class SettingService extends BaseService {
                 if (annotation1!=null){
                     builder.title(annotation1.title());
                 }
+                builder.tip(annotation1.tip());
                 if(settingData!=null){
                     try {
                         field.setAccessible(true);

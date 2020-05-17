@@ -1,8 +1,7 @@
 package com.qintingfm.web;
 
 import com.qintingfm.web.settings.Form;
-import com.qintingfm.web.settings.FormField;
-import com.qintingfm.web.spider.BaiduSpiderSetting;
+import com.qintingfm.web.settings.repo.BaiduSpiderSetting;
 import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -49,7 +47,7 @@ public class SettingTest {
     @Test
     @Transactional
     void readFromString() {
-//        List<FromField> form = settingService.getFormByClass("com.qintingfm.web.spider.BaiduSpiderSetting");
+//        List<FromField> form = settingService.getFormByClass("com.qintingfm.web.settings.repo.BaiduSpiderSetting");
 //        System.out.println(form);
         Form baidu = settingService.getFormBySettingName("baidu");
         System.out.println(baidu);

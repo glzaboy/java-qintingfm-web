@@ -1,4 +1,4 @@
-package com.qintingfm.web.spider;
+package com.qintingfm.web.settings.repo;
 
 import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingField;

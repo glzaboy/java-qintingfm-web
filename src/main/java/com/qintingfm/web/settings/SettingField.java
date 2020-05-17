@@ -15,4 +15,5 @@ public @interface SettingField {
     String value() default "";
     @AliasFor("value")
     String title() default "";
+    String tip()   default "";
 }
