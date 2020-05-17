@@ -17,5 +17,5 @@ public class RegisterSetting extends SettingData {
     @SettingField(value = "启用")
     Boolean enable;
     @SettingField(value = "禁止注册提示")
-    Boolean disableRegisterTip;
+    String disableRegisterTip;
 }
