@@ -120,7 +120,6 @@ public class SettingService extends BaseService {
                         declaredField2.setAccessible(true);
                     }
                     if (declaredField2.getType()==Boolean.class) {
-
                         String stringValue = collect.get(declaredField2.getName());
                         declaredField2.set(t, value2Boolean(stringValue));
                     } else {
@@ -170,13 +169,11 @@ public class SettingService extends BaseService {
     private  Form getForm(Optional<? extends SettingData> settingDataClass, String settingName){
         Form.FormBuilder builder1 = Form.builder();
         List<FormField> fromFields=new ArrayList<>();
-
         SettingData settingData = settingDataClass.orElse(null);
         if (settingData==null){
             throw new BusinessException("获取配置娄出错，配置名"+settingName);
         }
         Class<?> tmpClass=settingData.getClass();
-
         SettingField classAnnotation = AnnotationUtils.getAnnotation(tmpClass, SettingField.class);
         if(classAnnotation==null){
             builder1.title(settingName);

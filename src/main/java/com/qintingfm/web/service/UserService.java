@@ -10,6 +10,7 @@ import com.qintingfm.web.jpa.entity.UserRegister;
 import com.qintingfm.web.pojo.request.UserRegisterPojo;
 import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
+import com.qintingfm.web.settings.repo.RegisterSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,11 +122,11 @@ public class UserService extends BaseService {
      */
     @Transactional(rollbackFor = {BusinessException.class})
     public UserRegister register(UserRegisterPojo userRegisterPojo) {
-        Optional<SettingData> register1 = settingService.getSettingBean("register", SettingData.class);
-        SettingData settingData = register1.orElse(null);
+        Optional<RegisterSetting> registerSetting = settingService.getSettingBean("register", RegisterSetting.class);
+        RegisterSetting registerSetting1 = registerSetting.orElse(null);
         Business.BusinessBuilder builder = Business.builder();
         Set<Business> businessSet = new HashSet<>();
-        if (settingData == null || !settingData.getEnable()) {
+        if (registerSetting1 == null || !registerSetting1.getEnable()) {
             buildAndThrowBusinessException("暂时不开放注册，您可以直接联系站长。");
         }
         this.validatePojoAndThrow(userRegisterPojo);
