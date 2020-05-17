@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * 关键词设置
  * @author guliuzhong
@@ -14,7 +16,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @SettingField("站点功能")
-public class SiteSetting extends SettingData {
+public class SiteSetting extends SettingData implements Serializable {
     @SettingField(value = "站点标题")
     String title;
     @SettingField(value = "固定关闭词",tip = "使用逗号进行分隔")

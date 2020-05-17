@@ -127,7 +127,7 @@ public class UserService extends BaseService {
         Business.BusinessBuilder builder = Business.builder();
         Set<Business> businessSet = new HashSet<>();
         if (registerSetting1 == null || !registerSetting1.getEnable()) {
-            buildAndThrowBusinessException("暂时不开放注册，您可以直接联系站长。");
+            buildAndThrowBusinessException(registerSetting1.getDisableRegisterTip()==null?"暂时不开放注册，您可以直接联系站长。":registerSetting1.getDisableRegisterTip());
         }
         this.validatePojoAndThrow(userRegisterPojo);
         UserRegister userRegisterExam = new UserRegister();

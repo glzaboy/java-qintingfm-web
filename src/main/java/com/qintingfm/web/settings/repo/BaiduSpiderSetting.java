@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * 百度搜索配置
  *
@@ -15,7 +17,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @SettingField("百度推送")
-public class BaiduSpiderSetting extends SettingData {
+public class BaiduSpiderSetting extends SettingData implements Serializable {
     @SettingField(value = "启用")
     Boolean enable;
     @SettingField(value = "站点名称",tip = "请填写需要推送的域名，不包含http://，如您是通过http://baidu.com/xx.com进行访问，请填写baidu.com")

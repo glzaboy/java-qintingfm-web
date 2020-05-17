@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * @author guliuzhong
  */
@@ -13,7 +15,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @SettingField("注册设置")
-public class RegisterSetting extends SettingData {
+public class RegisterSetting extends SettingData implements Serializable {
     @SettingField(value = "启用")
     Boolean enable;
     @SettingField(value = "禁止注册提示")

@@ -8,6 +8,9 @@ import com.qintingfm.web.jpa.entity.SettingItem;
 import com.qintingfm.web.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +54,7 @@ public class SettingService extends BaseService {
      * @param <T> 类型限定为 SettingData 的子类
      * @return 返回设置的对象值
      */
+    @CacheEvict(value = {"settings.bean","settings.form","settings.form"},key = "#settingName")
     public synchronized  <T extends SettingData> T saveSettingBean(String settingName,T bean) {
         Class<?> superclass = bean.getClass();
         ArrayList<SettingItem> settingItems=new ArrayList<>();
@@ -103,6 +107,7 @@ public class SettingService extends BaseService {
      * @return  读取后返回的对象
      */
     @Transactional(readOnly = true)
+    @Cacheable(value = "settings.bean",key = "#settingName")
     public synchronized <T extends SettingData> Optional<T> getSettingBean(String settingName, Class<T> classic) {
         Stream<SettingItem> settings = settingJpa.findByName(settingName);
         try {
@@ -161,6 +166,7 @@ public class SettingService extends BaseService {
         }
     }
     @Transactional(readOnly = true)
+    @Cacheable(value = "settings.form",key = "#settingName")
     public Form getFormBySettingName(String settingName){
         Class<? extends SettingData> settingClass = getSettingClass(settingName);
         Optional<? extends SettingData> settingBean = getSettingBean(settingName, settingClass);
