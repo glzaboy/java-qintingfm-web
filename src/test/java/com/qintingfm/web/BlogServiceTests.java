@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,6 +22,7 @@ public class BlogServiceTests {
     }
 
     @Test
+    @Transactional
     public void validBlogPojo() {
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
         builder.title("test");
@@ -32,6 +34,7 @@ public class BlogServiceTests {
     }
 
     @Test
+    @Transactional
     public void saveBlogPojo() {
         BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
         builder.title("test");

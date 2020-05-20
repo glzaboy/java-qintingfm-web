@@ -4,6 +4,7 @@ import com.qintingfm.web.settings.Form;
 import com.qintingfm.web.settings.repo.BaiduSpiderSetting;
 import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
+import com.qintingfm.web.settings.repo.RegisterSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class SettingTest {
     void test() {
         Optional<BaiduSpiderSetting> baidu = settingService.getSettingBean("baidu", BaiduSpiderSetting.class);
         log.debug(baidu.toString());
-        Optional<SettingData> register = settingService.getSettingBean("register", SettingData.class);
+        Optional<RegisterSetting> register = settingService.getSettingBean("register", RegisterSetting.class);
         log.debug(register.toString());
     }
     @Test
@@ -38,7 +39,7 @@ public class SettingTest {
             BaiduSpiderSetting baidu1 = settingService.saveSettingBean("baidu1", baiduSpiderSetting);
             log.debug(baidu1.toString());
         });
-        Optional<SettingData> register = settingService.getSettingBean("register", SettingData.class);
+        Optional<RegisterSetting> register = settingService.getSettingBean("register", RegisterSetting.class);
         register.ifPresent(settingData -> {
             log.debug(settingData.toString());
             settingService.saveSettingBean("register",settingData);
@@ -47,8 +48,6 @@ public class SettingTest {
     @Test
     @Transactional
     void readFromString() {
-//        List<FromField> form = settingService.getFormByClass("com.qintingfm.web.settings.repo.BaiduSpiderSetting");
-//        System.out.println(form);
         Form baidu = settingService.getFormBySettingName("baidu");
         System.out.println(baidu);
 

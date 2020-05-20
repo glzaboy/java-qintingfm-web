@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class SiteSetting extends SettingData implements Serializable {
     @SettingField(value = "站点标题")
     String title;
-    @SettingField(value = "固定关闭词",tip = "使用逗号进行分隔")
+    @SettingField(value = "固定关键词",tip = "使用逗号进行分隔")
     String fixKeyWord;
     @SettingField(value = "固定描述")
     String fixDescription;
