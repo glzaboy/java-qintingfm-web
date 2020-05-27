@@ -8,10 +8,15 @@ import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.pojo.WebUserDetails;
 import com.qintingfm.web.pojo.request.BlogPojo;
+import com.qintingfm.web.pojo.request.UploadError;
+import com.qintingfm.web.pojo.request.UploadImagePojo;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
 import com.qintingfm.web.service.HtmlService;
 import com.qintingfm.web.service.UserService;
+import com.qintingfm.web.storage.Manager;
+import com.qintingfm.web.storage.ManagerException;
+import com.qintingfm.web.storage.StorageObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,13 +26,22 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +53,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BlogController {
     BlogService blogServer;
+
+    Manager manager;
     CategoryService categoryService;
     HtmlService htmlService;
 
@@ -62,6 +78,11 @@ public class BlogController {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setManager(Manager manager) {
+        this.manager = manager;
     }
 
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
@@ -176,7 +197,6 @@ public class BlogController {
         } catch (NoSuchMethodException e) {
             log.error("找不到博客文档的url");
         }
-
         return ajaxDto;
     }
 
@@ -198,5 +218,38 @@ public class BlogController {
         modelAndView.addObject("catBlog", catBlogList);
         modelAndView.setViewName("blog/categoryArticleList");
         return modelAndView;
+    }
+    @RequestMapping(value = {"/uploadImage"},method = {RequestMethod.POST})
+    @ResponseBody
+    public UploadImagePojo uploadImage(@RequestParam("upload") MultipartFile multipartFile) {
+        UploadImagePojo.UploadImagePojoBuilder builder = UploadImagePojo.builder();
+        UploadError.UploadErrorBuilder uploadErrorBuilder = UploadError.builder();
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            uploadErrorBuilder.message("用户没有登录");
+            builder.error(uploadErrorBuilder.build());
+            return builder.build();
+        }
+        try {
+            Map<String,String> returnMap=new HashMap<>();
+            byte[] bytes = multipartFile.getBytes();
+            String s = DigestUtils.md5DigestAsHex(bytes);
+            StorageObject put = manager.put(bytes, s);
+            String url = put.getUrl();
+            returnMap.put("default",url);
+            builder.urls(returnMap);
+            return builder.build();
+        } catch (IOException e) {
+            log.error("上传文件出错{},文件读写出错",e.getMessage());
+            uploadErrorBuilder.message("上传文件出错"+e.getMessage());
+            builder.error(uploadErrorBuilder.build());
+        } catch (ManagerException e) {
+            log.error("上传文件出错{},上传到远程出错",e.getMessage());
+            uploadErrorBuilder.message("上传文件出错，上传到远程出错"+e.getMessage());
+            builder.error(uploadErrorBuilder.build());
+
+        }
+        return builder.build();
     }
 }

@@ -70,7 +70,8 @@
     <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
     <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
     <script src="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.js"></script>
-    <script>
+    <script th:inline="javascript" type="text/javascript">
+        /*<![CDATA[*/
         $(document).on('nifty.ready', function () {
             ClassicEditor
                 .create(document.querySelector('.editor'), {
@@ -102,6 +103,7 @@
                     image: {
                         toolbar: [
                             'imageTextAlternative',
+                            '|',
                             'imageStyle:full',
                             'imageStyle:side'
                         ]
@@ -116,7 +118,7 @@
                         ]
                     },
                     simpleUpload: {
-                        uploadUrl: ':/uploadImage'
+                        uploadUrl: /*[[@{'/blog/uploadImage'}]]*/''
                     },
                     licenseKey: '',
                 })
@@ -127,6 +129,7 @@
                     console.error(error);
                 });
         });
+        /*]]>*/
     </script>
 </div>
 </body>
