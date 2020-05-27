@@ -22,7 +22,7 @@
                     <h1 th:utext="${blogPost.title}">title</h1>
                 </div>
             </div>
-            <div class="blog-content" th:if="${blogPost.blogCategory}">
+            <div th:if="${blogPost.blogCategory}">
                 <span>分类：</span>
                 <span th:each="item:${blogPost.blogCategory}">
                     <a th:utext="${item.title}" th:href="@{/blog/category/{catName}(catName=${item.title})}" href="#"
@@ -30,8 +30,7 @@
                 </span>
             </div>
             <div class="blog-content">
-
-                <div class="blog-body" th:utext="${blogPost.blogCont.cont}"/>
+                <div class="blog-body ck-content" th:utext="${blogPost.blogCont.cont}"/>
             </div>
             <div class="blog-footer">
                 <div class="media-left">
