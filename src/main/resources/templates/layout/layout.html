@@ -6,7 +6,7 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <title layout:title-pattern="$CONTENT_TITLE-$LAYOUT_TITLE">钦听知天下</title>
+        <title layout:title-pattern="$CONTENT_TITLE-$LAYOUT_TITLE" th:utext="${site.getTitle()}">标题</title>
         <link type="application/rsd+xml" rel="EditURI" href="/xmlrpc.php"/>
         <!--Bootstrap Stylesheet [ REQUIRED ]-->
         <link href="//static.qintingfm.com/nifty/v2.9/css/bootstrap.min.css" rel="stylesheet"/>

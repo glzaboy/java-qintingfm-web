@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/blog")
 @Slf4j
-public class BlogController {
+public class BlogController extends BaseController{
     BlogService blogServer;
 
     Manager manager;
@@ -96,6 +96,7 @@ public class BlogController {
         );
         blog.orElseThrow(()-> new ResourceNotFoundException("您要查看的内容已经不存在，请查看其它内容。"));
         modelAndView.setViewName("blog/view");
+        modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
 
@@ -154,6 +155,7 @@ public class BlogController {
         Page<Category> allCategory = categoryService.getAllCategory(1, 10000);
         modelAndView.addObject("allCategory", allCategory);
         modelAndView.setViewName("blog/post");
+        modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
 
@@ -206,6 +208,7 @@ public class BlogController {
         Page<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(null, null, 100);
         modelAndView.addObject("allCategory", category.toList());
         modelAndView.setViewName("blog/category");
+        modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
 
@@ -217,6 +220,7 @@ public class BlogController {
         Page<Blog> catBlogList = blogServer.getCatBlogList(category, pageIndex, null, 30);
         modelAndView.addObject("catBlog", catBlogList);
         modelAndView.setViewName("blog/categoryArticleList");
+        modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
     @RequestMapping(value = {"/uploadImage"},method = {RequestMethod.POST})

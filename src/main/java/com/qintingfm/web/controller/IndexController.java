@@ -2,22 +2,28 @@ package com.qintingfm.web.controller;
 
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
+import com.qintingfm.web.service.BaseService;
 import com.qintingfm.web.service.BlogService;
+import com.qintingfm.web.settings.SettingService;
+import com.qintingfm.web.settings.repo.SiteSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 /**
  * @author guliuzhong
  */
 @Controller
 @Slf4j
-public class IndexController {
+public class IndexController extends BaseController {
     BlogService blogServer;
 
     @Autowired
@@ -41,6 +47,7 @@ public class IndexController {
         view.addObject("pageIndex", blogList.getPageable().getPageNumber() + 1);
         view.addObject("totalPages", blogList.getTotalPages());
         view.addObject("total", blogList.getTotalElements());
+        view.addObject("site", getSiteSetting());
         view.setViewName("index");
         return view;
     }

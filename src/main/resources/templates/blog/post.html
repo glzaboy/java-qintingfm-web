@@ -2,9 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-    <title th:text="|${blog.title}-文章编辑|">文章编辑</title>
-    <meta name="Keywords" content="keywords" th:content="|${blog.title},资讯,博客,时事要闻,qintingfm,microtf|">
-    <meta name="description" content="资讯，博客，时事要闻" th:content="|${blog.title}资讯,博客,时事要闻|">
+    <title th:text="|${blog.title?:'新文章'}-文章编辑|">文章编辑</title>
     <style>
         #content-container:before {
             display: none;

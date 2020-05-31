@@ -2,6 +2,7 @@ package com.qintingfm.web.controller.admin;
 
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.BusinessException;
+import com.qintingfm.web.controller.BaseController;
 import com.qintingfm.web.settings.Form;
 import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
@@ -24,21 +25,14 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/admin/setting")
-public class SettingController {
-
-    SettingService settingService;
-
-    @Autowired
-    public void setSettingService(SettingService settingService) {
-        this.settingService = settingService;
-    }
-
+public class SettingController extends BaseController {
     @RequestMapping(value = "/edit/{name}", method = {RequestMethod.GET})
     public ModelAndView edit(ModelAndView modelAndView, @PathVariable(value = "name") String name) {
         modelAndView.setViewName("admin/setting");
         modelAndView.addObject("settingName",name);
         Form formBySettingName = settingService.getFormBySettingName(name);
         modelAndView.addObject("form", formBySettingName);
+        modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
 
