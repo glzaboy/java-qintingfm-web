@@ -143,6 +143,7 @@ public class BlogService extends BaseService {
         Collection<String> pushUrl = new ArrayList<>();
         String link=siteSetting.getMainUrl()+"/blog/view/"+blog.getPostId();
         log.error("当前推送地址{}",link);
+        pushUrl.add(link);
         baiduSpider.pushUrlToSpider(pushUrl);
 //        pushUrl.add(link);
 //        try {
