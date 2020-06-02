@@ -110,58 +110,66 @@ public class MetaWebLogServer extends XmlRpcServer {
         String methodName = xmlRequestParser.getMethodName();
         Class<? extends MetaWebLogServer> aClass = this.getClass();
         Optional<Map.Entry<String, String>> first = methodMap.entrySet().stream().filter(item -> methodName.equals(item.getKey())).findFirst();
-
-        first.ifPresent(findMethod -> {
-            try {
-                /**
-                 * 此部分需要进行身份认证才能操作
-                 */
-                if (NO_LOGIN_METHOD.stream().noneMatch(item -> item.equals(findMethod.getKey()))) {
-                    @SuppressWarnings("rawtypes")
-                    List params = xmlRequestParser.getParams();
-                    if (params == null) {
-                        responseError(outputStream, 403, "无权限调用");
-                    }
-                    if (params != null) {
-                        String userName = xmlRequestParser.getParams().get(1).toString();
-                        String password = xmlRequestParser.getParams().get(2).toString();
-                        if ("blogger.deletePost".equals(methodName)) {
-                            userName = xmlRequestParser.getParams().get(2).toString();
-                            password = xmlRequestParser.getParams().get(3).toString();
+        SiteSetting siteSetting = getSiteSetting();
+        if (siteSetting.getEnableMetaWebLog()){
+            if(first.isPresent()){
+                first.ifPresent(findMethod -> {
+                    try {
+                        /**
+                         * 此部分需要进行身份认证才能操作
+                         */
+                        if (NO_LOGIN_METHOD.stream().noneMatch(item -> item.equals(findMethod.getKey()))) {
+                            @SuppressWarnings("rawtypes")
+                            List params = xmlRequestParser.getParams();
+                            if (params == null) {
+                                responseError(outputStream, 403, "无权限调用");
+                            }
+                            if (params != null) {
+                                String userName = xmlRequestParser.getParams().get(1).toString();
+                                String password = xmlRequestParser.getParams().get(2).toString();
+                                if ("blogger.deletePost".equals(methodName)) {
+                                    userName = xmlRequestParser.getParams().get(2).toString();
+                                    password = xmlRequestParser.getParams().get(3).toString();
+                                }
+                                Optional<User> login = userService.validPassword(userName, password);
+                                if (!login.isPresent()) {
+                                    responseError(outputStream, 403, "无权限执行");
+                                    return;
+                                }
+                                Method method = aClass.getDeclaredMethod(findMethod.getValue(), XmlRpcRequestParser.class, User.class);
+                                Object invoke = method.invoke(this, xmlRequestParser, login.get());
+                                response(outputStream, invoke);
+                            }
+                        } else {
+                            Method method = aClass.getDeclaredMethod(findMethod.getValue(), XmlRpcRequestParser.class);
+                            Object invoke = method.invoke(this, xmlRequestParser);
+                            response(outputStream, invoke);
                         }
-                        Optional<User> login = userService.validPassword(userName, password);
-                        if (!login.isPresent()) {
-                            responseError(outputStream, 403, "无权限执行");
-                            return;
-                        }
-                        Method method = aClass.getDeclaredMethod(findMethod.getValue(), XmlRpcRequestParser.class, User.class);
-                        Object invoke = method.invoke(this, xmlRequestParser, login.get());
-                        response(outputStream, invoke);
+                    } catch (NoSuchMethodException e) {
+                        responseError(outputStream, 404, "服务不存在");
+                    } catch (IllegalAccessException e) {
+                        responseError(outputStream, 500, "服务执行出错 IllegalAccessException");
+                    } catch (InvocationTargetException e) {
+                        Throwable t = e.getCause();
+                        AjaxDto ajaxDto = new AjaxDto();
+                        do {
+                            if (t instanceof ConstraintViolationException) {
+                                Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
+                                logger.error(constraintViolations.toString());
+                                Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> k.getPropertyPath().toString(), ConstraintViolation::getMessage, (v1, v2) -> v1 + "," + v2));
+                                responseError(outputStream, 500, "服务执行出错" + collect.toString());
+                                return;
+                            }
+                        } while ((t = t.getCause()) != null);
+                        responseError(outputStream, 500, "服务执行出错 InvocationTargetException");
                     }
-                } else {
-                    Method method = aClass.getDeclaredMethod(findMethod.getValue(), XmlRpcRequestParser.class);
-                    Object invoke = method.invoke(this, xmlRequestParser);
-                    response(outputStream, invoke);
-                }
-            } catch (NoSuchMethodException e) {
+                });
+            }else{
                 responseError(outputStream, 404, "服务不存在");
-            } catch (IllegalAccessException e) {
-                responseError(outputStream, 404, "服务执行出错 IllegalAccessException");
-            } catch (InvocationTargetException e) {
-                Throwable t = e.getCause();
-                AjaxDto ajaxDto = new AjaxDto();
-                do {
-                    if (t instanceof ConstraintViolationException) {
-                        Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) t).getConstraintViolations();
-                        logger.error(constraintViolations.toString());
-                        Map<String, String> collect = constraintViolations.stream().collect(Collectors.toMap(k -> k.getPropertyPath().toString(), ConstraintViolation::getMessage, (v1, v2) -> v1 + "," + v2));
-                        responseError(outputStream, 500, "服务执行出错" + collect.toString());
-                        return;
-                    }
-                } while ((t = t.getCause()) != null);
-                responseError(outputStream, 500, "服务执行出错 InvocationTargetException");
             }
-        });
+        }else{
+            responseError(outputStream, 403, "MetaWebLog发布服务未开启，请联系管理员处理。");
+        }
     }
 
     private List<String> listMethods(XmlRpcRequestParser xmlRpcRequestParser) {
