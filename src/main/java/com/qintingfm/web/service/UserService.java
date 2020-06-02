@@ -47,7 +47,6 @@ public class UserService extends BaseService {
     String mailUser;
     UserRegisterJpa userRegisterJpa;
 
-    SettingService settingService;
 
     HtmlService htmlService;
 
@@ -67,11 +66,6 @@ public class UserService extends BaseService {
     @Autowired
     public void setUserRegisterJpa(UserRegisterJpa userRegisterJpa) {
         this.userRegisterJpa = userRegisterJpa;
-    }
-
-    @Autowired
-    public void setSettingService(SettingService settingService) {
-        this.settingService = settingService;
     }
 
     @Autowired

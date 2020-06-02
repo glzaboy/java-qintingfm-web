@@ -23,4 +23,9 @@ public class SiteSetting extends SettingData implements Serializable {
     String fixKeyWord;
     @SettingField(value = "固定描述")
     String fixDescription;
+    @SettingField(value = "站点内容URL前缀",tip = "填写您希望对外公布的URL地址，最后结尾不需要带/")
+    String mainUrl;
+    @SettingField(value = "开启MetaWebLog服务",tip = "开启后可以使用标准的xmlrpc服务发布内容")
+    Boolean enableMetaWebLog;
+
 }

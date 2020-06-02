@@ -1,6 +1,7 @@
 package com.qintingfm.web.controller;
 
 import com.qintingfm.web.service.MetaWebLogServer;
+import com.qintingfm.web.settings.repo.SiteSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.xmlrpc.XmlRpcException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.io.IOException;
  */
 @Controller
 @Slf4j
-public class XmlRpcController {
+public class XmlRpcController extends BaseController{
 
     MetaWebLogServer metaWebLogServer;
 
@@ -45,6 +46,7 @@ public class XmlRpcController {
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
         response.setContentType("application/xml");
+        metaWebLogServer.setRequestUrl(request.getRequestURI());
 //        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 //        byte[] bytes = new byte[1024];
 //        int readNum;
@@ -60,6 +62,8 @@ public class XmlRpcController {
             metaWebLogServer.invoke(inputStream, response.getOutputStream());
         } catch (SAXException e) {
             log.error("MetaWebLog invoke ERROR{}", e.getMessage());
+        }finally {
+            metaWebLogServer.removeRequestUrl();
         }
         return "";
     }
@@ -67,6 +71,7 @@ public class XmlRpcController {
     @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.GET}, produces = {"application/xml;charset=utf-8"})
     @ResponseBody
     public String xmlRpcServer() {
+        SiteSetting siteSetting = getSiteSetting();
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<rsd version=\"1.0\" xmlns=\"http://archipelago.phrasewise.com/rsd\">\n" +
                 "\t<service>\n" +
@@ -74,7 +79,7 @@ public class XmlRpcController {
                 "\t\t<engineLink>http://qintingfm.com/</engineLink>\n" +
                 "\t\t<homePageLink>http://qintingfm.com/</homePageLink>\n" +
                 "\t\t<apis>\n" +
-                "\t\t\t<api name=\"MetaWeblog\" blogID=\"1\" preferred=\"true\" apiLink=\"" + ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString() + "\" />\n" +
+                "\t\t\t<api name=\"MetaWeblog\" blogID=\"1\" preferred=\"true\" apiLink=\"" + siteSetting.getMainUrl()+ "/xmlrpc.php\" />\n" +
                 "\t\t</apis>\n" +
                 "\t</service>\n" +
                 "</rsd>";

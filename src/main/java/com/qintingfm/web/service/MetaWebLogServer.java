@@ -1,13 +1,13 @@
 package com.qintingfm.web.service;
 
 import com.qintingfm.web.common.AjaxDto;
-import com.qintingfm.web.controller.BlogController;
 import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.xmlrpc.RpcController;
 import com.qintingfm.web.service.xmlrpc.StreamConfig;
+import com.qintingfm.web.settings.repo.SiteSetting;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
@@ -19,9 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
 import javax.validation.ConstraintViolation;
@@ -31,7 +28,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,6 +43,10 @@ import java.util.stream.Stream;
  */
 @Service
 public class MetaWebLogServer extends XmlRpcServer {
+    /**
+     * requestUrl保存请求运行的URL,需要和具体的请求绑定，因此使用ThreadLocal
+     */
+    private ThreadLocal<String> requestUrl=new ThreadLocal<>();
     public static final List<String> NO_LOGIN_METHOD = Stream.of("system.listMethods").collect(Collectors.toList());
     final Map<String, String> methodMap = new HashMap<>();
     CategoryService categoryService;
@@ -66,6 +73,16 @@ public class MetaWebLogServer extends XmlRpcServer {
 
     }
 
+    public String getRequestUrl() {
+        return requestUrl.get();
+    }
+
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl.set(requestUrl);
+    }
+    public void removeRequestUrl() {
+        requestUrl.remove();
+    }
 
     @Autowired
     public void setManager(Manager manager) {
@@ -96,8 +113,10 @@ public class MetaWebLogServer extends XmlRpcServer {
 
         first.ifPresent(findMethod -> {
             try {
+                /**
+                 * 此部分需要进行身份认证才能操作
+                 */
                 if (NO_LOGIN_METHOD.stream().noneMatch(item -> item.equals(findMethod.getKey()))) {
-                    //需要登录
                     @SuppressWarnings("rawtypes")
                     List params = xmlRequestParser.getParams();
                     if (params == null) {
@@ -150,18 +169,20 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     private ArrayList<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {
+        SiteSetting siteSetting = getSiteSetting();
         ArrayList<Map<String, String>> mapVector = new ArrayList<>();
         Map<String, String> userBlog = new HashMap<>(10);
         userBlog.put("blogid", "1");
         userBlog.put("blogName", "qintingfm");
-        userBlog.put("url", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString());
-        userBlog.put("xmlrpc", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString());
+        userBlog.put("url", siteSetting.getMainUrl());
+        userBlog.put("xmlrpc", siteSetting.getMainUrl()+getRequestUrl());
         userBlog.put("isAdmin", "1");
         mapVector.add(userBlog);
         return mapVector;
     }
 
     private ArrayList<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, User userDetails) {
+        SiteSetting siteSetting = getSiteSetting();
         ArrayList<Map<String, String>> mapVector = new ArrayList<>();
         categoryService.getAllCategory(1, 10000).stream().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
@@ -169,7 +190,7 @@ public class MetaWebLogServer extends XmlRpcServer {
             caterories.put("categoryid", item.getCatId().toString());
             caterories.put("description", item.getDescription());
             caterories.put("rssUrl", "");
-            caterories.put("htmlUrl", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("/xmlrpc[\\S]{0,}[\\.]{0,}", "/") + "blog/category/" + item.getCatId());
+            caterories.put("htmlUrl", siteSetting.getMainUrl() + "/blog/category/" + item.getCatId());
             mapVector.add(caterories);
         });
 
@@ -195,6 +216,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
+        SiteSetting siteSetting = getSiteSetting();
         Map<String, Object> postMap = new HashMap<>(10);
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(0).toString());
         Optional<Blog> blog = blogServer.getBlog(postId);
@@ -203,12 +225,13 @@ public class MetaWebLogServer extends XmlRpcServer {
             postMap.put("title", blog1.getTitle());
             postMap.put("postid", blog1.getPostId());
             postMap.put("description", blog1.getBlogCont().getCont());
-            postMap.put("link", ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString().replaceAll("/xmlrpc[\\S]{0,}[\\.]{0,}", "/") + "blog/view/" + blog1.getPostId());
+            postMap.put("link", siteSetting.getMainUrl() + "/blog/view/" + blog1.getPostId());
         });
         return postMap;
     }
 
     ArrayList<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, User userDetails) {
+        SiteSetting siteSetting = getSiteSetting();
         ArrayList<Map<String, Object>> mapVector = new ArrayList<>();
         int pageSize = Integer.parseInt(xmlRequestParser.getParams().get(3).toString());
         if (pageSize >= 100) {
@@ -229,14 +252,15 @@ public class MetaWebLogServer extends XmlRpcServer {
             } else {
                 post.put("description", "");
             }
-            Method detail;
-            try {
-                detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, item.getPostId(), null).build().toString();
-                post.put("link", s);
-            } catch (NoSuchMethodException e) {
-                logger.error("获取文章地址出错{}",e.getMessage());
-            }
+            post.put("link", siteSetting.getMainUrl()+"/blog/view/"+item.getPostId());
+//            Method detail;
+//            try {
+//                detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
+//                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, item.getPostId(), null).build().toString();
+//                post.put("link", siteSetting.getMainUrl()+"/blog/view/"+item.getPostId());
+//            } catch (NoSuchMethodException e) {
+//                logger.error("获取文章地址出错{}",e.getMessage());
+//            }
             mapVector.add(post);
         });
         return mapVector;

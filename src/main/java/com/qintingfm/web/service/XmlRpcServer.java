@@ -26,7 +26,7 @@ import java.io.OutputStream;
  *
  * @author guliuzhong
  */
-public class XmlRpcServer {
+public class XmlRpcServer extends BaseService{
     StreamConfig streamConfig;
     RpcController rpcController;
     final static  Logger logger = LoggerFactory.getLogger(XmlRpcServer.class);

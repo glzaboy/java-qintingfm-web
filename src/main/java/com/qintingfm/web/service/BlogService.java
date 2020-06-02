@@ -8,6 +8,7 @@ import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.pojo.request.BlogPojo;
+import com.qintingfm.web.settings.repo.SiteSetting;
 import com.qintingfm.web.spider.BaiduSpider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,16 +139,21 @@ public class BlogService extends BaseService {
     }
 
     public void pushToBaidu(Blog blog) {
+        SiteSetting siteSetting = getSiteSetting();
         Collection<String> pushUrl = new ArrayList<>();
-        try {
-            Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, blog.getPostId(), null).build().toString();
-            pushUrl.add(s);
-            log.error("当前推送地址{}",s);
-            baiduSpider.pushUrlToSpider(pushUrl);
-        } catch (NoSuchMethodException e) {
-            log.error("找不到博客文档的url");
-        }
+        String link=siteSetting.getMainUrl()+"/blog/view/"+blog.getPostId();
+        log.error("当前推送地址{}",link);
+        baiduSpider.pushUrlToSpider(pushUrl);
+//        pushUrl.add(link);
+//        try {
+//            Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
+//            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, blog.getPostId(), null).build().toString();
+//            pushUrl.add(s);
+//            log.error("当前推送地址{}",s);
+//            baiduSpider.pushUrlToSpider(pushUrl);
+//        } catch (NoSuchMethodException e) {
+//            log.error("找不到博客文档的url");
+//        }
     }
 
     public Page<BlogComment> getBlogComment(Blog blog, Integer pageIndex, Sort sort, Integer pageSize) {
