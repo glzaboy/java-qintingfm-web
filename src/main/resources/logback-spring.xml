@@ -58,10 +58,9 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    <root level="trace">
+    <root level="info">
         <appender-ref ref="error"/>
         <appender-ref ref="info"/>
-        <appender-ref ref="STDOUT"/>
     </root>
     <logger name="org.hibernate.SQL" level="DEBUG">
         <appender-ref ref="debug"/>
