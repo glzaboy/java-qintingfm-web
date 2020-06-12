@@ -252,7 +252,6 @@ public class BlogController extends BaseController{
             log.error("上传文件出错{},上传到远程出错",e.getMessage());
             uploadErrorBuilder.message("上传文件出错，上传到远程出错"+e.getMessage());
             builder.error(uploadErrorBuilder.build());
-
         }
         return builder.build();
     }

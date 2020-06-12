@@ -1,6 +1,5 @@
 package com.qintingfm.web.service;
 
-import com.qintingfm.web.controller.BlogController;
 import com.qintingfm.web.jpa.BlogCommentJpa;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
@@ -16,11 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import javax.validation.ConstraintViolationException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 /**
