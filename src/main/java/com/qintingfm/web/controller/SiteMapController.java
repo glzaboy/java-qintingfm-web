@@ -1,13 +1,43 @@
 package com.qintingfm.web.controller;
 
-import com.qintingfm.web.pojo.SiteMap;
+import com.qintingfm.web.jpa.entity.Blog;
+import com.qintingfm.web.pojo.sitemap.SiteMap;
+import com.qintingfm.web.pojo.sitemap.SiteUrl;
+import com.qintingfm.web.service.BlogService;
+import com.qintingfm.web.settings.repo.SiteSetting;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Date;
+
+//import jdk.vm.ci.code.site.Site;
+
 @RestController
-public class SiteMapController {
+public class SiteMapController extends BaseController{
+    BlogService blogServer;
+
+    @Autowired
+    public void setBlogServer(BlogService blogServer) {
+        this.blogServer = blogServer;
+    }
     @GetMapping("sitemap.xml")
     SiteMap siteMap(){
-        return new SiteMap();
+        SiteSetting siteSetting = getSiteSetting();
+        SiteMap siteMap=new SiteMap();
+        ArrayList<SiteUrl> siteUrlList=new ArrayList<>();
+        Page<Blog> blogList = blogServer.getBlogList(0, 1, null, 500);
+        blogList.forEach(item->{
+            SiteUrl siteUrl=new SiteUrl();
+            siteUrl.loc=siteSetting.getMainUrl()+"/blog/view/"+item.getPostId();
+            siteUrl.lastmod=item.getDateCreated();
+            siteUrl.changefreq="daily";
+            siteUrl.priority="1.0";
+            siteUrlList.add(siteUrl);
+        });
+        siteMap.setUrl(siteUrlList);
+        return siteMap;
     }
 }
