@@ -8,6 +8,7 @@ import com.qintingfm.web.settings.repo.SiteSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -39,5 +40,15 @@ public class SiteMapController extends BaseController{
         });
         siteMap.setUrl(siteUrlList);
         return siteMap;
+    }
+    @GetMapping("robots.txt")
+    @ResponseBody
+    String robots(){
+        SiteSetting siteSetting = getSiteSetting();
+        StringBuffer stringBuffer=new StringBuffer();
+        stringBuffer.append("User-agent: *").append("\n");
+        stringBuffer.append("Disallow: /admin/").append("\n");
+        stringBuffer.append("Sitemap : ").append(siteSetting.getMainUrl()).append("robots.txt").append("\n");
+        return stringBuffer.toString();
     }
 }
