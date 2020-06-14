@@ -48,7 +48,7 @@ public class SiteMapController extends BaseController{
         StringBuffer stringBuffer=new StringBuffer();
         stringBuffer.append("User-agent: *").append("\n");
         stringBuffer.append("Disallow: /admin/").append("\n");
-        stringBuffer.append("Sitemap : ").append(siteSetting.getMainUrl()).append("/robots.txt").append("\n");
+        stringBuffer.append("Sitemap : ").append(siteSetting.getMainUrl()).append("/sitemap.xml").append("\n");
         return stringBuffer.toString();
     }
 }
