@@ -3,8 +3,8 @@
       layout:decorate="~{layout/layout}">
 <head>
     <title th:text="${blogPost.title}">首页</title>
-    <meta name="Keywords" content="keywords" th:content="|${blogPost.title},${site.getFixKeyWord()}|">
-    <meta name="description" content="资讯，博客，时事要闻" th:content="|${blogPost.title},${site.getFixDescription()}|">
+    <meta name="Keywords" content="keywords" th:content="|${blogPost.keywords?:blogPost.title},${site.getFixKeyWord()}|">
+    <meta name="description" content="资讯，博客，时事要闻" th:content="|${blogPost.summary?:''},${site.getFixDescription()}|">
     <style>
         #content-container:before {
             display: none;

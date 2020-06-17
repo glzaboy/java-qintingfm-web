@@ -2,19 +2,7 @@ package com.qintingfm.web.jpa.entity;
 
 import lombok.Data;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -45,5 +33,8 @@ public class Blog implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "blog")
     private List<BlogComment> comment;
     String state;
-
+    @Column(length = 255)
+    String keywords;
+    @Column(length = 512)
+    String summary;
 }

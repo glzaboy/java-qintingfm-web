@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/misc")
-public class MiscController {
+public class MiscController extends BaseController{
     @RequestMapping(value = "/changeTheme")
     @ResponseBody
     public Map<String, String> changeTheme() {

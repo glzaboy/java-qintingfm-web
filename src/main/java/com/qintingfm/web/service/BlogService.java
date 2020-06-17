@@ -1,5 +1,6 @@
 package com.qintingfm.web.service;
 
+import com.hankcs.hanlp.HanLP;
 import com.qintingfm.web.jpa.BlogCommentJpa;
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolationException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author guliuzhong
@@ -105,6 +107,8 @@ public class BlogService extends BaseService {
     public Blog save(BlogPojo blogPojo) throws ConstraintViolationException {
         validatePojoAndThrow(blogPojo);
         String contentText = htmlService.filterNone(blogPojo.getCont());
+        List<String> keywords = HanLP.extractKeyword(contentText, 15);
+        String summary = HanLP.getSummary(contentText, 255);
         if (contentText.length() > shortContLen) {
             contentText = contentText.substring(0, shortContLen);
         }
@@ -127,6 +131,8 @@ public class BlogService extends BaseService {
         blog.setAuthor(userService.getUser(blogPojo.getAuthorId()));
         blog.setBlogCategory(categoryService.getCategory(blogPojo.getCatNames()));
         blog.setState(blogPojo.getState().toLowerCase());
+        blog.setSummary(summary);
+        blog.setKeywords(keywords.stream().collect(Collectors.joining(",")).toString());
         Blog save = blogJpa.save(blog);
         if (save.getState() != null && "publish".equalsIgnoreCase(save.getState())) {
             pushToBaidu(save);

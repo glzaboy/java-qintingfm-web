@@ -98,9 +98,6 @@ public class UserController {
     @ResponseBody
     public AjaxDto resetPost(ModelAndView modelAndView, @RequestParam(value = "email") String email, @RequestParam(value = "userName") String userName) {
         AjaxDto ajaxDto = new AjaxDto();
-//        UserRegisterPojo.UserRegisterPojoBuilder builder = UserRegisterPojo.builder();
-//        builder.email(email).userName(userName).tel(tel);
-//        UserRegister register = userService.register(builder.build());
         ajaxDto.setMessage("即将开放，正在加紧开发中~~");
         return ajaxDto;
     }

@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.Date;
-
-//import jdk.vm.ci.code.site.Site;
 
 @RestController
 public class SiteMapController extends BaseController{

@@ -2,10 +2,7 @@ package com.qintingfm.web.controller;
 
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.ResourceNotFoundException;
-import com.qintingfm.web.jpa.entity.Blog;
-import com.qintingfm.web.jpa.entity.BlogComment;
-import com.qintingfm.web.jpa.entity.BlogCont;
-import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.jpa.entity.*;
 import com.qintingfm.web.pojo.WebUserDetails;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.pojo.request.UploadError;
@@ -58,8 +55,6 @@ public class BlogController extends BaseController{
     CategoryService categoryService;
     HtmlService htmlService;
 
-    UserService userService;
-
     @Autowired
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
@@ -73,11 +68,6 @@ public class BlogController extends BaseController{
     @Autowired
     public void setHtmlService(HtmlService htmlService) {
         this.htmlService = htmlService;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 
     @Autowired
@@ -105,9 +95,8 @@ public class BlogController extends BaseController{
     @Transactional(rollbackFor = Exception.class)
     public AjaxDto postComment(@PathVariable("postId") Integer postId, @RequestParam("cont") String cont) {
         AjaxDto ajaxDto = new AjaxDto();
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken) {
+        Optional<User> loginUser = getLoginUser();
+        if (!loginUser.isPresent()) {
             ajaxDto.setMessage("用户没有登录");
             try {
                 Method loginPage = UserController.class.getMethod("loginPage", ModelAndView.class);
@@ -122,8 +111,8 @@ public class BlogController extends BaseController{
         Optional<Blog> blog = blogServer.getBlog(postId);
         blog.ifPresent(item -> {
                     BlogComment blogComment = new BlogComment();
-                    WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
-                    blogComment.setAuthor(userService.getUser(principal.getUsername()));
+                    User user = loginUser.get();
+                    blogComment.setAuthor(user);
                     blogComment.setCont(cont);
                     blogComment.setBlog(item);
                     blogServer.saveComment(blogComment);
@@ -164,9 +153,8 @@ public class BlogController extends BaseController{
     @Transactional(rollbackFor = {Exception.class})
     public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNames", required = false) List<String> catNames, @RequestParam(value = "state", required = false) String state) {
         AjaxDto ajaxDto = new AjaxDto();
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken) {
+        Optional<User> loginUser = getLoginUser();
+        if (!loginUser.isPresent()) {
             ajaxDto.setMessage("用户没有登录");
             try {
                 Method loginPage = UserController.class.getMethod("loginPage", ModelAndView.class);
@@ -183,8 +171,7 @@ public class BlogController extends BaseController{
         builder.title(title);
         builder.cont(cont);
         builder.catNames(catNames);
-        WebUserDetails principal = (WebUserDetails) authentication.getPrincipal();
-        builder.authorId(principal.getUserId());
+        builder.authorId(loginUser.get().getId());
         if (state != null) {
             builder.state("publish");
         } else {
@@ -228,9 +215,8 @@ public class BlogController extends BaseController{
     public UploadImagePojo uploadImage(@RequestParam("upload") MultipartFile multipartFile) {
         UploadImagePojo.UploadImagePojoBuilder builder = UploadImagePojo.builder();
         UploadError.UploadErrorBuilder uploadErrorBuilder = UploadError.builder();
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken) {
+        Optional<User> loginUser = getLoginUser();
+        if (!loginUser.isPresent()) {
             uploadErrorBuilder.message("用户没有登录");
             builder.error(uploadErrorBuilder.build());
             return builder.build();

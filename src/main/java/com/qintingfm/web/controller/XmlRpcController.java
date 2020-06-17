@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletInputStream;
@@ -36,12 +35,12 @@ public class XmlRpcController extends BaseController{
         this.metaWebLogServer = metaWebLogServer;
     }
 
-    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.OPTIONS}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {MediaType.ALL_VALUE})
+    @RequestMapping(value = { "xmlrpc.php"}, method = {RequestMethod.OPTIONS}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {MediaType.ALL_VALUE})
     public ResponseEntity<String> xmlRpcServerOption(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         return ResponseEntity.ok().header("Allow", "GET,POST,OPTIONS").header("PowerBy", "qintingfm.com").body("");
     }
 
-    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.POST}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml"})
+    @RequestMapping(value = {"xmlrpc.php"}, method = {RequestMethod.POST}, produces = {"application/xml;charset=utf-8", "text/xml"}, consumes = {"application/xml", "text/xml"})
     @ResponseBody
     public String xmlRpcServer(@Autowired HttpServletRequest request, @Autowired HttpServletResponse response) throws IOException, XmlRpcException {
         ServletInputStream inputStream = request.getInputStream();
@@ -68,7 +67,7 @@ public class XmlRpcController extends BaseController{
         return "";
     }
 
-    @RequestMapping(value = {"/xmlrpc/server", "xmlrpc.php"}, method = {RequestMethod.GET}, produces = {"application/xml;charset=utf-8"})
+    @RequestMapping(value = {"xmlrpc.php"}, method = {RequestMethod.GET}, produces = {"application/xml;charset=utf-8"})
     @ResponseBody
     public String xmlRpcServer() {
         SiteSetting siteSetting = getSiteSetting();
