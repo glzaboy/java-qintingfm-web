@@ -71,14 +71,11 @@
                                         <i class="demo-pli-male"></i>
                                     </span>
                                     <!--You can also display a user name in the navbar.-->
-                                    <!--<div class="username hidden-xs">Aaron Chavez</div>-->
+                                    <div class="username hidden-xs" th:utext="${#authentication.name}">Aaron Chavez</div>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right panel-default">
                                     <ul class="head-list">
-                                        <li>
-                                            <span th:utext="${#authentication.name}"></span>
-                                        </li>
                                         <li>
                                             <a href="#">
                                                 <i class="demo-pli-male icon-lg icon-fw"></i>
@@ -121,7 +118,6 @@
                     <!--Page content-->
                     <div id="page-content" layout:fragment="content"></div>
                     <!--End page content-->
-
                 </div>
                 <!--END CONTENT CONTAINER-->
                 <!--ASIDE-->
@@ -237,18 +233,11 @@
                         </div>
                     </div>
                 </aside>
-                <!--===================================================-->
                 <!--END ASIDE-->
-
-
                 <!--MAIN NAVIGATION-->
-                <!--===================================================-->
                 <nav id="mainnav-container">
                     <div id="mainnav">
-
-
                         <!--Menu-->
-                        <!--================================-->
                         <div id="mainnav-menu-wrap">
                             <div class="nano">
                                 <div class="nano-content">
@@ -273,14 +262,10 @@
                                 </div>
                             </div>
                         </div>
-                        <!--================================-->
                         <!--End menu-->
-
                     </div>
                 </nav>
-                <!--===================================================-->
                 <!--END MAIN NAVIGATION-->
-
             </div>
             <footer id="footer" th:fragment="contentFoot">
                 <div class="hide-fixed pull-right pad-rgt">
@@ -289,7 +274,6 @@
                 <p class="pad-lft"> &#0169; 2020 qintingfm.com</p>
             </footer>
         </div>
-        <!--===================================================-->
         <!-- END OF CONTAINER -->
         <div>
             <!-- SCROLL PAGE BUTTON -->
