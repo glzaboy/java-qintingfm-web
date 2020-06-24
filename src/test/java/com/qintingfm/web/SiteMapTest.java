@@ -1,6 +1,6 @@
 package com.qintingfm.web;
 
-import com.qintingfm.web.pojo.SiteMap;
+import com.qintingfm.web.pojo.sitemap.SiteMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,7 +17,6 @@ public class SiteMapTest {
         JAXBContext jaxbContext=JAXBContext.newInstance(SiteMap.class);
         Marshaller marshaller = jaxbContext.createMarshaller();
         PrintWriter println=new PrintWriter(System.out);
-        siteMap.setName("china");
         marshaller.marshal(siteMap,println);
     }
 }
