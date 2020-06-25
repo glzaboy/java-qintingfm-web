@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 分类
@@ -42,5 +43,11 @@ public class CategoryService {
 
     public List<Category> getCategory(Collection<String> categoryNameList) {
         return categoryJpa.findAllByTitleIn(new ArrayList<>(categoryNameList));
+    }
+    public Optional<Category> getCategory(Integer catId) {
+        return categoryJpa.findById(catId);
+    }
+    public Category save(Category category) {
+        return categoryJpa.save(category);
     }
 }

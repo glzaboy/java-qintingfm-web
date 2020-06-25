@@ -31,8 +31,8 @@
         </a>
         <!--Submenu-->
         <ul class="collapse">
-            <li th:class="${tpl}=='/admin/category'?'active-link':''">
-                <a href="#" th:href="@{/admin/category}">分类设置</a>
+            <li th:class="${tpl}=='/admin/category/list'?'active-link':''">
+                <a href="#" th:href="@{/admin/category/list}">分类设置</a>
             </li>
             <li th:class="${tpl}=='/admin/setting/baidu'?'active-link':''">
                 <a href="#" th:href="@{/admin/setting/edit/baidu}">百度推送</a>
@@ -52,14 +52,14 @@
 <!-- 分页 -->
 <ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
     <li th:class="${pageIndex==1}?'disabled':''">
-        <a href="#" class="demo-pli-arrow-left" th:href="${#strings.replace(urlPrefix,'{}',1)}"></a></li>
+        <a href="#" class="demo-pli-arrow-left" th:href="@{${urlPrefix}(page=${pageTotal})}"></a></li>
     <th:block th:each="index:${#numbers.sequence(1, pageTotal)}">
         <li th:class="${pageIndex==index}?'active':''" th:if="${(pageIndex-10/2) le 0 and index le 10} or (${(pageIndex-10/2) gt 0} and ${index ge pageIndex-10/2+1 and index le pageIndex-10/2+10} and ${pageTotal-pageIndex ge 10/2}) or  ${pageTotal-pageIndex lt 10/2 and index gt pageTotal-10}">
-            <a href="#" th:href="${#strings.replace(urlPrefix,'{}',index)}"th:text="${index}">1</a>
+            <a href="#" th:href="@{${urlPrefix}(page=${index})}"th:text="${index}">1</a>
         </li>
     </th:block>
     <li th:class="${pageIndex==pageTotal}?'disabled':''">
-        <a href="#" class="demo-pli-arrow-right" th:href="${#strings.replace(urlPrefix,'{}',pageTotal)}"></a>
+        <a href="#" class="demo-pli-arrow-right" th:href="@{${urlPrefix}(page=${pageTotal})}"></a>
     </li>
 </ul>
 </html>

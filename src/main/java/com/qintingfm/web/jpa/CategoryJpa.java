@@ -12,7 +12,7 @@ import java.util.List;
  * @author guliuzhong
  */
 @Component
-public interface CategoryJpa extends JpaRepository<Category, String> {
+public interface CategoryJpa extends JpaRepository<Category, Integer> {
     /**
      * 查找指定类型的分类
      *

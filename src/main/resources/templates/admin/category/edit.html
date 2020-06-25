@@ -1,0 +1,14 @@
+ <form class="form-horizontal form-padding ajaxform" th:action="@{/admin/category/edit/{catId}(catId=${catId})}" method="post">
+    <div class="form-group">
+        <label class="col-md-3 control-label"  for="title">名称</label>
+        <div class="col-md-9">
+            <input type="text" id="title" name="title"  class="form-control" th:placeholder="${category.title}" th:value="${category.title}"  />
+         </div>
+    </div>
+     <div class="form-group">
+         <label class="col-md-3 control-label"  for="description"></label>
+         <div class="col-md-9">
+             <input type="text" id="description"  name="description" class="form-control" th:placeholder="${category.description}" th:value="${category.description}"  />
+         </div>
+     </div>
+</form>

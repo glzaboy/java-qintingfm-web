@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <title>设置选项</title>
+    <meta name="Keywords" content="资讯,博客,时事要闻,qintingfm,microtf">
+    <meta name="description" content="资讯,博客,时事要闻">
+    <link href="https://static.qintingfm.com/nifty/v2.9/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <style>
+        #content-container:before {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<ul id="mainnav-menu" class="list-group" layout:fragment="menu"
+    th:include="fragments/common::menu(${'/admin/category/list'})"></ul>
+<div id="page-content" layout:fragment="content">
+    <div class="row fixed-fluid">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="pad-btm form-inline">
+                    <div class="row">
+                        <div class="col-sm-6 table-toolbar-left">
+                            <a class="btn btn-primary ajaxdialog" th:href="@{'/admin/category/edit/{catId}'(catId=0)}"><i class="ion-plus"></i> 新建类目</a>
+                        </div>
+                        <div class="col-sm-6 col-xs-12 table-toolbar-right">
+                            <div class="form-group">
+                                <input id="demo-input-search2" type="text" placeholder="Search" class="form-control" autocomplete="off">
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-default"><i class="ion-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>名称</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category:${categories}">
+                        <td class="text-center" th:utext="${category.catId}">1</td>
+                        <td><a href="#" class="btn-link" target="_blank"  th:href="@{'/blog/category/{catName}/'(catName=${category.title})}" th:utext="${category.title}">title</a></td>
+                        <td><a href="#" class="btn-link ajaxdialog" th:href="@{'/admin/category/edit/{catId}'(catId=${category.catId})}" title="编辑类目">编辑</a>&nbsp;<a href="" class="btn-link ajaxask" >禁用</a> </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-5 hidden-xs">
+                        <div th:text="|展现${pageIndex}页 ,共计${totalPages}页,合计${total}条|"></div>
+                    </div>
+                    <div class="col-sm-7 col-xs-12 text-right">
+                        <ul class="pagination" th:replace="fragments/common::pager(${pageIndex},${totalPages},'/admin/category/list/{page}')"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

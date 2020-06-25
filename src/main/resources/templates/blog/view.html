@@ -84,7 +84,7 @@
                 </div>
                 <div class="col-sm-7 text-right">
                     <ul class="pagination"
-                        th:replace="fragments/common::pager(${blogComment.pageable.pageNumber+1},${blogComment.totalPages},'/blog/view/'+${blogPost.postId}+'/{}')"/>
+                        th:replace="fragments/common::pager(${blogComment.pageable.pageNumber+1},${blogComment.totalPages},'/blog/view/'+${blogPost.postId}+'/{page}')"/>
                 </div>
             </div>
         </div>
