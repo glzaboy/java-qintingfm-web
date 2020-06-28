@@ -1,9 +1,6 @@
 package com.qintingfm.web.config;
 
-import com.qintingfm.web.security.JpaTokenRepositoryImpl;
-import com.qintingfm.web.security.WebLoginFailHandler;
-import com.qintingfm.web.security.WebLoginSuccessHandler;
-import com.qintingfm.web.security.WebLogoutSuccessHandler;
+import com.qintingfm.web.security.*;
 import com.qintingfm.web.service.AppUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 
 import java.util.UUID;
@@ -27,6 +25,12 @@ import java.util.UUID;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     final UUID key = UUID.randomUUID();
     AppUserDetailsServiceImpl appUserDetailsService;
+
+    ImageValidateCodeFilter imageValidateCodeFilter;
+    @Autowired
+    public void setImageValidateCodeFilter(ImageValidateCodeFilter imageValidateCodeFilter) {
+        this.imageValidateCodeFilter = imageValidateCodeFilter;
+    }
 
     @Autowired
     public void setAppUserDetailsService(AppUserDetailsServiceImpl appUserDetailsService) {
@@ -68,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/user/login","/user/active/*", "/user/register","/user/reset", "/xmlrpc/server", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt","/favicon.ico","/sitemap*").permitAll()
+        http.addFilterBefore(imageValidateCodeFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/user/login","/user/active/*", "/user/register","/user/reset", "/xmlrpc/server", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt","/favicon.ico","/sitemap*").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/user/login").loginProcessingUrl("/login").
@@ -76,7 +80,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
                 .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString())
-                .and().csrf(cs -> cs.ignoringAntMatchers("/xmlrpc/server", "/xmlrpc.php", "/user/register","/blog/uploadImage"));
+                .and().csrf(cs -> cs.ignoringAntMatchers("/xmlrpc/server", "/xmlrpc.php", "/user/register","/blog/uploadImage"))
+                ;
     }
 
     @Bean
