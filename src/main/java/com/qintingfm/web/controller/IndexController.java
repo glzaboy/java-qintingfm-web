@@ -2,21 +2,15 @@ package com.qintingfm.web.controller;
 
 import com.qintingfm.web.jpa.BlogJpa;
 import com.qintingfm.web.jpa.entity.Blog;
-import com.qintingfm.web.service.BaseService;
 import com.qintingfm.web.service.BlogService;
-import com.qintingfm.web.settings.SettingService;
-import com.qintingfm.web.settings.repo.SiteSetting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Optional;
 
 /**
  * @author guliuzhong
@@ -29,13 +23,6 @@ public class IndexController extends BaseController {
     @Autowired
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
-    }
-
-    BlogJpa blogJpa;
-
-    @Autowired
-    public void setBlogJpa(BlogJpa blogJpa) {
-        this.blogJpa = blogJpa;
     }
 
     @RequestMapping(value = {"/page/{pageIndex}", "/"})

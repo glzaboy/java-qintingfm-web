@@ -1,7 +1,6 @@
 package com.qintingfm.web.controller.admin;
 
 import com.qintingfm.web.common.AjaxDto;
-import com.qintingfm.web.common.exception.ResourceNotFoundException;
 import com.qintingfm.web.controller.BaseController;
 import com.qintingfm.web.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +43,12 @@ public class Category extends BaseController {
     }
     @PostMapping("/edit/{catId}")
     @ResponseBody
-    AjaxDto edit(ModelAndView modelAndView, @PathVariable("catId") Integer catId, @RequestParam("title") String title,@RequestParam("description") String description){
+    AjaxDto edit(@PathVariable("catId") Integer catId, @RequestParam("title") String title,@RequestParam("description") String description){
         Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(catId);
         com.qintingfm.web.jpa.entity.Category category1 = category.orElse(new com.qintingfm.web.jpa.entity.Category());
         category1.setTitle(title);
         category1.setDescription(description);
-        com.qintingfm.web.jpa.entity.Category save = categoryService.save(category1);
+        categoryService.save(category1);
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setMessage("保存成功");
         ajaxDto.setAutoJump(1);

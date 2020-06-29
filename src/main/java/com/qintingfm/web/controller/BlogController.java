@@ -3,43 +3,29 @@ package com.qintingfm.web.controller;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.ResourceNotFoundException;
 import com.qintingfm.web.jpa.entity.*;
-import com.qintingfm.web.pojo.WebUserDetails;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.pojo.request.UploadError;
 import com.qintingfm.web.pojo.request.UploadImagePojo;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
 import com.qintingfm.web.service.HtmlService;
-import com.qintingfm.web.service.UserService;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -222,7 +208,7 @@ public class BlogController extends BaseController{
             return builder.build();
         }
         try {
-            Map<String,String> returnMap=new HashMap<>();
+            Map<String,String> returnMap=new HashMap<>(8);
             byte[] bytes = multipartFile.getBytes();
             String s = DigestUtils.md5DigestAsHex(bytes);
             StorageObject put = manager.put(bytes, s);

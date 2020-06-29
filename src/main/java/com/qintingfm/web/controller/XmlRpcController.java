@@ -46,17 +46,6 @@ public class XmlRpcController extends BaseController{
         ServletInputStream inputStream = request.getInputStream();
         response.setContentType("application/xml");
         metaWebLogServer.setRequestUrl(request.getRequestURI());
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        byte[] bytes = new byte[1024];
-//        int readNum;
-//        do {
-//            readNum = inputStream.read(bytes, 0, 1024);
-//            if (readNum > 0) {
-//                byteArrayOutputStream.write(bytes, 0, readNum);
-//            }
-//        } while (readNum > 0);
-//        log.info(byteArrayOutputStream.toString());
-//        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         try {
             metaWebLogServer.invoke(inputStream, response.getOutputStream());
         } catch (SAXException e) {
