@@ -27,11 +27,11 @@ public class ImageValidateCodeFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        if ("/login".equals(httpServletRequest.getRequestURI()) && "POST".equals(httpServletRequest.getMethod())) {
-//            throw new BusinessException("test");
-            webLoginFailHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, new AuthExc("test"));
-            return;
-        }
+//        if ("/login".equals(httpServletRequest.getRequestURI()) && "POST".equals(httpServletRequest.getMethod())) {
+////            throw new BusinessException("test");
+//            webLoginFailHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, new AuthExc("test"));
+//            return;
+//        }
 
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
