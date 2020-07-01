@@ -32,6 +32,7 @@ public class WebLoginFailHandler implements AuthenticationFailureHandler {
         AjaxDto ajaxDto = new AjaxDto();
         ajaxDto.setMessage("登录失败" + e.getLocalizedMessage());
         ajaxDto.setAutoHide("1");
+        ajaxDto.setAutoJump(3);
         httpServletResponse.setCharacterEncoding("utf-8");
         httpServletResponse.getWriter().println(objectMapper.writeValueAsString(ajaxDto));
     }

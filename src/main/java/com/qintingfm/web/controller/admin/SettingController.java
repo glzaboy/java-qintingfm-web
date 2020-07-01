@@ -55,7 +55,7 @@ public class SettingController extends BaseController {
                     if (!accessible) {
                         declaredField2.setAccessible(true);
                     }
-                    if (declaredField2.getName().equalsIgnoreCase("settingName")) {
+                    if ("settingName".equalsIgnoreCase(declaredField2.getName())) {
                         declaredField2.set(settingData, name);
                     } else {
                         String[] strings = parameterMap.get(declaredField2.getName());

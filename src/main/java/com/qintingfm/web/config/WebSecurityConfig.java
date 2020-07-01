@@ -26,10 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     final UUID key = UUID.randomUUID();
     AppUserDetailsServiceImpl appUserDetailsService;
 
-    ImageValidateCodeFilter imageValidateCodeFilter;
+    CaptchaFilter captchaFilter;
     @Autowired
-    public void setImageValidateCodeFilter(ImageValidateCodeFilter imageValidateCodeFilter) {
-        this.imageValidateCodeFilter = imageValidateCodeFilter;
+    public void setCaptchaFilter(CaptchaFilter captchaFilter) {
+        this.captchaFilter = captchaFilter;
     }
 
     @Autowired
@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(imageValidateCodeFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/user/login","/user/active/*", "/user/register","/user/reset", "/xmlrpc/server", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt","/favicon.ico","/sitemap*").permitAll()
+        http.addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/user/login","/user/active/*", "/user/register","/user/reset", "/xmlrpc/server", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt","/favicon.ico","/sitemap*","/captcha/showCaptcha").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/user/login").loginProcessingUrl("/login").
