@@ -40,7 +40,7 @@
                 <div class="form-group">
                     <div class="col-sm-12">
                         <div class="checkbox">
-                            <input id="state" class="magic-checkbox" type="checkbox" checked="" name="state" value="publish">
+                            <input id="state" class="magic-checkbox" type="checkbox" th:checked="${blog.state=='publish'}" name="state" value="publish">
                             <label for="state">发布前台</label>
                         </div>
                     </div>
@@ -74,13 +74,15 @@
                 .create(document.querySelector('.editor'), {
                     toolbar: {
                         items: [
+                            'heading',
                             'bold',
                             'italic',
                             'underline',
                             'strikethrough',
                             'fontColor',
-                            '|',
                             'undo',
+                            'redo',
+                            '|',
                             'link',
                             'imageUpload',
                             '|',
@@ -90,10 +92,7 @@
                             '|',
                             'blockQuote',
                             'insertTable',
-                            '|',
-                            'redo',
-                            'removeFormat',
-                            'fontBackgroundColor'
+                            'removeFormat'
                         ]
                     },
                     language: 'zh-cn',
