@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-sm-7 text-right">
                         <ul class="pagination"
-                            th:replace="fragments/common::pager(${catBlog.pageable.pageNumber+1},${catBlog.totalPages},@{/blog/category/{catName}/{}(catName=${catName})})"/>
+                            th:replace="fragments/common::pager(${catBlog.pageable.pageNumber+1},${catBlog.totalPages},@{/blog/category/{catName}/{page}(catName=${catName})})"/>
                     </div>
                 </div>
             </div>
