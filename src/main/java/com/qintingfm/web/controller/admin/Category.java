@@ -2,7 +2,11 @@ package com.qintingfm.web.controller.admin;
 
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
+import com.qintingfm.web.form.Form;
+import com.qintingfm.web.form.FormGeneralServices;
+import com.qintingfm.web.pojo.CategoryVo;
 import com.qintingfm.web.service.CategoryService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,7 +19,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin/category")
 public class Category extends BaseController {
+    FormGeneralServices formGeneralServices;
     CategoryService categoryService;
+    @Autowired
+    public void setFormGeneralServices(FormGeneralServices formGeneralServices) {
+        this.formGeneralServices = formGeneralServices;
+    }
+
     @Autowired
     public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -37,7 +47,11 @@ public class Category extends BaseController {
         modelAndView.addObject("site", getSiteSetting());
         Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(catId);
         com.qintingfm.web.jpa.entity.Category category1 = category.orElse(new com.qintingfm.web.jpa.entity.Category());
-        modelAndView.addObject("category",category1);
+//        modelAndView.addObject("category",category1);
+        CategoryVo categoryVo=new CategoryVo();
+        BeanUtils.copyProperties(category1,categoryVo);
+        Form form =  formGeneralServices.generalFormData(categoryVo);
+        modelAndView.addObject("form", form);
         modelAndView.setViewName("admin/category/edit");
         return modelAndView;
     }
