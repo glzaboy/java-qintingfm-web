@@ -4,13 +4,17 @@ import com.qintingfm.web.form.Annotation.FieldAnnotation;
 import com.qintingfm.web.form.Annotation.FormAnnotation;
 import lombok.Data;
 
-@FormAnnotation(method = "post",action = "/acdefg",title = "类别设置")
+/**
+ * 类别
+ * @author guliuzhong
+ */
+@FormAnnotation(method = "post",hideSubmit = true)
 @Data
 public class CategoryVo {
-    @FieldAnnotation(title = "类别ID",tip = "",Order = 1)
-    public Integer catId;
-    @FieldAnnotation(title = "名称",tip = "",Order = 1)
-    public String title;
-    @FieldAnnotation(title = "描述",tip = "",Order = 1)
-    public String description;
+    @FieldAnnotation(title = "类别ID",tip = "",order = 0,hide = true)
+    Integer catId;
+    @FieldAnnotation(title = "名称",tip = "",order = 1)
+    String title;
+    @FieldAnnotation(title = "描述",tip = "",order = 2)
+    String description;
 }

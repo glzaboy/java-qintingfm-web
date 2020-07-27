@@ -1,16 +1,2 @@
-<div th:object="${form}" xmlns:th="http://www.w3.org/1999/html">
-<form class="form-horizontal form-padding ajaxform" th:action="*{action}" method="post" th:method="*{method}">
-    <h3 class="panel-title" th:utext="*{title}">标题</h3>
-    <!--Static-->
-    <div class="form-group" th:each="item:${form.formItems}">
-        <label class="col-md-3 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
-        <div class="col-md-9">
-            <input type="text" id="input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control" th:placeholder="${item.fieldName}" th:value="${item.value}" th:if="${item.fieldName ne 'settingName' && item.className ne 'Boolean'} " />
-            <input type="checkbox" id="id-state-input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="toggle-switch" value="TRUE"  th:checked="${item.value eq 'TRUE' }" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "/>
-            <label for="id-state-input" th:for="${item.fieldName}" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "></label>
-            <p class="form-control-static" th:utext="${item.value}" th:if="${item.fieldName eq 'settingName'}">Text</p>
-            <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
-        </div>
-    </div>
-</form>
+<div th:include="fragments/common::form(${form},@{/admin/category/edit/{catId}(catId=${catId})})" xmlns:th="http://www.w3.org/1999/html">
 </div>

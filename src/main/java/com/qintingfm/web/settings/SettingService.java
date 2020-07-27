@@ -91,6 +91,7 @@ public class SettingService extends BaseService {
         Optional<SettingInfo> byId = settingInfoJpa.findById(settingName);
         SettingInfo settingInfo = new SettingInfo();
         settingInfo.setName(settingName);
+        assert bean.getClass() != null;
         settingInfo.setClassName(bean.getClass().getName());
         SettingInfo settingInfo1 = byId.orElse(settingInfo);
         settingInfoJpa.saveAndFlush(settingInfo1);
@@ -159,7 +160,9 @@ public class SettingService extends BaseService {
         byId.orElseThrow(()-> new BusinessException("没有获取到配置"));
         SettingInfo settingInfo = byId.get();
         try {
-            return (Class<? extends SettingData>)this.getClass().getClassLoader().loadClass(settingInfo.getClassName());
+            @SuppressWarnings({ "unchecked" })
+            Class<? extends SettingData> aClass = (Class<? extends SettingData>) this.getClass().getClassLoader().loadClass(settingInfo.getClassName());
+            return aClass;
         } catch (ClassNotFoundException e) {
             throw new BusinessException("没有获取配置相关数据定义！");
         }

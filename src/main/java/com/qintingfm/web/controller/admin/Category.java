@@ -3,7 +3,7 @@ package com.qintingfm.web.controller.admin;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
 import com.qintingfm.web.form.Form;
-import com.qintingfm.web.form.FormGeneralServices;
+import com.qintingfm.web.form.FormGenerateService;
 import com.qintingfm.web.pojo.CategoryVo;
 import com.qintingfm.web.service.CategoryService;
 import org.springframework.beans.BeanUtils;
@@ -19,11 +19,11 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin/category")
 public class Category extends BaseController {
-    FormGeneralServices formGeneralServices;
+    FormGenerateService formGenerateService;
     CategoryService categoryService;
     @Autowired
-    public void setFormGeneralServices(FormGeneralServices formGeneralServices) {
-        this.formGeneralServices = formGeneralServices;
+    public void setFormGenerateService(FormGenerateService formGenerateService) {
+        this.formGenerateService = formGenerateService;
     }
 
     @Autowired
@@ -47,21 +47,20 @@ public class Category extends BaseController {
         modelAndView.addObject("site", getSiteSetting());
         Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(catId);
         com.qintingfm.web.jpa.entity.Category category1 = category.orElse(new com.qintingfm.web.jpa.entity.Category());
-//        modelAndView.addObject("category",category1);
         CategoryVo categoryVo=new CategoryVo();
         BeanUtils.copyProperties(category1,categoryVo);
-        Form form =  formGeneralServices.generalFormData(categoryVo);
+        Form form =  formGenerateService.generalFormData(categoryVo);
         modelAndView.addObject("form", form);
         modelAndView.setViewName("admin/category/edit");
         return modelAndView;
     }
     @PostMapping("/edit/{catId}")
     @ResponseBody
-    AjaxDto edit(@PathVariable("catId") Integer catId, @RequestParam("title") String title,@RequestParam("description") String description){
-        Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(catId);
+    AjaxDto edit(CategoryVo categoryVo){
+        Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(categoryVo.getCatId());
         com.qintingfm.web.jpa.entity.Category category1 = category.orElse(new com.qintingfm.web.jpa.entity.Category());
-        category1.setTitle(title);
-        category1.setDescription(description);
+        category1.setTitle(categoryVo.getTitle());
+        category1.setDescription(categoryVo.getDescription());
         categoryService.save(category1);
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setMessage("保存成功");
