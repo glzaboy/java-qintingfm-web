@@ -11,11 +11,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface FormAnnotation {
-    @AliasFor("value")
-    String action() default "";
-    @AliasFor("action")
+    @AliasFor("title")
     String value() default "";
-    String method()   default "get";
+    @AliasFor("value")
     String title()   default "";
+    String method()   default "get";
     String message()   default "";
+    boolean hideSubmit() default false;
 }

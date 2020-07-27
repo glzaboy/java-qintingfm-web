@@ -17,6 +17,7 @@ public class FormItem implements Serializable,Comparable<FormItem>{
     String className;
     String tip;
     Integer order;
+    boolean hide;
 
     @Override
 

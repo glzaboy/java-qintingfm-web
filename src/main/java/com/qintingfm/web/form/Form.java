@@ -15,6 +15,6 @@ public class Form implements Serializable {
     List<FormItem> formItems;
     String title;
     String message;
-    String action;
     String method;
+    Boolean hideSubmit;
 }

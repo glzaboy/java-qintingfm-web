@@ -16,5 +16,6 @@ public @interface FieldAnnotation{
     @AliasFor("value")
     String title() default "";
     String tip()   default "";
-    int Order() default 0;
+    int order() default 0;
+    boolean hide() default false;
 }

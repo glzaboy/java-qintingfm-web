@@ -14,10 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * 表单生成器
+ * @author guliuzhong
+ */
 @Data
 @Slf4j
 @Service
-public class FormGeneralServices {
+public class FormGenerateService {
     public Form generalFormData(Object classData){
         return generalForm(null,classData);
     }
@@ -30,8 +34,7 @@ public class FormGeneralServices {
         Class<?> tmpClass=classic!=null?classic:classDate.getClass();
         FormAnnotation classAnnotation = AnnotationUtils.getAnnotation(tmpClass, FormAnnotation.class);
         if(classAnnotation!=null){
-            builder1.title(classAnnotation.title());
-            builder1.action(classAnnotation.action());
+            builder1.title(classAnnotation.title()).hideSubmit(classAnnotation.hideSubmit());
             builder1.message(classAnnotation.message()).method(classAnnotation.method());
         }
         while (tmpClass!=null){
@@ -43,16 +46,19 @@ public class FormGeneralServices {
                 builder.className(field.getType().getSimpleName());
                 FieldAnnotation fieldAnnotation = AnnotationUtils.getAnnotation(field, FieldAnnotation.class);
                 if (fieldAnnotation!=null){
-                    builder.title(fieldAnnotation.title());
-                    builder.tip(fieldAnnotation.tip());
-                    builder.order(fieldAnnotation.Order());
+                    builder.title(fieldAnnotation.title()).tip(fieldAnnotation.tip());
+                    builder.order(fieldAnnotation.order()).hide(fieldAnnotation.hide());
                 }
                 try {
                     if(classDate !=null){
-                        field.setAccessible(true);
+                        @SuppressWarnings("deprecation")
+                        boolean accessible = field.isAccessible();
+                        if(!accessible){
+                            field.setAccessible(true);
+                        }
                         if(field.getType()==Boolean.class){
-                            Boolean o = field.getBoolean(classDate);
-                            if(o!=null && (Boolean)o){
+                            Boolean aBoolean = (Boolean) field.get(classDate);
+                            if(aBoolean!=null && aBoolean){
                                 builder.value(boolTrue());
                             }else{
                                 builder.value(boolFalse());
@@ -60,7 +66,20 @@ public class FormGeneralServices {
                         } else if(field.getType()==String.class){
                             builder.value( (String) field.get(classDate));
                         }else if(field.getType()==Integer.class){
-                            builder.value( String.valueOf(field.getInt(classDate)));
+                            builder.value( String.valueOf(field.get(classDate)));
+                        }else if(field.getType()==Long.class){
+                            builder.value( String.valueOf(field.get(classDate)));
+                        }else if(field.getType()==Float.class){
+                            builder.value( String.valueOf(field.get(classDate)));
+                        }else if(field.getType()==Double.class){
+                            builder.value( String.valueOf(field.get(classDate)));
+                        }else if(field.getType()==Character.class){
+                            builder.value( String.valueOf(field.get(classDate)));
+                        }else if(field.getType()==Byte.class){
+                            throw new IllegalAccessException("不能处理Byte类型");
+                        }
+                        if(!accessible){
+                            field.setAccessible(false);
                         }
                     }
                 } catch (IllegalAccessException e) {
