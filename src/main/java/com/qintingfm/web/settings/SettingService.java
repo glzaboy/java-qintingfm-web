@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,9 +72,9 @@ public class SettingService extends BaseService {
                     Object o = field.get(bean);
                     if(o instanceof Boolean){
                         if ((Boolean) o){
-                            settingItem.setValue(boolTrue());
+                            settingItem.setValue(formGenerateService.boolTrue());
                         }else{
-                            settingItem.setValue(boolFalse());
+                            settingItem.setValue(formGenerateService.boolFalse());
                         }
                     }else{
                         settingItem.setValue((String) field.get(bean));
@@ -133,7 +131,7 @@ public class SettingService extends BaseService {
                     }
                     if (declaredField2.getType()==Boolean.class) {
                         String stringValue = collect.get(declaredField2.getName());
-                        declaredField2.set(t, value2Boolean(stringValue));
+                        declaredField2.set(t, formGenerateService.value2Boolean(stringValue));
                     } else {
                         declaredField2.set(t, collect.get(declaredField2.getName()));
                     }
@@ -180,18 +178,5 @@ public class SettingService extends BaseService {
         Class<? extends SettingData> settingClass = getSettingClass(settingName);
         Optional<? extends SettingData> settingBean = getSettingBean(settingName, settingClass);
         return formGenerateService.generalForm(settingClass,settingBean.orElse(null));
-    }
-    public Boolean value2Boolean(String value){
-        String stringTrue = "TRUE";
-        String yes = "yes";
-        String num1 = "1";
-        String y = "Y";
-        return yes.equalsIgnoreCase(value) || y.equalsIgnoreCase(value) || stringTrue.equalsIgnoreCase(value) || num1.equalsIgnoreCase(value);
-    }
-    public String boolTrue(){
-        return "TRUE";
-    }
-    public String boolFalse(){
-        return "FALSE";
     }
 }

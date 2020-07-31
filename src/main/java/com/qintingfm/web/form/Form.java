@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * 表单
  * @author guliuzhong
  */
 @Data

@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
+ * 表单元素项目
  * @author guliuzhong
  */
 @Data
