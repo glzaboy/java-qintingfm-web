@@ -54,7 +54,7 @@ public class Category extends BaseController {
         modelAndView.setViewName("admin/category/edit");
         return modelAndView;
     }
-    @PostMapping("/edit/{catId}")
+    @PostMapping("/edit")
     @ResponseBody
     AjaxDto edit(CategoryVo categoryVo){
         Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(categoryVo.getCatId());

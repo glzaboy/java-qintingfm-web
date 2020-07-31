@@ -1,15 +1,15 @@
 package com.qintingfm.web.settings;
 
+import com.qintingfm.web.form.Annotation.FieldAnnotation;
+import com.qintingfm.web.pojo.vo.BaseVo;
 import lombok.Data;
 
-import java.io.Serializable;
 
 /**
  * @author guliuzhong
  */
 @Data
-public class SettingData implements Serializable {
-
-    @SettingField(value = "配置名称")
+public class SettingData extends BaseVo {
+    @FieldAnnotation(value = "配置名称",order = 0)
     String settingName;
 }

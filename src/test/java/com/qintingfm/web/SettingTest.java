@@ -1,8 +1,7 @@
 package com.qintingfm.web;
 
-import com.qintingfm.web.settings.Form;
+import com.qintingfm.web.form.Form;
 import com.qintingfm.web.settings.repo.BaiduSpiderSetting;
-import com.qintingfm.web.settings.SettingData;
 import com.qintingfm.web.settings.SettingService;
 import com.qintingfm.web.settings.repo.RegisterSetting;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,7 @@ public class SettingTest {
     @Test
     @Transactional
     void readFromString() {
-        Form baidu = settingService.getFormBySettingName("baidu");
+        Form baidu = settingService.getFormBySettingName2("baidu");
         System.out.println(baidu);
 
     }

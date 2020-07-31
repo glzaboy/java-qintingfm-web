@@ -3,16 +3,12 @@ package com.qintingfm.web.controller.admin;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.BusinessException;
 import com.qintingfm.web.controller.BaseController;
-import com.qintingfm.web.settings.Form;
+import com.qintingfm.web.form.Form;
 import com.qintingfm.web.settings.SettingData;
-import com.qintingfm.web.settings.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,17 +25,16 @@ public class SettingController extends BaseController {
     @RequestMapping(value = "/edit/{name}", method = {RequestMethod.GET})
     public ModelAndView edit(ModelAndView modelAndView, @PathVariable(value = "name") String name) {
         modelAndView.setViewName("admin/setting");
-        modelAndView.addObject("settingName",name);
-        Form formBySettingName = settingService.getFormBySettingName(name);
-        modelAndView.addObject("form", formBySettingName);
+        Form formBySettingName = settingService.getFormBySettingName2(name);
+        modelAndView.addObject("form1", formBySettingName);
         modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
 
-    @RequestMapping(value = "/save/{name}", method = {RequestMethod.POST})
+    @RequestMapping(value = "/save", method = {RequestMethod.POST})
     @ResponseBody
     @Transactional(rollbackFor = {BusinessException.class, Exception.class})
-    public AjaxDto save(@PathVariable(value = "name") String name, @Autowired HttpServletRequest request) {
+    public AjaxDto save(@RequestParam(value = "settingName") String name, @Autowired HttpServletRequest request) {
         AjaxDto ajaxDto = new AjaxDto();
         Map<String, String[]> parameterMap = request.getParameterMap();
         Class<? extends SettingData> settingClass = settingService.getSettingClass(name);

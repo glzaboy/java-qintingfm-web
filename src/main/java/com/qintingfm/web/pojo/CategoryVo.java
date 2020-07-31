@@ -2,6 +2,7 @@ package com.qintingfm.web.pojo;
 
 import com.qintingfm.web.form.Annotation.FieldAnnotation;
 import com.qintingfm.web.form.Annotation.FormAnnotation;
+import com.qintingfm.web.pojo.vo.BaseVo;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
  */
 @FormAnnotation(method = "post",hideSubmit = true)
 @Data
-public class CategoryVo {
+public class CategoryVo extends BaseVo {
     @FieldAnnotation(title = "类别ID",tip = "",order = 0,hide = true)
     Integer catId;
     @FieldAnnotation(title = "名称",tip = "",order = 1)

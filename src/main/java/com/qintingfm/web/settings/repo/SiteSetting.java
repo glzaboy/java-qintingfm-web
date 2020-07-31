@@ -1,7 +1,8 @@
 package com.qintingfm.web.settings.repo;
 
+import com.qintingfm.web.form.Annotation.FieldAnnotation;
+import com.qintingfm.web.form.Annotation.FormAnnotation;
 import com.qintingfm.web.settings.SettingData;
-import com.qintingfm.web.settings.SettingField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,17 +16,16 @@ import java.io.Serializable;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@SettingField("站点功能")
+@FormAnnotation(title = "站点功能",method = "post")
 public class SiteSetting extends SettingData implements Serializable {
-    @SettingField(value = "站点标题")
+    @FieldAnnotation(value = "站点标题",order = 1)
     String title;
-    @SettingField(value = "固定关键词",tip = "使用逗号进行分隔")
+    @FieldAnnotation(value = "固定关键词",tip = "使用逗号进行分隔",order = 2)
     String fixKeyWord;
-    @SettingField(value = "固定描述")
+    @FieldAnnotation(value = "固定描述",order = 2)
     String fixDescription;
-    @SettingField(value = "站点内容URL前缀",tip = "填写您希望对外公布的URL地址，最后结尾不需要带/")
+    @FieldAnnotation(value = "站点内容URL前缀",tip = "填写您希望对外公布的URL地址，最后结尾不需要带/",order = 3)
     String mainUrl;
-    @SettingField(value = "开启MetaWebLog服务",tip = "开启后可以使用标准的xmlrpc服务发布内容")
+    @FieldAnnotation(value = "开启MetaWebLog服务",tip = "开启后可以使用标准的xmlrpc服务发布内容",order = 4)
     Boolean enableMetaWebLog;
-
 }

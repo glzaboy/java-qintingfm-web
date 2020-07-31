@@ -1,6 +1,7 @@
 package com.qintingfm.web.settings;
 
 import com.qintingfm.web.common.exception.BusinessException;
+import com.qintingfm.web.form.FormGenerateService;
 import com.qintingfm.web.jpa.SettingInfoJpa;
 import com.qintingfm.web.jpa.SettingJpa;
 import com.qintingfm.web.jpa.entity.SettingInfo;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
 public class SettingService extends BaseService {
     SettingJpa settingJpa;
     SettingInfoJpa settingInfoJpa;
+    FormGenerateService formGenerateService;
 
     @Autowired
     public void setSettingJpa(SettingJpa settingJpa) {
@@ -43,6 +45,11 @@ public class SettingService extends BaseService {
     @Autowired
     public void setSettingInfoJpa(SettingInfoJpa settingInfoJpa) {
         this.settingInfoJpa = settingInfoJpa;
+    }
+
+    @Autowired
+    public void setFormGenerateService(FormGenerateService formGenerateService) {
+        this.formGenerateService = formGenerateService;
     }
 
     /**
@@ -169,63 +176,10 @@ public class SettingService extends BaseService {
     }
     @Transactional(readOnly = true)
     @Cacheable(value = "settings.form",key = "#settingName")
-    public Form getFormBySettingName(String settingName){
+    public com.qintingfm.web.form.Form getFormBySettingName2(String settingName){
         Class<? extends SettingData> settingClass = getSettingClass(settingName);
         Optional<? extends SettingData> settingBean = getSettingBean(settingName, settingClass);
-        return getForm(settingBean,settingName);
-    }
-    private  Form getForm(Optional<? extends SettingData> settingDataClass, String settingName){
-        Form.FormBuilder builder1 = Form.builder();
-        List<FormField> fromFields=new ArrayList<>();
-        SettingData settingData = settingDataClass.orElse(null);
-        if (settingData==null){
-            throw new BusinessException("获取配置娄出错，配置名"+settingName);
-        }
-        Class<?> tmpClass=settingData.getClass();
-        SettingField classAnnotation = AnnotationUtils.getAnnotation(tmpClass, SettingField.class);
-        if(classAnnotation==null){
-            builder1.title(settingName);
-            builder1.settingName(settingName);
-        }else{
-            builder1.title(classAnnotation.title());
-            builder1.settingName(settingData.settingName != null ?settingData.settingName:settingName);
-        }
-        while (tmpClass!=null){
-
-            Field[] declaredFields = tmpClass.getDeclaredFields();
-            FormField.FormFieldBuilder builder = FormField.builder();
-            for (Field field:declaredFields) {
-                builder.fieldName(field.getName());
-                builder.className(field.getType().getSimpleName());
-                SettingField annotation1 = AnnotationUtils.getAnnotation(field, SettingField.class);
-                if (annotation1!=null){
-                    builder.title(annotation1.title());
-                    builder.tip(annotation1.tip());
-                }
-                try {
-                    field.setAccessible(true);
-                    if(field.getType()==Boolean.class){
-                        Boolean o = (Boolean)field.get(settingData);
-                        if(o){
-                            builder.value(boolTrue());
-                        }else{
-                            builder.value(boolFalse());
-                        }
-                    }else {
-                        builder.value((String) field.get(settingData));
-                    }
-                } catch (IllegalAccessException e) {
-                    log.warn("获取表单数据值出错{}",field.getName());
-                }
-                fromFields.add(builder.build());
-            }
-            if (tmpClass == SettingData.class) {
-                break;
-            }
-            tmpClass=tmpClass.getSuperclass();
-        }
-        builder1.formFields(fromFields);
-        return builder1.build();
+        return formGenerateService.generalForm(settingClass,settingBean.orElse(null));
     }
     public Boolean value2Boolean(String value){
         String stringTrue = "TRUE";

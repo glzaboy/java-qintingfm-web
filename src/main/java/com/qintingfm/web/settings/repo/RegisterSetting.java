@@ -1,7 +1,8 @@
 package com.qintingfm.web.settings.repo;
 
+import com.qintingfm.web.form.Annotation.FieldAnnotation;
+import com.qintingfm.web.form.Annotation.FormAnnotation;
 import com.qintingfm.web.settings.SettingData;
-import com.qintingfm.web.settings.SettingField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -14,10 +15,10 @@ import java.io.Serializable;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@SettingField("注册设置")
+@FormAnnotation(title = "注册设置",method = "post")
 public class RegisterSetting extends SettingData implements Serializable {
-    @SettingField(value = "启用")
+    @FieldAnnotation(value = "启用",order = 1)
     Boolean enable;
-    @SettingField(value = "禁止注册提示")
+    @FieldAnnotation(value = "禁止注册提示",order = 2)
     String disableRegisterTip;
 }
