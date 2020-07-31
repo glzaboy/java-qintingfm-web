@@ -17,13 +17,13 @@ import java.io.Serializable;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@FormAnnotation(title = "百度推送",method = "post")
+@FormAnnotation(title = "百度搜索引擎推送",method = "post")
 public class BaiduSpiderSetting extends SettingData implements Serializable {
-    @FieldAnnotation(value = "启用")
+    @FieldAnnotation(title = "启用",order = 1)
     Boolean enable;
-    @FieldAnnotation(value = "站点名称",tip = "请填写需要推送的域名，不包含http://，如您是通过http://baidu.com/xx.com进行访问，请填写baidu.com")
+    @FieldAnnotation(title = "站点名称",tip = "请填写需要推送的域名，不包含http://，如您是通过http://baidu.com/xx.com进行访问，请填写baidu.com",order = 2)
     String site;
-    @FieldAnnotation(value = "推送KEY")
+    @FieldAnnotation(title = "推送KEY",order = 3)
     String token;
 
 }

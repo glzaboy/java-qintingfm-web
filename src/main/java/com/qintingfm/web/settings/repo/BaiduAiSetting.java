@@ -9,6 +9,10 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+/**
+ * 百度AI配置
+ * @author guliuzhong
+ */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)

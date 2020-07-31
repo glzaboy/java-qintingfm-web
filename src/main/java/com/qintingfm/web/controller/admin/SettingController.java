@@ -25,7 +25,7 @@ public class SettingController extends BaseController {
     @RequestMapping(value = "/edit/{name}", method = {RequestMethod.GET})
     public ModelAndView edit(ModelAndView modelAndView, @PathVariable(value = "name") String name) {
         modelAndView.setViewName("admin/setting");
-        Form formBySettingName = settingService.getFormBySettingName2(name);
+        Form formBySettingName = settingService.getFormBySettingName(name);
         modelAndView.addObject("form1", formBySettingName);
         modelAndView.addObject("site", getSiteSetting());
         return modelAndView;

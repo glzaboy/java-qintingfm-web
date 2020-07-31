@@ -47,7 +47,7 @@ public class SettingTest {
     @Test
     @Transactional
     void readFromString() {
-        Form baidu = settingService.getFormBySettingName2("baidu");
+        Form baidu = settingService.getFormBySettingName("baidu");
         System.out.println(baidu);
 
     }

@@ -174,9 +174,12 @@ public class SettingService extends BaseService {
     }
     @Transactional(readOnly = true)
     @Cacheable(value = "settings.form",key = "#settingName")
-    public com.qintingfm.web.form.Form getFormBySettingName2(String settingName){
+    public com.qintingfm.web.form.Form getFormBySettingName(String settingName){
         Class<? extends SettingData> settingClass = getSettingClass(settingName);
         Optional<? extends SettingData> settingBean = getSettingBean(settingName, settingClass);
         return formGenerateService.generalForm(settingClass,settingBean.orElse(null));
+    }
+    public Boolean value2Boolean(String value){
+        return formGenerateService.value2Boolean(value);
     }
 }
