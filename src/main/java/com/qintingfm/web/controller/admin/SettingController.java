@@ -28,6 +28,7 @@ public class SettingController extends BaseController {
         Form formBySettingName = settingService.getFormBySettingName(name);
         modelAndView.addObject("form1", formBySettingName);
         modelAndView.addObject("site", getSiteSetting());
+        modelAndView.addObject("name", name);
         return modelAndView;
     }
 
