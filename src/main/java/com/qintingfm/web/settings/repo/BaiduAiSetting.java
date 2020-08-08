@@ -1,7 +1,7 @@
 package com.qintingfm.web.settings.repo;
 
-import com.qintingfm.web.form.Annotation.FieldAnnotation;
-import com.qintingfm.web.form.Annotation.FormAnnotation;
+import com.qintingfm.web.form.annotation.FieldAnnotation;
+import com.qintingfm.web.form.annotation.FormAnnotation;
 import com.qintingfm.web.settings.SettingData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,9 +1,8 @@
 package com.qintingfm.web.form;
 
-import com.qintingfm.web.form.Annotation.FieldAnnotation;
-import com.qintingfm.web.form.Annotation.FormAnnotation;
+import com.qintingfm.web.form.annotation.FieldAnnotation;
+import com.qintingfm.web.form.annotation.FormAnnotation;
 import com.qintingfm.web.pojo.vo.BaseVo;
-import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -22,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class FormGenerateService {
-    public Form generalFormData(Object classData){
+    public <T extends BaseVo> Form generalFormData(T classData){
         return generalForm(null,classData);
     }
     public Form generalForm(Class classic){
@@ -48,6 +47,8 @@ public class FormGenerateService {
                 if (fieldAnnotation!=null){
                     builder.title(fieldAnnotation.title()).tip(fieldAnnotation.tip());
                     builder.order(fieldAnnotation.order()).hide(fieldAnnotation.hide());
+                    builder.largeText(fieldAnnotation.largeText()).useHtml(fieldAnnotation.useHtml());
+                    builder.uploadFile(fieldAnnotation.uploadFile());
                 }
                 try {
                     if(classDate !=null){

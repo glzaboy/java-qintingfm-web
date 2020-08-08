@@ -1,7 +1,7 @@
 package com.qintingfm.web.pojo;
 
-import com.qintingfm.web.form.Annotation.FieldAnnotation;
-import com.qintingfm.web.form.Annotation.FormAnnotation;
+import com.qintingfm.web.form.annotation.FieldAnnotation;
+import com.qintingfm.web.form.annotation.FormAnnotation;
 import com.qintingfm.web.pojo.vo.BaseVo;
 import lombok.Data;
 
