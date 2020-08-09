@@ -1,7 +1,7 @@
 package com.qintingfm.web.controller;
 
 import com.qintingfm.web.service.MetaWebLogServer;
-import com.qintingfm.web.settings.repo.SiteSetting;
+import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.xmlrpc.XmlRpcException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class XmlRpcController extends BaseController{
     @RequestMapping(value = {"xmlrpc.php"}, method = {RequestMethod.GET}, produces = {"application/xml;charset=utf-8"})
     @ResponseBody
     public String xmlRpcServer() {
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<rsd version=\"1.0\" xmlns=\"http://archipelago.phrasewise.com/rsd\">\n" +
                 "\t<service>\n" +

@@ -2,8 +2,7 @@ package com.qintingfm.web.service;
 
 import com.qintingfm.web.common.exception.Business;
 import com.qintingfm.web.common.exception.BusinessException;
-import com.qintingfm.web.settings.SettingService;
-import com.qintingfm.web.settings.repo.SiteSetting;
+import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolation;
@@ -82,9 +81,9 @@ public class BaseService {
      * 获取站点配置类
      * @return 如果设置了配置返回配置否则返回一个未设置任何属性的对象
      */
-    public SiteSetting getSiteSetting(){
-        Optional<SiteSetting> site = settingService.getSettingBean("site", SiteSetting.class);
-        SiteSetting siteSetting=new SiteSetting();
+    public SiteSettingVo getSiteSetting(){
+        Optional<SiteSettingVo> site = settingService.getSettingBean("site", SiteSettingVo.class);
+        SiteSettingVo siteSetting=new SiteSettingVo();
         return site.orElse(siteSetting);
     }
 }

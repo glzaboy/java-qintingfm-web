@@ -1,7 +1,7 @@
 package com.qintingfm.web.spider;
 
 import com.qintingfm.web.service.NetClient;
-import com.qintingfm.web.settings.repo.BaiduSpiderSetting;
+import com.qintingfm.web.pojo.vo.settings.BaiduSpiderSettingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,9 +30,9 @@ public class BaiduSpider extends BaseSpider {
     @Override
     @Transactional(readOnly = true,rollbackFor = Exception.class)
     public String pushUrlToSpider(Collection<String> url) {
-        Optional<BaiduSpiderSetting> settingBean = settingService.getSettingBean(SpiderName, BaiduSpiderSetting.class);
+        Optional<BaiduSpiderSettingVo> settingBean = settingService.getSettingBean(SpiderName, BaiduSpiderSettingVo.class);
         if(settingBean.isPresent()){
-            BaiduSpiderSetting baiduSpiderSetting = settingBean.get();
+            BaiduSpiderSettingVo baiduSpiderSetting = settingBean.get();
             Boolean enable = baiduSpiderSetting.getEnable();
             if (enable) {
                 ConcurrentHashMap<String,String> concurrentHashMap=new ConcurrentHashMap<>(4);

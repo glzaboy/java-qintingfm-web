@@ -4,7 +4,7 @@ import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.pojo.sitemap.SiteMap;
 import com.qintingfm.web.pojo.sitemap.SiteUrl;
 import com.qintingfm.web.service.BlogService;
-import com.qintingfm.web.settings.repo.SiteSetting;
+import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ public class SiteMapController extends BaseController{
     }
     @GetMapping("sitemap.xml")
     SiteMap siteMap(){
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         SiteMap siteMap=new SiteMap();
         ArrayList<SiteUrl> siteUrlList=new ArrayList<>();
         Page<Blog> blogList = blogServer.getBlogList(0, 1, null, 500);
@@ -41,7 +41,7 @@ public class SiteMapController extends BaseController{
     @GetMapping("robots.txt")
     @ResponseBody
     String robots(){
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         StringBuffer stringBuffer=new StringBuffer();
         stringBuffer.append("User-agent: *").append("\n");
         stringBuffer.append("Disallow: /admin/").append("\n");

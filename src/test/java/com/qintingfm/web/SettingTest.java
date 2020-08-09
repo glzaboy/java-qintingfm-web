@@ -1,9 +1,9 @@
 package com.qintingfm.web;
 
 import com.qintingfm.web.form.Form;
-import com.qintingfm.web.settings.repo.BaiduSpiderSetting;
-import com.qintingfm.web.settings.SettingService;
-import com.qintingfm.web.settings.repo.RegisterSetting;
+import com.qintingfm.web.pojo.vo.settings.BaiduSpiderSettingVo;
+import com.qintingfm.web.service.SettingService;
+import com.qintingfm.web.pojo.vo.settings.RegisterSettingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +21,24 @@ public class SettingTest {
     @Test
     @Transactional
     void test() {
-        Optional<BaiduSpiderSetting> baidu = settingService.getSettingBean("baidu", BaiduSpiderSetting.class);
+        Optional<BaiduSpiderSettingVo> baidu = settingService.getSettingBean("baidu", BaiduSpiderSettingVo.class);
         log.debug(baidu.toString());
-        Optional<RegisterSetting> register = settingService.getSettingBean("register", RegisterSetting.class);
+        Optional<RegisterSettingVo> register = settingService.getSettingBean("register", RegisterSettingVo.class);
         log.debug(register.toString());
     }
     @Test
     @Transactional
     @Rollback(value = false)
     void testWrite()  {
-        Optional<BaiduSpiderSetting> baidu = settingService.getSettingBean("baidu1", BaiduSpiderSetting.class);
+        Optional<BaiduSpiderSettingVo> baidu = settingService.getSettingBean("baidu1", BaiduSpiderSettingVo.class);
         baidu.ifPresent(baiduSpiderSetting -> {
             log.debug(baiduSpiderSetting.toString());
             baiduSpiderSetting.setSettingName("现在时间");
             baiduSpiderSetting.setEnable(true);
-            BaiduSpiderSetting baidu1 = settingService.saveSettingBean("baidu1", baiduSpiderSetting);
+            BaiduSpiderSettingVo baidu1 = settingService.saveSettingBean("baidu1", baiduSpiderSetting);
             log.debug(baidu1.toString());
         });
-        Optional<RegisterSetting> register = settingService.getSettingBean("register", RegisterSetting.class);
+        Optional<RegisterSettingVo> register = settingService.getSettingBean("register", RegisterSettingVo.class);
         register.ifPresent(settingData -> {
             log.debug(settingData.toString());
             settingService.saveSettingBean("register",settingData);

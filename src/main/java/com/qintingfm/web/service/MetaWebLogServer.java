@@ -7,7 +7,7 @@ import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.xmlrpc.RpcController;
 import com.qintingfm.web.service.xmlrpc.StreamConfig;
-import com.qintingfm.web.settings.repo.SiteSetting;
+import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
@@ -110,7 +110,7 @@ public class MetaWebLogServer extends XmlRpcServer {
         String methodName = xmlRequestParser.getMethodName();
         Class<? extends MetaWebLogServer> aClass = this.getClass();
         Optional<Map.Entry<String, String>> first = methodMap.entrySet().stream().filter(item -> methodName.equals(item.getKey())).findFirst();
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         if (siteSetting.getEnableMetaWebLog()){
             if(first.isPresent()){
                 first.ifPresent(findMethod -> {
@@ -177,7 +177,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     private ArrayList<Map<String, String>> getUsersBlogs(XmlRpcRequestParser xmlRpcRequestParser, User userDetails) {
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         ArrayList<Map<String, String>> mapVector = new ArrayList<>();
         Map<String, String> userBlog = new HashMap<>(10);
         userBlog.put("blogid", "1");
@@ -190,7 +190,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     private ArrayList<Map<String, String>> getCategories(XmlRpcRequestParser xmlRequestParser, User userDetails) {
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         ArrayList<Map<String, String>> mapVector = new ArrayList<>();
         categoryService.getAllCategory(1, 10000).stream().forEach((item) -> {
             Map<String, String> caterories = new HashMap<>(10);
@@ -224,7 +224,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     private Map<String, Object> getPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         Map<String, Object> postMap = new HashMap<>(10);
         Integer postId = Integer.valueOf(xmlRequestParser.getParams().get(0).toString());
         Optional<Blog> blog = blogServer.getBlog(postId);
@@ -239,7 +239,7 @@ public class MetaWebLogServer extends XmlRpcServer {
     }
 
     ArrayList<Map<String, Object>> getRecentPosts(XmlRpcRequestParser xmlRequestParser, User userDetails) {
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         ArrayList<Map<String, Object>> mapVector = new ArrayList<>();
         int pageSize = Integer.parseInt(xmlRequestParser.getParams().get(3).toString());
         if (pageSize >= 100) {

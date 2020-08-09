@@ -4,7 +4,7 @@ import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.BusinessException;
 import com.qintingfm.web.controller.BaseController;
 import com.qintingfm.web.form.Form;
-import com.qintingfm.web.settings.SettingData;
+import com.qintingfm.web.pojo.vo.settings.SettingDataVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +38,9 @@ public class SettingController extends BaseController {
     public AjaxDto save(@RequestParam(value = "settingName") String name, @Autowired HttpServletRequest request) {
         AjaxDto ajaxDto = new AjaxDto();
         Map<String, String[]> parameterMap = request.getParameterMap();
-        Class<? extends SettingData> settingClass = settingService.getSettingClass(name);
-        Optional<? extends SettingData> settingBean = settingService.getSettingBean(name, settingClass);
-        SettingData settingData = settingBean.orElseThrow(() -> new BusinessException("读取原配置出错"));
+        Class<? extends SettingDataVo> settingClass = settingService.getSettingClass(name);
+        Optional<? extends SettingDataVo> settingBean = settingService.getSettingBean(name, settingClass);
+        SettingDataVo settingDataVo = settingBean.orElseThrow(() -> new BusinessException("读取原配置出错"));
         Class<?> superclass = settingClass;
         try {
             while (superclass != null) {
@@ -52,18 +52,18 @@ public class SettingController extends BaseController {
                         declaredField2.setAccessible(true);
                     }
                     if ("settingName".equalsIgnoreCase(declaredField2.getName())) {
-                        declaredField2.set(settingData, name);
+                        declaredField2.set(settingDataVo, name);
                     } else {
                         String[] strings = parameterMap.get(declaredField2.getName());
                         if (declaredField2.getType() == Boolean.class) {
                             if (strings != null && strings.length > 0) {
-                                declaredField2.set(settingData, settingService.value2Boolean(strings[0]));
+                                declaredField2.set(settingDataVo, settingService.value2Boolean(strings[0]));
                             } else {
-                                declaredField2.set(settingData, false);
+                                declaredField2.set(settingDataVo, false);
                             }
                         } else {
                             if (strings != null && strings.length > 0) {
-                                declaredField2.set(settingData, strings[strings.length - 1]);
+                                declaredField2.set(settingDataVo, strings[strings.length - 1]);
                             }
                         }
                     }
@@ -71,7 +71,7 @@ public class SettingController extends BaseController {
                         declaredField2.setAccessible(false);
                     }
                 }
-                if (superclass == SettingData.class) {
+                if (superclass == SettingDataVo.class) {
                     break;
                 }
                 superclass = superclass.getSuperclass();
@@ -79,7 +79,7 @@ public class SettingController extends BaseController {
         } catch (IllegalAccessException e) {
             throw new BusinessException("保存配置出错！");
         }
-        settingService.saveSettingBean(name, settingData);
+        settingService.saveSettingBean(name, settingDataVo);
         ajaxDto.setMessage("更新完成");
         return ajaxDto;
     }

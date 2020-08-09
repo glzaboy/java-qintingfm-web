@@ -2,6 +2,7 @@ package com.qintingfm.web.jpa.entity;
 
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,5 +27,6 @@ public class SettingItem {
     String name;
     String key;
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     String value;
 }

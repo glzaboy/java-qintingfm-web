@@ -8,7 +8,7 @@ import com.qintingfm.web.jpa.entity.BlogComment;
 import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.pojo.request.BlogPojo;
-import com.qintingfm.web.settings.repo.SiteSetting;
+import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
 import com.qintingfm.web.spider.BaiduSpider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +141,7 @@ public class BlogService extends BaseService {
     }
 
     public void pushToBaidu(Blog blog) {
-        SiteSetting siteSetting = getSiteSetting();
+        SiteSettingVo siteSetting = getSiteSetting();
         Collection<String> pushUrl = new ArrayList<>();
         String link=siteSetting.getMainUrl()+"/blog/view/"+blog.getPostId();
         log.error("当前推送地址{}",link);

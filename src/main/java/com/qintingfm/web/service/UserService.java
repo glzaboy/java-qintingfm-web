@@ -8,9 +8,7 @@ import com.qintingfm.web.jpa.UserRegisterJpa;
 import com.qintingfm.web.jpa.entity.User;
 import com.qintingfm.web.jpa.entity.UserRegister;
 import com.qintingfm.web.pojo.request.UserRegisterPojo;
-import com.qintingfm.web.settings.SettingData;
-import com.qintingfm.web.settings.SettingService;
-import com.qintingfm.web.settings.repo.RegisterSetting;
+import com.qintingfm.web.pojo.vo.settings.RegisterSettingVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,8 +114,8 @@ public class UserService extends BaseService {
      */
     @Transactional(rollbackFor = {BusinessException.class})
     public UserRegister register(UserRegisterPojo userRegisterPojo) {
-        Optional<RegisterSetting> registerSetting = settingService.getSettingBean("register", RegisterSetting.class);
-        RegisterSetting registerSetting1 = registerSetting.orElse(null);
+        Optional<RegisterSettingVo> registerSetting = settingService.getSettingBean("register", RegisterSettingVo.class);
+        RegisterSettingVo registerSetting1 = registerSetting.orElse(null);
         Business.BusinessBuilder builder = Business.builder();
         Set<Business> businessSet = new HashSet<>();
         if (registerSetting1 == null || !registerSetting1.getEnable()) {

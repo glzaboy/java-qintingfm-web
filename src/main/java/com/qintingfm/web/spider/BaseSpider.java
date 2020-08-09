@@ -1,6 +1,6 @@
 package com.qintingfm.web.spider;
 
-import com.qintingfm.web.settings.SettingService;
+import com.qintingfm.web.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

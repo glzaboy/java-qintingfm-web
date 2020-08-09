@@ -1,8 +1,7 @@
-package com.qintingfm.web.settings.repo;
+package com.qintingfm.web.pojo.vo.settings;
 
 import com.qintingfm.web.form.annotation.FieldAnnotation;
 import com.qintingfm.web.form.annotation.FormAnnotation;
-import com.qintingfm.web.settings.SettingData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,7 +16,7 @@ import java.io.Serializable;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @FormAnnotation(title = "站点功能",method = "post")
-public class SiteSetting extends SettingData implements Serializable {
+public class SiteSettingVo extends SettingDataVo implements Serializable {
     @FieldAnnotation(value = "站点标题",order = 1)
     String title;
     @FieldAnnotation(value = "固定关键词",tip = "使用逗号进行分隔",order = 2)

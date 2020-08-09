@@ -1,4 +1,4 @@
-package com.qintingfm.web.settings;
+package com.qintingfm.web.service;
 
 import com.qintingfm.web.common.exception.BusinessException;
 import com.qintingfm.web.form.FormGenerateService;
@@ -6,7 +6,7 @@ import com.qintingfm.web.jpa.SettingInfoJpa;
 import com.qintingfm.web.jpa.SettingJpa;
 import com.qintingfm.web.jpa.entity.SettingInfo;
 import com.qintingfm.web.jpa.entity.SettingItem;
-import com.qintingfm.web.service.BaseService;
+import com.qintingfm.web.pojo.vo.settings.SettingDataVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -59,7 +59,7 @@ public class SettingService extends BaseService {
      * @return 返回设置的对象值
      */
     @CacheEvict(value = {"settings.bean","settings.form","settings.form"},key = "#settingName")
-    public synchronized  <T extends SettingData> T saveSettingBean(String settingName,T bean) {
+    public synchronized  <T extends SettingDataVo> T saveSettingBean(String settingName, T bean) {
         Class<?> superclass = bean.getClass();
         ArrayList<SettingItem> settingItems=new ArrayList<>();
         while (superclass!=null){
@@ -85,7 +85,7 @@ public class SettingService extends BaseService {
                     log.warn("保存设置{}失败，字段不可读{},跳过些字段保存。",settingName,field.getName());
                 }
             }
-            if (superclass == SettingData.class) {
+            if (superclass == SettingDataVo.class) {
                 break;
             }
             superclass=superclass.getSuperclass();
@@ -113,7 +113,7 @@ public class SettingService extends BaseService {
      */
     @Transactional(readOnly = true)
     @Cacheable(value = "settings.bean",key = "#settingName")
-    public synchronized <T extends SettingData> Optional<T> getSettingBean(String settingName, Class<T> classic) {
+    public synchronized <T extends SettingDataVo> Optional<T> getSettingBean(String settingName, Class<T> classic) {
         Stream<SettingItem> settings = settingJpa.findByName(settingName);
         try {
             Constructor<T> declaredConstructor = classic.getDeclaredConstructor();
@@ -139,7 +139,7 @@ public class SettingService extends BaseService {
                         declaredField2.setAccessible(false);
                     }
                 }
-                if (superclass == SettingData.class) {
+                if (superclass == SettingDataVo.class) {
                     break;
                 }
                 superclass = superclass.getSuperclass();
@@ -160,13 +160,13 @@ public class SettingService extends BaseService {
         return Optional.empty();
     }
     @Transactional(readOnly = true)
-    public Class<? extends SettingData> getSettingClass(String settingName){
+    public Class<? extends SettingDataVo> getSettingClass(String settingName){
         Optional<SettingInfo> byId = settingInfoJpa.findById(settingName);
         byId.orElseThrow(()-> new BusinessException("没有获取到配置"));
         SettingInfo settingInfo = byId.get();
         try {
             @SuppressWarnings({ "unchecked" })
-            Class<? extends SettingData> aClass = (Class<? extends SettingData>) this.getClass().getClassLoader().loadClass(settingInfo.getClassName());
+            Class<? extends SettingDataVo> aClass = (Class<? extends SettingDataVo>) this.getClass().getClassLoader().loadClass(settingInfo.getClassName());
             return aClass;
         } catch (ClassNotFoundException e) {
             throw new BusinessException("没有获取配置相关数据定义！");
@@ -175,8 +175,8 @@ public class SettingService extends BaseService {
     @Transactional(readOnly = true)
     @Cacheable(value = "settings.form",key = "#settingName")
     public com.qintingfm.web.form.Form getFormBySettingName(String settingName){
-        Class<? extends SettingData> settingClass = getSettingClass(settingName);
-        Optional<? extends SettingData> settingBean = getSettingBean(settingName, settingClass);
+        Class<? extends SettingDataVo> settingClass = getSettingClass(settingName);
+        Optional<? extends SettingDataVo> settingBean = getSettingBean(settingName, settingClass);
         return formGenerateService.generalForm(settingClass,settingBean.orElse(null));
     }
     public Boolean value2Boolean(String value){
