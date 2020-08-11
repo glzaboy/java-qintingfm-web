@@ -43,7 +43,7 @@ public class Category extends BaseController {
         return modelAndView;
     }
     @GetMapping("/edit/{catId}")
-    ModelAndView edit(ModelAndView modelAndView, @PathVariable("catId") Integer catId){
+    ModelAndView edit(ModelAndView modelAndView, @PathVariable(value = "catId",required = false) Integer catId){
         modelAndView.addObject("site", getSiteSetting());
         Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(catId);
         com.qintingfm.web.jpa.entity.Category category1 = category.orElse(new com.qintingfm.web.jpa.entity.Category());
@@ -57,8 +57,13 @@ public class Category extends BaseController {
     @PostMapping("/edit")
     @ResponseBody
     AjaxDto edit(CategoryVo categoryVo){
-        Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(categoryVo.getCatId());
-        com.qintingfm.web.jpa.entity.Category category1 = category.orElse(new com.qintingfm.web.jpa.entity.Category());
+        com.qintingfm.web.jpa.entity.Category category1;
+        if(categoryVo.getCatId()!=null){
+            Optional<com.qintingfm.web.jpa.entity.Category> category = categoryService.getCategory(categoryVo.getCatId());
+            category1=category.orElse(new com.qintingfm.web.jpa.entity.Category());
+        }else{
+            category1=new com.qintingfm.web.jpa.entity.Category();
+        }
         category1.setTitle(categoryVo.getTitle());
         category1.setDescription(categoryVo.getDescription());
         categoryService.save(category1);

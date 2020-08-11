@@ -9,15 +9,14 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
+ * 敏感关键词
  * @author guliuzhong
  */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@FormAnnotation(title = "注册设置",method = "post")
-public class RegisterSettingVo extends SettingDataVo implements Serializable {
-    @FieldAnnotation(value = "启用",order = 1)
-    Boolean enable;
-    @FieldAnnotation(value = "禁止注册提示",order = 2,largeText = true,useHtml = true)
-    String disableRegisterTip;
+@FormAnnotation(title = "敏感关键词", method = "post")
+public class SensitiveWordVo extends SettingDataVo implements Serializable {
+    @FieldAnnotation(value = "敏感关键词",order = 1,largeText = true)
+    String sensitiveWord;
 }
