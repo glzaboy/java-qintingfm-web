@@ -1,6 +1,6 @@
 package com.qintingfm.web;
 
-import com.qintingfm.web.form.Form;
+import com.qintingfm.web.service.form.Form;
 import com.qintingfm.web.pojo.vo.settings.BaiduSpiderSettingVo;
 import com.qintingfm.web.service.SettingService;
 import com.qintingfm.web.pojo.vo.settings.RegisterSettingVo;

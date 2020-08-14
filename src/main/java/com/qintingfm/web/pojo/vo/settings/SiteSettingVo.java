@@ -1,7 +1,7 @@
 package com.qintingfm.web.pojo.vo.settings;
 
-import com.qintingfm.web.form.annotation.FieldAnnotation;
-import com.qintingfm.web.form.annotation.FormAnnotation;
+import com.qintingfm.web.service.form.annotation.FieldAnnotation;
+import com.qintingfm.web.service.form.annotation.FormAnnotation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

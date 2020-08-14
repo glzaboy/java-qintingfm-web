@@ -1,4 +1,4 @@
-package com.qintingfm.web.form.annotation;
+package com.qintingfm.web.service.form.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 

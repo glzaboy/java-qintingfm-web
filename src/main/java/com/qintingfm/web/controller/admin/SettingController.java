@@ -3,7 +3,7 @@ package com.qintingfm.web.controller.admin;
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.common.exception.BusinessException;
 import com.qintingfm.web.controller.BaseController;
-import com.qintingfm.web.form.Form;
+import com.qintingfm.web.service.form.Form;
 import com.qintingfm.web.pojo.vo.settings.SettingDataVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

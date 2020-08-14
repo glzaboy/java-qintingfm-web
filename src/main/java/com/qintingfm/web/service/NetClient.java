@@ -130,7 +130,7 @@ public class NetClient {
         return null;
     }
 
-    public <T> T requestToOjbect(Class<T> classzz) {
+    public <T> T requestToObject(Class<T> classzz) {
         String s = requestToString();
         if (s != null) {
             T t = null;

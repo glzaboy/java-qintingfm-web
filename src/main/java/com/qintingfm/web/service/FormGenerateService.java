@@ -1,8 +1,10 @@
-package com.qintingfm.web.form;
+package com.qintingfm.web.service;
 
-import com.qintingfm.web.form.annotation.FieldAnnotation;
-import com.qintingfm.web.form.annotation.FormAnnotation;
+import com.qintingfm.web.service.form.Form;
+import com.qintingfm.web.service.form.annotation.FieldAnnotation;
+import com.qintingfm.web.service.form.annotation.FormAnnotation;
 import com.qintingfm.web.pojo.vo.BaseVo;
+import com.qintingfm.web.service.form.annotation.FormItem;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;

@@ -2,8 +2,8 @@ package com.qintingfm.web.controller.admin;
 
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
-import com.qintingfm.web.form.Form;
-import com.qintingfm.web.form.FormGenerateService;
+import com.qintingfm.web.service.form.Form;
+import com.qintingfm.web.service.FormGenerateService;
 import com.qintingfm.web.pojo.CategoryVo;
 import com.qintingfm.web.service.CategoryService;
 import org.springframework.beans.BeanUtils;

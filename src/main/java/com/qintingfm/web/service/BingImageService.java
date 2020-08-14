@@ -37,7 +37,7 @@ public class BingImageService {
                 return bgImage;
             }
         }
-        bgImage = netClient.requestToOjbect(BingBgImage.class);
+        bgImage = netClient.requestToObject(BingBgImage.class);
         lastUpdateDate = new Date();
         return bgImage;
     }

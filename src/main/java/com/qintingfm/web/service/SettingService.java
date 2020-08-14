@@ -1,7 +1,6 @@
 package com.qintingfm.web.service;
 
 import com.qintingfm.web.common.exception.BusinessException;
-import com.qintingfm.web.form.FormGenerateService;
 import com.qintingfm.web.jpa.SettingInfoJpa;
 import com.qintingfm.web.jpa.SettingJpa;
 import com.qintingfm.web.jpa.entity.SettingInfo;
@@ -174,7 +173,7 @@ public class SettingService extends BaseService {
     }
     @Transactional(readOnly = true)
     @Cacheable(value = "settings.form",key = "#settingName")
-    public com.qintingfm.web.form.Form getFormBySettingName(String settingName){
+    public com.qintingfm.web.service.form.Form getFormBySettingName(String settingName){
         Class<? extends SettingDataVo> settingClass = getSettingClass(settingName);
         Optional<? extends SettingDataVo> settingBean = getSettingBean(settingName, settingClass);
         return formGenerateService.generalForm(settingClass,settingBean.orElse(null));
