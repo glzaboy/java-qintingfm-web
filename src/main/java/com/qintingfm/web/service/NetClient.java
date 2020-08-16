@@ -111,7 +111,23 @@ public class NetClient {
         }
         builder.url(url);
     }
-
+    public byte[] requestToBytes() {
+        Response execute;
+        try {
+            execute = okHttpClient.newCall(builder.build()).execute();
+            if (!execute.isSuccessful()) {
+                assert execute.body() != null;
+                log.info("http return httpCode {},BODY {}", execute.code(), execute.body().string());
+            }
+            if (execute.isSuccessful()) {
+                assert execute.body() != null;
+                return execute.body().bytes();
+            }
+        } catch (IOException e) {
+            log.error("request http error {}", e.getMessage());
+        }
+        return null;
+    }
     public String requestToString() {
         Response execute;
         try {
