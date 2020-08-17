@@ -10,24 +10,31 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+/**
+ * 百度云API封装
+ * @author guliuzhong
+ */
 @Service
 @Slf4j
-public class BaiduAiApi extends BaseService{
-    private boolean isEnable=false;
-    @Autowired
+public class BaiduAiApi extends BaseService {
+    final String SCHEME_FILE="file";
+    private boolean isEnable = false;
+
     NetClient netClient;
+
+    @Autowired
+    public void setNetClient(NetClient netClient) {
+        this.netClient = netClient;
+    }
 
     private BaiduApiToken baiduApiToken = null;
 
@@ -43,17 +50,16 @@ public class BaiduAiApi extends BaseService{
         }
         String apiUrl = "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id={client_id}&&client_secret={client_secret}";
         Optional<BaiduAiSettingVo> baiduyun = settingService.getSettingBean("baiduyun", BaiduAiSettingVo.class);
-        if (!baiduyun.isPresent()){
-            isEnable=false;
+        if (!baiduyun.isPresent()) {
+            isEnable = false;
             return;
         }
-        isEnable=true;
+        isEnable = true;
         BaiduAiSettingVo baiduAiSettingVo = baiduyun.get();
         HashMap<String, String> hashMap = new HashMap<>(4);
         hashMap.put("client_id", baiduAiSettingVo.getClientId());
         hashMap.put("client_secret", baiduAiSettingVo.getClientSecret());
-        netClient.setUrl(apiUrl, hashMap);
-        baiduApiToken = netClient.requestToObject(BaiduApiToken.class);
+        baiduApiToken = netClient.newRequest().setUrl(apiUrl, hashMap).requestToObject(BaiduApiToken.class);
         this.baiduApiToken.setCreateData(new Date());
     }
 
@@ -65,79 +71,83 @@ public class BaiduAiApi extends BaseService{
 
             if (new Date().before(c.getTime())) {
                 updateToken();
-                if(isEnable){
+                if (isEnable) {
                     return baiduApiToken.getAccessToken();
                 }
                 return null;
             }
         }
         updateToken();
-        if(isEnable){
+        if (isEnable) {
             return baiduApiToken.getAccessToken();
         }
         return null;
     }
+
     /**
      * 图片文字识别
      *
-     * @param file 文件路径
+     * 图片转成灰度，不降低识别
+     * @param uri 文件路径
      * @return 图片识别结果
      */
-    public String getPicInfo(String file) {
+    public String getPicInfo(URI uri) {
         String apiUrl = "https://aip.baidubce.com/rest/2.0/ocr/v1/general?access_token={access_token}";
         HashMap<String, String> hashMap = new HashMap<>(4);
         hashMap.put("access_token", getToken());
-        if(isEnable==false){
+        if (!isEnable) {
             throw new BusinessException("Baidu ai接口异常，获取token异常");
         }
-        netClient.setUrl(apiUrl, hashMap);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Map<String, String> postMap = new HashMap<>(4);
         try {
-            BufferedImage image = ImageIO.read(new File(file));
+            BufferedImage image;
+            if(uri.getScheme().equalsIgnoreCase("file")){
+                image = ImageIO.read(new File(uri.getPath()));
+            }else{
+                byte[] bytes = netClient.newRequest().setUrl(uri.toURL()).requestToBytes();
+                image = ImageIO.read(new ByteArrayInputStream(bytes));
+            }
+            assert image!=null;
             int width = image.getWidth();
             int height = image.getHeight();
-            /**
-             * 图片转成灰度，不降低识别
-             */
             BufferedImage grayImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
             Graphics graphics = grayImage.getGraphics();
-            graphics.drawImage(image,0,0,width,height,null);
-
+            graphics.drawImage(image, 0, 0, width, height, null);
             ImageIO.write(grayImage, "jpg", byteArrayOutputStream);
-            postMap.put("image",String.valueOf(Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray())));
+            postMap.put("image", String.valueOf(Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray())));
         } catch (IOException e) {
             log.warn("读取用户图片出错");
             return "{\"error\":\"读取用户图片出错\"}";
         }
-        netClient.setPostMap(postMap);
+        netClient.newRequest().setUrl(apiUrl, hashMap).setPostMap(postMap);
         return netClient.requestToString();
     }
     /**
      * 植物识别
+     * 本地文件
      *
-     * @param file
-     * @return
+     * @param uri 远程或本地文件路径
+     * @return 识别结果
      */
-    public String plant(String file,int baikeNum) {
+    public String plant(URI uri, int baikeNum) throws IOException {
         String apiUrl = "https://aip.baidubce.com/rest/2.0/image-classify/v1/plant?access_token={access_token}";
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>(2);
         hashMap.put("access_token", getToken());
-        if(isEnable==false){
+        if (!isEnable) {
             throw new BusinessException("Baidu ai接口异常，获取token异常");
         }
-        netClient.setUrl(apiUrl, hashMap);
-        byte[] bytes = new byte[0];
-        try {
-            bytes = Files.readAllBytes(Paths.get(file));
-        } catch (IOException e) {
-            e.printStackTrace();
+        byte[] bytes;
+        if (SCHEME_FILE.equalsIgnoreCase(uri.getScheme())){
+            bytes = Files.readAllBytes(Paths.get(uri.getPath()));
+        }else{
+            bytes = netClient.newRequest().setUrl(uri.toURL(), null).requestToBytes();
         }
-        Map<String, String> postMap = new HashMap<>();
+        netClient.newRequest().setUrl(apiUrl, hashMap);
+        Map<String, String> postMap = new HashMap<>(2);
         postMap.put("image", String.valueOf(Base64.getEncoder().encodeToString(bytes)));
         postMap.put("baike_num", String.valueOf(baikeNum));
         netClient.setPostMap(postMap);
         return netClient.requestToString();
     }
-
 }

@@ -14,11 +14,14 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * 网络请求类
+ *
  * @author guliuzhong
  */
 @Slf4j
@@ -27,7 +30,7 @@ public class NetClient {
     public static final String URL_START = "?";
     private static final String URL_SPLIT = "&";
     ObjectMapper objectMapper;
-    private final Request.Builder builder = new Request.Builder();
+    private final ThreadLocal<Request.Builder> builderThreadLocal = new ThreadLocal<>();
     private OkHttpClient okHttpClient;
 
     @Autowired
@@ -40,40 +43,58 @@ public class NetClient {
         this.objectMapper = objectMapper;
     }
 
-    public void setPostMap(Map<String, String> postMap) {
+    /**
+     * 开始新请求
+     *
+     * @return NetClient
+     */
+    public NetClient newRequest() {
+        builderThreadLocal.set(new Request.Builder());
+        return this;
+    }
+
+    private NetClient endRequest() {
+        builderThreadLocal.remove();
+        return this;
+    }
+
+    public NetClient setPostMap(Map<String, String> postMap) {
         if (postMap.size() > 0) {
             FormBody.Builder builder1 = new FormBody.Builder();
             for (Map.Entry<String, String> postItem : postMap.entrySet()) {
                 builder1.add(postItem.getKey(), postItem.getValue());
             }
             RequestBody build = builder1.build();
+            Request.Builder builder = builderThreadLocal.get();
             builder.post(build);
         }
+        return this;
     }
 
-    public void setHeaderMap(Map<String, String> headerMap) {
+    public NetClient setHeaderMap(Map<String, String> headerMap) {
         if (headerMap.size() > 0) {
+            Request.Builder builder = builderThreadLocal.get();
             for (Map.Entry<String, String> postItem : headerMap.entrySet()) {
                 builder.addHeader(postItem.getKey(), postItem.getValue());
             }
         }
+        return this;
     }
 
-    public void setJson(String json) {
+    public NetClient setJson(String json) {
+        Request.Builder builder = builderThreadLocal.get();
         builder.post(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json));
+        return this;
     }
 
-    public void setJson(Object jsonObject) throws JsonProcessingException {
-        setJson(objectMapper.writeValueAsString(jsonObject));
+    public NetClient setJson(Object jsonObject) throws JsonProcessingException {
+        return setJson(objectMapper.writeValueAsString(jsonObject));
     }
 
-    public void setBin(String contextType, byte[] bytes) {
+    public NetClient setBin(String contextType, byte[] bytes) {
+        Request.Builder builder = builderThreadLocal.get();
         builder.post(RequestBody.create(MediaType.parse(contextType), bytes));
-    }
-
-
-    public void setUrl(String url) {
-        setUrl(url, null);
+        return this;
     }
 
     private String urlEncode(String encodeString) {
@@ -85,12 +106,25 @@ public class NetClient {
         }
     }
 
-    public void setUrl(String url, Map<String, String> queries) {
+    public NetClient setUrl(URL url) {
+        return setUrl(url.toString(), null);
+    }
+
+    public NetClient setUrl(URL url, Map<String, String> queries) {
+        return setUrl(url.toString(), queries);
+    }
+
+    public NetClient setUrl(String url) {
+        return setUrl(url, null);
+    }
+
+
+    public NetClient setUrl(String url, Map<String, String> queries) {
         StringBuilder sb = new StringBuilder();
         if (queries != null && queries.size() > 0) {
             for (Map.Entry<String, String> next : queries.entrySet()) {
                 String key = next.getKey();
-                Pattern pattern = Pattern.compile("\\{" + key + "\\}");
+                Pattern pattern = Pattern.compile("\\{" + key + "}");
                 if (pattern.matcher(url).find()) {
                     url = url.replaceAll(pattern.toString(), urlEncode(next.getValue()));
                 } else {
@@ -109,39 +143,45 @@ public class NetClient {
                 url = url + URL_START + sb.toString().substring(0, sb.length() - 1);
             }
         }
+        Request.Builder builder = builderThreadLocal.get();
         builder.url(url);
+        return this;
     }
+
     public byte[] requestToBytes() {
         Response execute;
         try {
+            Request.Builder builder = builderThreadLocal.get();
             execute = okHttpClient.newCall(builder.build()).execute();
+            assert execute.body() != null;
             if (!execute.isSuccessful()) {
-                assert execute.body() != null;
-                log.info("http return httpCode {},BODY {}", execute.code(), execute.body().string());
-            }
-            if (execute.isSuccessful()) {
-                assert execute.body() != null;
+                log.error("http return httpCode {},BODY {}", execute.code(), execute.body().string());
+            } else {
                 return execute.body().bytes();
             }
+            endRequest();
         } catch (IOException e) {
             log.error("request http error {}", e.getMessage());
+            endRequest();
         }
         return null;
     }
+
     public String requestToString() {
         Response execute;
         try {
+            Request.Builder builder = builderThreadLocal.get();
             execute = okHttpClient.newCall(builder.build()).execute();
+            assert execute.body() != null;
             if (!execute.isSuccessful()) {
-                assert execute.body() != null;
-                log.info("http return httpCode {},BODY {}", execute.code(), execute.body().string());
-            }
-            if (execute.isSuccessful()) {
-                assert execute.body() != null;
+                log.error("http return httpCode {},BODY {}", execute.code(), execute.body().string());
+            } else {
                 return execute.body().string();
             }
+            endRequest();
         } catch (IOException e) {
             log.error("request http error {}", e.getMessage());
+            endRequest();
         }
         return null;
     }

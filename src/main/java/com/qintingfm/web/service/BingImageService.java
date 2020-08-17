@@ -27,7 +27,6 @@ public class BingImageService {
     private BingBgImage bgImage;
 
     public BingBgImage getImage() {
-        netClient.setUrl("http://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1");
         if (lastUpdateDate != null && bgImage != null) {
             Calendar instance = Calendar.getInstance();
             instance.setTime(lastUpdateDate);
@@ -37,7 +36,8 @@ public class BingImageService {
                 return bgImage;
             }
         }
-        bgImage = netClient.requestToObject(BingBgImage.class);
+        bgImage = netClient.newRequest().setUrl("http://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1")
+                .requestToObject(BingBgImage.class);
         lastUpdateDate = new Date();
         return bgImage;
     }

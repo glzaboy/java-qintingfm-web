@@ -38,13 +38,12 @@ public class BaiduSpider extends BaseSpider {
                 ConcurrentHashMap<String,String> concurrentHashMap=new ConcurrentHashMap<>(4);
                 concurrentHashMap.put("token",baiduSpiderSetting.getToken());
                 concurrentHashMap.put("site",baiduSpiderSetting.getSite());
-                netClient.setUrl("http://data.zz.baidu.com/urls", concurrentHashMap);
-                StringBuilder postData = new StringBuilder();
-                url.forEach(item -> postData.append(item).append("\n"));
+                netClient.newRequest().setUrl("http://data.zz.baidu.com/urls", concurrentHashMap);
                 Map<String, String> headerMap = new HashMap<>(4);
                 headerMap.put("Content-Type", "text/plain");
-                netClient.setHeaderMap(headerMap);
-                netClient.setBin("text/plain", postData.toString().getBytes());
+                StringBuilder postData = new StringBuilder();
+                url.forEach(item -> postData.append(item).append("\n"));
+                netClient.setBin("text/plain", postData.toString().getBytes()).setHeaderMap(headerMap);
                 String s = netClient.requestToString();
                 log.info("baidu推送结果{}", s);
                 return s;
