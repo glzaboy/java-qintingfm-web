@@ -26,7 +26,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class BaiduAiApi extends BaseService {
-    final String SCHEME_FILE="file";
+    private final String SCHEME_FILE="file";
     private boolean isEnable = false;
 
     NetClient netClient;
@@ -102,7 +102,7 @@ public class BaiduAiApi extends BaseService {
         Map<String, String> postMap = new HashMap<>(4);
         try {
             BufferedImage image;
-            if(uri.getScheme().equalsIgnoreCase("file")){
+            if(SCHEME_FILE.equalsIgnoreCase(uri.getScheme())){
                 image = ImageIO.read(new File(uri.getPath()));
             }else{
                 byte[] bytes = netClient.newRequest().setUrl(uri.toURL()).requestToBytes();
