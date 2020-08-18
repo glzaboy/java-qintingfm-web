@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,17 +23,18 @@ import java.util.Date;
 
 /**
  * 微信相关接口
+ *
  * @author guliuzhong
  */
 @Controller
 @RequestMapping("/wxapi")
 @Slf4j
-public class WeiXinController extends BaseController{
+public class WeiXinController extends BaseController {
     Manager manager;
     WxUploadJpa wxUploadJpa;
 
     @Autowired
-    @Qualifier(value="wxupload")
+    @Qualifier(value = "wxUpload")
     public void setManager(Manager manager) {
         this.manager = manager;
     }
@@ -42,16 +44,16 @@ public class WeiXinController extends BaseController{
         this.wxUploadJpa = wxUploadJpa;
     }
 
-    @PostMapping(value = "/bodysegupload", produces = "application/json;charset=utf-8")
+    @PostMapping(value = "/{appID}upload", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public WxUploadVo upload(@RequestParam("file") MultipartFile file) {
+    public WxUploadVo upload(@RequestParam("file") MultipartFile file, @PathVariable("appID") String appId) {
         String originalFilename = file.getOriginalFilename();
         originalFilename = originalFilename.replaceAll(":", "").replaceAll("\\//", "").replaceAll("\\\\", "");
         WxUploadVo wxUploadVo = new WxUploadVo();
         try {
             byte[] bytes = file.getBytes();
             String s = DigestUtils.md5DigestAsHex(bytes);
-            StorageObject put = manager.put(bytes,s);
+            StorageObject put = manager.put(bytes, s);
             WxUpload wxUpload = new WxUpload();
             wxUpload.setUrl(put.getUrl());
             wxUpload.setFileName(put.getObjectName());

@@ -17,17 +17,15 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class StorageConfig {
     @Bean(name = "uploadConfig")
-    @ConfigurationProperties(prefix = "storage.qiniu")
-
-    Config qiniuConfig() {
+    @ConfigurationProperties(prefix = "storage.upload")
+    Config config() {
         return new Config();
     }
-
     @Bean(name = "uploadQss")
-    Oss qiniuOss(@Autowired @Qualifier("uploadConfig") Config config) {
-        QiniuOssImpl qiniuOss = new QiniuOssImpl();
-        qiniuOss.setConfig(config);
-        return qiniuOss;
+    Oss oss(@Autowired @Qualifier("uploadConfig") Config config) {
+        QiniuOssImpl oss = new QiniuOssImpl();
+        oss.setConfig(config);
+        return oss;
     }
     @Bean(name = "upload")
     @Primary
@@ -36,20 +34,20 @@ public class StorageConfig {
         manager.setOss(oss);
         return manager;
     }
-    @Bean(name = "wxuploadConfig")
+    @Bean(name = "wxUploadConfig")
     @ConfigurationProperties(prefix = "storage.wx")
-    Config wxqiniuConfig() {
+    Config wxConfig() {
         return new Config();
     }
 
-    @Bean(name = "wxuploadQss")
-    Oss wxqiniuOss(@Autowired @Qualifier("uploadConfig") Config config) {
-        QiniuOssImpl qiniuOss = new QiniuOssImpl();
-        qiniuOss.setConfig(config);
-        return qiniuOss;
+    @Bean(name = "wxQss")
+    Oss wxOss(@Autowired @Qualifier("wxUploadConfig") Config config) {
+        QiniuOssImpl oss = new QiniuOssImpl();
+        oss.setConfig(config);
+        return oss;
     }
-    @Bean(name = "wxupload")
-    Manager wxmanager(@Autowired @Qualifier("wxuploadQss") Oss oss) {
+    @Bean(name = "wxUpload")
+    Manager wxManager(@Autowired @Qualifier("wxQss") Oss oss) {
         Manager manager = new Manager();
         manager.setOss(oss);
         return manager;
