@@ -1,10 +1,15 @@
 package com.qintingfm.web.jpa.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * 微信上传文件
+ * @author guliuzhong
+ */
 @Data
 @Entity
 public class WxUpload {
@@ -14,5 +19,11 @@ public class WxUpload {
     private Long id;
     String url;
     String fileName;
+    String appId;
+    String actionType;
+    String processStatus;
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    String processText;
     Date create;
 }
