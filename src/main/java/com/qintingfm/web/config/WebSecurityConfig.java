@@ -72,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/user/login","/user/active/*", "/user/register","/user/reset", "/xmlrpc/server", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt","/favicon.ico","/sitemap*","/captcha/showCaptcha").permitAll()
+        http.addFilterBefore(captchaFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/wxapi/**","/user/login","/user/active/*", "/user/register","/user/reset", "/misc/changeTheme", "/xmlrpc.php", "/", "/page/*", "/blog/**", "/robots.txt","/favicon.ico","/sitemap*","/captcha/showCaptcha").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated()
                 .and().formLogin()
                 .loginPage("/user/login").loginProcessingUrl("/login").
@@ -80,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(webLogoutSuccessHandler).permitAll()
                 .and().rememberMe().tokenRepository(jpaTokenRepository).key(key.toString())
-                .and().csrf(cs -> cs.ignoringAntMatchers("/xmlrpc/server", "/xmlrpc.php", "/user/register","/blog/uploadImage"))
+                .and().csrf(cs -> cs.ignoringAntMatchers("/xmlrpc.php", "/user/register","/blog/uploadImage","/wxapi/**"))
                 ;
     }
 

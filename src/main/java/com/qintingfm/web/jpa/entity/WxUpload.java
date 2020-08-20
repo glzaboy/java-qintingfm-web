@@ -25,5 +25,5 @@ public class WxUpload {
     @Lob
     @Type(type="org.hibernate.type.TextType")
     String processText;
-    Date create;
+    Date createDate;
 }

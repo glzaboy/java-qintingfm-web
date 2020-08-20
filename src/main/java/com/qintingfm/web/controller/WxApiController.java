@@ -2,12 +2,11 @@ package com.qintingfm.web.controller;
 
 import com.qintingfm.web.jpa.WxUploadJpa;
 import com.qintingfm.web.jpa.entity.WxUpload;
-import com.qintingfm.web.pojo.vo.WxUploadVo;
+import com.qintingfm.web.pojo.vo.WxResponse;
 import com.qintingfm.web.service.BaiduAiApi;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,13 +47,17 @@ public class WxApiController extends BaseController {
     public void setWxUploadJpa(WxUploadJpa wxUploadJpa) {
         this.wxUploadJpa = wxUploadJpa;
     }
+    @Autowired
+    public void setBaiduAiApi(BaiduAiApi baiduAiApi) {
+        this.baiduAiApi = baiduAiApi;
+    }
 
-    @PostMapping(value = "/{appID}upload", produces = "application/json;charset=utf-8")
+    @PostMapping(value = "/{appID}/upload", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public WxUploadVo upload(@PathVariable("appID") String appId,@RequestParam("file") MultipartFile file) {
+    public WxResponse upload(@PathVariable("appID") String appId, @RequestParam("file") MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         originalFilename = originalFilename.replaceAll(":", "").replaceAll("\\//", "").replaceAll("\\\\", "");
-        WxUploadVo wxUploadVo = new WxUploadVo();
+        WxResponse.WxResponseBuilder builder = WxResponse.builder();
         try {
             byte[] bytes = file.getBytes();
             String s = DigestUtils.md5DigestAsHex(bytes);
@@ -63,30 +66,35 @@ public class WxApiController extends BaseController {
             wxUpload.setAppId(appId);
             wxUpload.setUrl(put.getUrl());
             wxUpload.setFileName(put.getObjectName());
-            wxUpload.setCreate(new Date());
+            wxUpload.setCreateDate(new Date());
             wxUploadJpa.save(wxUpload);
-            wxUploadVo.setId(String.valueOf(wxUpload.getId()));
+            builder.data(String.valueOf(wxUpload.getId())).isSuccess(true);
         } catch (IOException | ManagerException e) {
             log.error("图片上传出错原因"+e.getMessage());
+            builder.isSuccess(false).message("图片上传出错原因：服务器出错");
         }
-        return wxUploadVo;
+        return builder.build();
     }
     @RequestMapping(value = "/{appID}/getPlant", produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String getPlant( @PathVariable("appID") String appId,@RequestParam("id") Long id, @RequestParam("baike_num") Integer baikeNum) {
+    public WxResponse getPlant( @PathVariable("appID") String appId,@RequestParam("id") Long id, @RequestParam("baike_num") Integer baikeNum) {
+        WxResponse.WxResponseBuilder builder = WxResponse.builder();
         Optional<WxUpload> byId = wxUploadJpa.findById(id);
         if (!byId.isPresent()) {
-            return "{}";
+            return builder.message("未找到上传的文件").isSuccess(false).build();
         } else {
             WxUpload wxUpload = byId.get();
             String bodySeg = null;
             try {
-                bodySeg = baiduAiApi.plant(URI.create(wxUpload.getFileName()),baikeNum);
-                return bodySeg;
+                bodySeg = baiduAiApi.plant(URI.create(wxUpload.getUrl()),baikeNum);
+                wxUpload.setProcessText(bodySeg);
+                wxUpload.setProcessStatus("true");
+                wxUpload.setActionType("plant");
+                wxUploadJpa.save(wxUpload);
+                return builder.data(bodySeg).isSuccess(true).build();
             } catch (IOException e) {
-                log.error("图片识别出错"+e.getMessage());
+                return builder.message("图片识别出错").isSuccess(false).build();
             }
-            return bodySeg;
         }
     }
 

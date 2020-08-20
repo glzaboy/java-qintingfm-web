@@ -23,8 +23,8 @@ class BaiduAiTests {
 
     @Test
     void testPlant() throws IOException {
-        String plant = baiduAiApi.plant(URI.create("file:///Users/guliuzhong/1.jpeg"), 3);
-        log.info(plant);
+//        String plant = baiduAiApi.plant(URI.create("file:///Users/guliuzhong/1.jpeg"), 3);
+//        log.info(plant);
         String plant2 = baiduAiApi.plant(URI.create("https://img-blog.csdn.net/20180119101851037?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvc2luYXRfMzc5MjQxNzY=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"), 3);
         log.info(plant2);
     }
