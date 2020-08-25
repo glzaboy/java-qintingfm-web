@@ -25,7 +25,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class BaiduAiApi extends BaseService {
+public class BaiduAiApiService extends BaseService {
     private final String SCHEME_FILE="file";
     private boolean isEnable = false;
 

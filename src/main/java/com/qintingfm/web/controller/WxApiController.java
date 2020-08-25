@@ -1,9 +1,9 @@
 package com.qintingfm.web.controller;
 
-import com.qintingfm.web.jpa.WxUploadJpa;
 import com.qintingfm.web.jpa.entity.WxUpload;
 import com.qintingfm.web.pojo.vo.WxResponse;
-import com.qintingfm.web.service.BaiduAiApi;
+import com.qintingfm.web.service.BaiduAiApiService;
+import com.qintingfm.web.service.WxUploadService;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -34,8 +34,8 @@ import java.util.Optional;
 @Slf4j
 public class WxApiController extends BaseController {
     Manager manager;
-    WxUploadJpa wxUploadJpa;
-    BaiduAiApi baiduAiApi;
+    WxUploadService wxUploadService;
+    BaiduAiApiService baiduAiApiService;
 
     @Autowired
     @Qualifier(value = "wxUpload")
@@ -44,12 +44,13 @@ public class WxApiController extends BaseController {
     }
 
     @Autowired
-    public void setWxUploadJpa(WxUploadJpa wxUploadJpa) {
-        this.wxUploadJpa = wxUploadJpa;
+    public void setBaiduAiApiService(BaiduAiApiService baiduAiApiService) {
+        this.baiduAiApiService = baiduAiApiService;
     }
+
     @Autowired
-    public void setBaiduAiApi(BaiduAiApi baiduAiApi) {
-        this.baiduAiApi = baiduAiApi;
+    public void setWxUploadService(WxUploadService wxUploadService) {
+        this.wxUploadService = wxUploadService;
     }
 
     @PostMapping(value = "/{appID}/upload", produces = "application/json;charset=utf-8")
@@ -61,14 +62,9 @@ public class WxApiController extends BaseController {
         try {
             byte[] bytes = file.getBytes();
             String s = DigestUtils.md5DigestAsHex(bytes);
-            StorageObject put = manager.put(bytes, s);
-            WxUpload wxUpload = new WxUpload();
-            wxUpload.setAppId(appId);
-            wxUpload.setUrl(put.getUrl());
-            wxUpload.setFileName(put.getObjectName());
-            wxUpload.setCreateDate(new Date());
-            wxUploadJpa.save(wxUpload);
-            builder.data(String.valueOf(wxUpload.getId())).isSuccess(true);
+            StorageObject storageObject = wxUploadService.uploadFile(bytes, s);
+            WxUpload upload = wxUploadService.upload(appId, storageObject.getUrl(), storageObject.getObjectName());
+            builder.data(String.valueOf(upload.getId())).isSuccess(true);
         } catch (IOException | ManagerException e) {
             log.error("图片上传出错原因"+e.getMessage());
             builder.isSuccess(false).message("图片上传出错原因：服务器出错");
@@ -77,20 +73,21 @@ public class WxApiController extends BaseController {
     }
     @RequestMapping(value = "/{appID}/getPlant", produces = "application/json;charset=utf-8")
     @ResponseBody
+    @Transactional
     public WxResponse getPlant( @PathVariable("appID") String appId,@RequestParam("id") Long id, @RequestParam("baike_num") Integer baikeNum) {
         WxResponse.WxResponseBuilder builder = WxResponse.builder();
-        Optional<WxUpload> byId = wxUploadJpa.findById(id);
+        Optional<WxUpload> byId = wxUploadService.findById(id);
         if (!byId.isPresent()) {
             return builder.message("未找到上传的文件").isSuccess(false).build();
         } else {
             WxUpload wxUpload = byId.get();
+            if(wxUpload.getProcessText()!=null){
+                return builder.data(wxUpload.getProcessText()).isSuccess(true).build();
+            }
             String bodySeg = null;
             try {
-                bodySeg = baiduAiApi.plant(URI.create(wxUpload.getUrl()),baikeNum);
-                wxUpload.setProcessText(bodySeg);
-                wxUpload.setProcessStatus("true");
-                wxUpload.setActionType("plant");
-                wxUploadJpa.save(wxUpload);
+                bodySeg = baiduAiApiService.plant(URI.create(wxUpload.getUrl()),baikeNum);
+                wxUploadService.process(wxUpload,"plant","true",bodySeg);
                 return builder.data(bodySeg).isSuccess(true).build();
             } catch (IOException e) {
                 return builder.message("图片识别出错").isSuccess(false).build();

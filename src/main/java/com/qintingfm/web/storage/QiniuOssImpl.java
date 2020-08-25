@@ -1,6 +1,5 @@
 package com.qintingfm.web.storage;
 
-import com.qiniu.common.AutoRegion;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
@@ -35,7 +34,7 @@ public class QiniuOssImpl implements Oss {
 
     @Override
     public StorageObject put(byte[] data, String objName) throws ManagerException {
-        UploadManager uploadManager = new UploadManager(new Configuration(AutoRegion.autoRegion()));
+        UploadManager uploadManager = new UploadManager(new Configuration());
         StorageObject storageObject = new StorageObject();
         try {
             Response r = uploadManager.put(data, objName, getToken());
@@ -51,7 +50,7 @@ public class QiniuOssImpl implements Oss {
 
     @Override
     public StorageObject put(URL url, String objName) throws ManagerException {
-        BucketManager bucketManager = new BucketManager(getAuth(), new Configuration(AutoRegion.autoRegion()));
+        BucketManager bucketManager = new BucketManager(getAuth(), new Configuration());
 
         StorageObject storageObject = new StorageObject();
         try {
@@ -66,7 +65,7 @@ public class QiniuOssImpl implements Oss {
 
     @Override
     public StorageObject put(InputStream inputStream, String objName) throws ManagerException {
-        UploadManager uploadManager = new UploadManager(new Configuration(AutoRegion.autoRegion()));
+        UploadManager uploadManager = new UploadManager(new Configuration());
         StorageObject storageObject = new StorageObject();
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -92,7 +91,7 @@ public class QiniuOssImpl implements Oss {
     @Override
     public Boolean delete(String objName) throws ManagerException {
         try {
-            BucketManager bucketManager = new BucketManager(getAuth(), new Configuration(AutoRegion.autoRegion()));
+            BucketManager bucketManager = new BucketManager(getAuth(), new Configuration());
             bucketManager.delete(config.getBucket(), objName);
         } catch (QiniuException e) {
             throw new ManagerException(e.getMessage(), e.getCause());
