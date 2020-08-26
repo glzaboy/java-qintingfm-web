@@ -1,19 +1,29 @@
 package com.qintingfm.web.service;
 
 import com.qintingfm.web.service.form.Form;
+import com.qintingfm.web.service.form.FormSelect;
 import com.qintingfm.web.service.form.annotation.FieldAnnotation;
+import com.qintingfm.web.service.form.annotation.FieldSelectAnnotation;
 import com.qintingfm.web.service.form.annotation.FormAnnotation;
 import com.qintingfm.web.pojo.vo.BaseVo;
-import com.qintingfm.web.service.form.annotation.FormItem;
+import com.qintingfm.web.service.form.FormItem;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 表单生成器
@@ -22,7 +32,13 @@ import java.util.List;
 @Data
 @Slf4j
 @Service
-public class FormGenerateService {
+public class FormGenerateService implements ApplicationContextAware {
+    ApplicationContext applicationContext;
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext=applicationContext;
+    }
+
     public <T extends BaseVo> Form generalFormData(T classData){
         return generalForm(null,classData);
     }
@@ -51,6 +67,30 @@ public class FormGenerateService {
                     builder.order(fieldAnnotation.order()).hide(fieldAnnotation.hide());
                     builder.largeText(fieldAnnotation.largeText()).useHtml(fieldAnnotation.useHtml());
                     builder.uploadFile(fieldAnnotation.uploadFile());
+                }
+                FieldSelectAnnotation fieldSelectAnnotation = AnnotationUtils.getAnnotation(field, FieldSelectAnnotation.class);
+                if(fieldSelectAnnotation!=null){
+                    String[] value = fieldSelectAnnotation.value();
+
+                    if(value.length>1 && value.length%2==0){
+                        /**
+                         * 使用value初始化列表
+                         */
+                        Set<FormSelect> formSelectSet=new HashSet<>();
+                        for(int i=0;i<value.length/2;i++){
+                            FormSelect.FormSelectBuilder formSelectBuilder = FormSelect.builder();
+                            formSelectBuilder.key(value[i*2]).value(value[i*2+1]);
+                            formSelectSet.add(formSelectBuilder.build());
+                        }
+                        builder.formSelectSet(formSelectSet);
+                    }else{
+                        Object bean = applicationContext.getBean(fieldSelectAnnotation.bean());
+                        Class<?> aClass = bean.getClass();
+                        Method method1 = ReflectionUtils.findMethod(aClass, fieldSelectAnnotation.method());
+                        Set<FormSelect> formSelects =(Set<FormSelect>)ReflectionUtils.invokeMethod(method1,bean);
+                        builder.formSelectSet(formSelects);
+                    }
+
                 }
                 try {
                     if(classDate !=null){

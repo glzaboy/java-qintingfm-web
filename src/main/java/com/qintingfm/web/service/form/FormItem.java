@@ -1,9 +1,10 @@
-package com.qintingfm.web.service.form.annotation;
+package com.qintingfm.web.service.form;
 
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 表单元素项目
@@ -23,7 +24,7 @@ public class FormItem implements Serializable, Comparable<FormItem> {
     boolean largeText;
     boolean useHtml;
     boolean uploadFile;
-
+    Set<FormSelect> formSelectSet;
 
     @Override
 

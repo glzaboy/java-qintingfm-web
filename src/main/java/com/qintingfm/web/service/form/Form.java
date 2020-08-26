@@ -1,6 +1,5 @@
 package com.qintingfm.web.service.form;
 
-import com.qintingfm.web.service.form.annotation.FormItem;
 import lombok.Builder;
 import lombok.Data;
 

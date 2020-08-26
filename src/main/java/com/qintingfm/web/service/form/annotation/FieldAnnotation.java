@@ -54,5 +54,4 @@ public @interface FieldAnnotation{
      * @return
      */
     boolean uploadFile() default false;
-    boolean cc() default false;
 }
