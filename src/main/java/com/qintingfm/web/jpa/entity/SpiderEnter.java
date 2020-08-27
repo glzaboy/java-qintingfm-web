@@ -14,7 +14,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- *
+ * @author guliuzhong
  */
 @Entity
 @Data

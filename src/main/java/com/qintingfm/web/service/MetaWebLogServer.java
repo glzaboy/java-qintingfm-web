@@ -261,14 +261,6 @@ public class MetaWebLogServer extends XmlRpcServer {
                 post.put("description", "");
             }
             post.put("link", siteSetting.getMainUrl()+"/blog/view/"+item.getPostId());
-//            Method detail;
-//            try {
-//                detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-//                String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, item.getPostId(), null).build().toString();
-//                post.put("link", siteSetting.getMainUrl()+"/blog/view/"+item.getPostId());
-//            } catch (NoSuchMethodException e) {
-//                logger.error("获取文章地址出错{}",e.getMessage());
-//            }
             mapVector.add(post);
         });
         return mapVector;
@@ -278,39 +270,39 @@ public class MetaWebLogServer extends XmlRpcServer {
     String editPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
-        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
-        builder.postId(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
-        builder.title(stringObjectHashMap.get("title").toString());
-        builder.cont(stringObjectHashMap.get("description").toString());
+        BlogPojo blogPojo=new BlogPojo();
+        blogPojo.setPostId(Integer.valueOf(xmlRequestParser.getParams().get(0).toString()));
+        blogPojo.setTitle(stringObjectHashMap.get("title").toString());
+        blogPojo.setCont(stringObjectHashMap.get("description").toString());
         if (stringObjectHashMap.get("dateCreated") != null) {
-            builder.createDate((Date) stringObjectHashMap.get("dateCreated"));
+            blogPojo.setCreateDate((Date) stringObjectHashMap.get("dateCreated"));
         }
         if (stringObjectHashMap.get("categories") != null) {
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-            builder.catNames(Stream.of(categories).map(item -> (String) item).collect(Collectors.toList()));
+            blogPojo.setCatNames(Stream.of(categories).map(item -> (String) item).toArray(String[]::new));
         }
-        builder.authorId(userDetails.getId());
-        builder.state("publish");
-        blogServer.save(builder.build());
+        blogPojo.setAuthorId(userDetails.getId());
+        blogPojo.setState(true);
+        blogServer.save(blogPojo);
         return "";
     }
 
     String newPost(XmlRpcRequestParser xmlRequestParser, User userDetails) {
         @SuppressWarnings("unchecked")
         HashMap<String, Object> stringObjectHashMap = (HashMap<String, Object>) xmlRequestParser.getParams().get(3);
-        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
-        builder.title(stringObjectHashMap.get("title").toString());
-        builder.cont(stringObjectHashMap.get("description").toString());
+        BlogPojo blogPojo=new BlogPojo();
+        blogPojo.setTitle(stringObjectHashMap.get("title").toString());
+        blogPojo.setCont(stringObjectHashMap.get("description").toString());
         if (stringObjectHashMap.get("dateCreated") != null) {
-            builder.createDate((Date) stringObjectHashMap.get("dateCreated"));
+            blogPojo.setCreateDate((Date) stringObjectHashMap.get("dateCreated"));
         }
         if (stringObjectHashMap.get("categories") != null) {
             Object[] categories = (Object[]) stringObjectHashMap.get("categories");
-            builder.catNames(Stream.of(categories).map(item -> (String) item).collect(Collectors.toList()));
+            blogPojo.setCatNames(Stream.of(categories).map(item -> (String) item).toArray(String[]::new));
         }
-        builder.authorId(userDetails.getId());
-        builder.state("publish");
-        Blog save = blogServer.save(builder.build());
+        blogPojo.setAuthorId(userDetails.getId());
+        blogPojo.setState(true);
+        Blog save = blogServer.save(blogPojo);
         return save.getPostId().toString();
     }
 }

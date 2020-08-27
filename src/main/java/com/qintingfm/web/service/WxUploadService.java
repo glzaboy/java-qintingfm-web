@@ -1,20 +1,18 @@
 package com.qintingfm.web.service;
 
-import com.qintingfm.web.common.exception.BusinessException;
 import com.qintingfm.web.jpa.WxUploadJpa;
 import com.qintingfm.web.jpa.entity.WxUpload;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Optional;
@@ -77,7 +75,7 @@ public class WxUploadService extends BaseService{
     public StorageObject uploadFile(byte[] bytes, String objName) throws ManagerException{
         return manager.put(bytes,objName);
     }
-    @Transactional
+    @Transactional(rollbackFor = {})
     public WxUpload upload(String appId,String url,String fileName){
         WxUpload wxUpload = new WxUpload();
         wxUpload.setAppId(appId);
@@ -86,11 +84,11 @@ public class WxUploadService extends BaseService{
         wxUpload.setCreateDate(new Date());
         return wxUploadJpa.save(wxUpload);
     }
-    @Transactional
+    @Transactional(rollbackFor = {},readOnly = true)
     public Optional<WxUpload> findById(Long id){
         return wxUploadJpa.findById(id);
     }
-    @Transactional
+    @Transactional(rollbackFor = {})
     public WxUpload process(WxUpload wxUpload,String actionType,String status,String processText){
         wxUpload.setActionType(actionType);
         wxUpload.setProcessStatus(status);

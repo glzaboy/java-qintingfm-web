@@ -6,6 +6,10 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 百度api接口token
+ * @author guliuzhong
+ */
 @Data
 @JsonIgnoreProperties({"expires_in","session_key"})
 public class BaiduApiToken {

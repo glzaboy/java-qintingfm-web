@@ -70,8 +70,8 @@
         <h3 class="panel-title" th:utext="${form.title}" th:if="${form.title}">标题</h3>
         <div th:each="item:${form.formItems}">
             <div class="form-group" th:classappend="${item.hide}?'hide':''"  th:if="${item.element eq'input'}">
-                <label class="col-md-3 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
-                <div class="col-md-9">
+                <label class="col-md-2 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
+                <div class="col-md-10">
                     <input type="text" id="input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}" th:if="${item.fieldName ne 'settingName' && item.className ne 'Boolean'} " />
                     <input type="checkbox" id="id-state-input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="toggle-switch" value="TRUE"  th:checked="${item.value eq 'TRUE' }" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "/>
                     <label for="id-state-input" th:for="${item.fieldName}" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "></label>
@@ -82,8 +82,8 @@
             </div>
 
             <div class="form-group" th:classappend="${item.hide}?'hide':''" th:if="${item.element eq 'select'}">
-                <label class="col-md-3 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
-                <div class="col-md-9">
+                <label class="col-md-2 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
+                <div class="col-md-10">
                     <select class="selectpicker" th:name="${item.fieldName}" th:id="${item.fieldName}" id="cat-selector" th:multiple="${item.multiple}"  th:title="${item.title}">
                         <option value="value" th:each="option:${item.formOption}" th:value="${option.id}"
                                 th:text="${option.text}" th:selected="${item.listKey!=null and item.listKey.contains(option.id)}">option
@@ -94,8 +94,8 @@
             </div>
 
             <div class="form-group" th:classappend="${item.hide}?'hide':''"  th:if="${item.element eq 'textarea'}">
-                <label class="col-md-3 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
-                <div class="col-md-9">
+                <label class="col-md-2 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
+                <div class="col-md-10">
                     <textarea th:name="${item.fieldName}" th:id="${item.fieldName}" th:utext="${item.value}" style="width:100%;min-height: 450px;"></textarea>
                     <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
                     <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js" th:if="${item.htmlEditUpload or item.htmlEditor}"></script>

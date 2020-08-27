@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 <head>
-    <title th:text="|${blog.title?:'新文章'}-文章编辑|">文章编辑</title>
+    <title th:text="|文章编辑|">文章编辑</title>
     <style>
         #content-container:before {
             display: none;
@@ -12,119 +12,10 @@
 <body>
 <ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/post')"></ul>
 <div id="page-content" layout:fragment="content">
-    <form action="#" th:action="@{'/blog/post/{postId}'(postId=${blog.postId?:0})}" class="ajaxform" method="post">
-        <div class="row">
-            <div class="col-xs-12 col-sm-7">
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <select class="selectpicker" multiple id="cat-selector" style="width: 100%" name="catNames" title="内容分类">
-                            <option value="push" th:each="category:${allCategory}" th:value="${category.title}"
-                                    th:text="${category.title}" th:selected="${blogCatList.contains(category.catId)}">分类
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-2">
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <div class="checkbox">
-                            <input id="allow-comments" class="magic-checkbox" type="checkbox" checked="" name="comments">
-                            <label for="allow-comments">允许评论</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-2">
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <div class="checkbox">
-                            <input id="state" class="magic-checkbox" type="checkbox" th:checked="${blog.state=='publish'}" name="state" value="publish">
-                            <label for="state">发布前台</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-1">
-                <div class="form-group">
-                    <button class="btn btn-primary">保存</button>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-12">
-                <div class="form-group">
-                    <input type="text" placeholder="标题" class="form-control input-lg" autofocus="autofocus"
-                           th:value="${blog.title}" name="title"/>
-                </div>
-                <div class="form-group">
-                    <textarea th:utext="${blog.blogCont.cont}" class="editor" placeholder="内容" name="cont"></textarea>
-                </div>
-            </div>
-        </div>
-    </form>
+    <div th:include="fragments/common::form(${form},@{'/blog/post'})" xmlns:th="http://www.w3.org/1999/html">
+    </div>
 </div>
 <div layout:fragment="footjs">
-    <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
-    <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
-    <script th:inline="javascript" type="text/javascript">
-        /*<![CDATA[*/
-        $(document).on('nifty.ready', function () {
-            ClassicEditor
-                .create(document.querySelector('.editor'), {
-                    toolbar: {
-                        items: [
-                            'heading',
-                            'bold',
-                            'italic',
-                            'underline',
-                            'strikethrough',
-                            'fontColor',
-                            'undo',
-                            'redo',
-                            '|',
-                            'link',
-                            'imageUpload',
-                            '|',
-                            'bulletedList',
-                            'numberedList',
-                            'alignment',
-                            '|',
-                            'blockQuote',
-                            'insertTable',
-                            'removeFormat'
-                        ]
-                    },
-                    language: 'zh-cn',
-                    image: {
-                        toolbar: [
-                            'imageTextAlternative',
-                            '|',
-                            'imageStyle:full',
-                            'imageStyle:side'
-                        ]
-                    },
-                    table: {
-                        contentToolbar: [
-                            'tableColumn',
-                            'tableRow',
-                            'mergeTableCells',
-                            'tableCellProperties',
-                            'tableProperties'
-                        ]
-                    },
-                    simpleUpload: {
-                        uploadUrl: /*[[@{'/blog/uploadImage'}]]*/''
-                    },
-                    licenseKey: '',
-                })
-                .then(editor => {
-                    window.editor = editor;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        });
-        /*]]>*/
-    </script>
 </div>
 </body>
 </html>

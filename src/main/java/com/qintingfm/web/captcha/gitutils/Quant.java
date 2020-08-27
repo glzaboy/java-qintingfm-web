@@ -6,10 +6,16 @@ package com.qintingfm.web.captcha.gitutils;
  */
 public class Quant {
     protected static final int netsize = 256;
-    /* number of colours used */
+    /**
+     * number of colours used
+     */
 
-    /* four primes near 500 - assume no image has a length so large */
-    /* that it is divisible by all four primes */
+    /**
+     *  four primes near 500 - assume no image has a length so large
+     */
+    /**
+     *  that it is divisible by all four primes
+     */
     protected static final int prime1 = 499;
     protected static final int prime2 = 491;
     protected static final int prime3 = 487;
@@ -354,7 +360,10 @@ public class Quant {
             network[i][0] >>= netbiasshift;
             network[i][1] >>= netbiasshift;
             network[i][2] >>= netbiasshift;
-            network[i][3] = i; /* record colour no */
+            network[i][3] = i;
+            /**
+             *  record colour no
+             */
         }
     }
 

@@ -9,6 +9,7 @@ import com.qintingfm.web.jpa.entity.BlogCont;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
+import com.qintingfm.web.service.form.FormOption;
 import com.qintingfm.web.spider.BaiduSpider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,8 +130,8 @@ public class BlogService extends BaseService {
         }
         blog.setShotCont(contentText);
         blog.setAuthor(userService.getUser(blogPojo.getAuthorId()));
-        blog.setBlogCategory(categoryService.getCategory(blogPojo.getCatNames()));
-        blog.setState(blogPojo.getState().toLowerCase());
+        blog.setBlogCategory(categoryService.getCategory(Arrays.stream(blogPojo.getCatNames()).collect(Collectors.toSet())));
+        blog.setState(blogPojo.getState()?"publish":"draft");
         blog.setSummary(summary);
         blog.setKeywords(keywords.stream().collect(Collectors.joining(",")).toString());
         Blog save = blogJpa.save(blog);
@@ -144,19 +145,9 @@ public class BlogService extends BaseService {
         SiteSettingVo siteSetting = getSiteSetting();
         Collection<String> pushUrl = new ArrayList<>();
         String link=siteSetting.getMainUrl()+"/blog/view/"+blog.getPostId();
-        log.error("当前推送地址{}",link);
+        log.info("当前推送地址{}",link);
         pushUrl.add(link);
         baiduSpider.pushUrlToSpider(pushUrl);
-//        pushUrl.add(link);
-//        try {
-//            Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
-//            String s = MvcUriComponentsBuilder.fromMethod(BlogController.class, detail, null, blog.getPostId(), null).build().toString();
-//            pushUrl.add(s);
-//            log.error("当前推送地址{}",s);
-//            baiduSpider.pushUrlToSpider(pushUrl);
-//        } catch (NoSuchMethodException e) {
-//            log.error("找不到博客文档的url");
-//        }
     }
 
     public Page<BlogComment> getBlogComment(Blog blog, Integer pageIndex, Sort sort, Integer pageSize) {

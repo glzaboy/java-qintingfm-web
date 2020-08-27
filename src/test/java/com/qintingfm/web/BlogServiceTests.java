@@ -1,5 +1,6 @@
 package com.qintingfm.web;
 
+import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.BlogService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,24 +25,24 @@ public class BlogServiceTests {
     @Test
     @Transactional
     public void validBlogPojo() {
-        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
-        builder.title("test");
-        builder.cont("这里是内容");
-        builder.authorId(1L);
-        builder.state("draft");
-        builder.catNames(Stream.of("a").collect(Collectors.toList()));
-        blogService.validatePojoAndThrow(builder.build());
+        BlogPojo blogPojo=new BlogPojo();
+        blogPojo.setTitle("test");
+        blogPojo.setCont("这里是内容");
+        blogPojo.setAuthorId(1L);
+        blogPojo.setState(false);
+        blogPojo.setCatNames(Stream.of("a").toArray(String[]::new));
+        blogService.validatePojoAndThrow(blogPojo);
     }
 
     @Test
     @Transactional
     public void saveBlogPojo() {
-        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
-        builder.title("test");
-        builder.cont("这里是内容");
-        builder.authorId(1L);
-        builder.state("draft");
-        builder.catNames(Stream.of("a").collect(Collectors.toList()));
-        blogService.save(builder.build());
+        BlogPojo blogPojo=new BlogPojo();
+        blogPojo.setTitle("test");
+        blogPojo.setCont("这里是内容");
+        blogPojo.setAuthorId(1L);
+        blogPojo.setState(false);
+        blogPojo.setCatNames(Stream.of("a").toArray(String[]::new));
+        blogService.save(blogPojo);
     }
 }

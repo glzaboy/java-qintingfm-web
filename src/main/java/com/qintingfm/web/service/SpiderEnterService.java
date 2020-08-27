@@ -4,6 +4,9 @@ import com.qintingfm.web.jpa.SpiderEnterJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author guliuzhong
+ */
 @Service
 public class SpiderEnterService extends BaseService{
     SpiderEnterJpa spiderEnterJpa;

@@ -8,7 +8,9 @@ import com.qintingfm.web.pojo.request.UploadError;
 import com.qintingfm.web.pojo.request.UploadImagePojo;
 import com.qintingfm.web.service.BlogService;
 import com.qintingfm.web.service.CategoryService;
+import com.qintingfm.web.service.FormGenerateService;
 import com.qintingfm.web.service.HtmlService;
+import com.qintingfm.web.service.form.Form;
 import com.qintingfm.web.storage.Manager;
 import com.qintingfm.web.storage.ManagerException;
 import com.qintingfm.web.storage.StorageObject;
@@ -41,6 +43,8 @@ public class BlogController extends BaseController{
     CategoryService categoryService;
     HtmlService htmlService;
 
+    FormGenerateService formGenerateService;
+
     @Autowired
     public void setBlogServer(BlogService blogServer) {
         this.blogServer = blogServer;
@@ -59,6 +63,11 @@ public class BlogController extends BaseController{
     @Autowired
     public void setManager(Manager manager) {
         this.manager = manager;
+    }
+
+    @Autowired
+    public void setFormGenerateService(FormGenerateService formGenerateService) {
+        this.formGenerateService = formGenerateService;
     }
 
     @RequestMapping(value = {"/view/{postId}", "/view/{postId}/{pageIndex}"})
@@ -112,32 +121,29 @@ public class BlogController extends BaseController{
         return ajaxDto;
     }
 
-
     @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.GET})
-    public ModelAndView postView(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
+    public ModelAndView postView2(ModelAndView modelAndView, @PathVariable(value = "postId", required = false) Integer postId) {
         Optional<Blog> blogDb = blogServer.getBlog(postId);
-        Blog blogtmp=new Blog();
-        BlogCont blogCont=new BlogCont();
-        blogCont.setCont("");
-        blogtmp.setBlogCont(blogCont);
-        blogtmp.setBlogCategory(new ArrayList<>());
-        blogtmp.setTitle("");
-        Blog blog = blogDb.orElse(blogtmp);
-        blog.setTitle(htmlService.decodeEntityHtml(blog.getTitle()));
-        modelAndView.addObject("blog", blog);
-        List<Integer> collect = blog.getBlogCategory().stream().map(Category::getCatId).collect(Collectors.toList());
-        modelAndView.addObject("blogCatList", collect);
-        Page<Category> allCategory = categoryService.getAllCategory(1, 10000);
-        modelAndView.addObject("allCategory", allCategory);
+        BlogPojo blogPojo =new  BlogPojo();
+        if(blogDb.isPresent()){
+            Blog blog = blogDb.get();
+            blogPojo.setPostId(blog.getPostId());
+            blogPojo.setCont(blog.getBlogCont().getCont());
+            blogPojo.setTitle(blog.getTitle());
+            List<Category> blogCategory = blog.getBlogCategory();
+            blogPojo.setState("publish".equalsIgnoreCase(blog.getState()));
+            blogPojo.setCatNames(blogCategory.stream().map(item -> item.title).toArray(String[]::new));
+        }
+        Form form = formGenerateService.generalFormData(blogPojo);
+        modelAndView.addObject("form",form);
         modelAndView.setViewName("blog/post");
         modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
-
-    @RequestMapping(value = {"/post/{postId}"}, method = {RequestMethod.POST})
+    @RequestMapping(value = {"/post"}, method = {RequestMethod.POST})
     @ResponseBody
     @Transactional(rollbackFor = {Exception.class})
-    public AjaxDto post(@PathVariable(value = "postId", required = false) Integer postId, @RequestParam("cont") String cont, @RequestParam("title") String title, @RequestParam(value = "catNames", required = false) List<String> catNames, @RequestParam(value = "state", required = false) String state) {
+    public AjaxDto post(BlogPojo blogPojo) {
         AjaxDto ajaxDto = new AjaxDto();
         Optional<User> loginUser = getLoginUser();
         if (!loginUser.isPresent()) {
@@ -152,18 +158,8 @@ public class BlogController extends BaseController{
             }
             return ajaxDto;
         }
-        BlogPojo.BlogPojoBuilder builder = BlogPojo.builder();
-        builder.postId(postId>0?postId:null);
-        builder.title(title);
-        builder.cont(cont);
-        builder.catNames(catNames);
-        builder.authorId(loginUser.get().getId());
-        if (state != null) {
-            builder.state("publish");
-        } else {
-            builder.state("draft");
-        }
-        Blog save = blogServer.save(builder.build());
+        blogPojo.setAuthorId(loginUser.get().getId());
+        Blog save = blogServer.save(blogPojo);
         ajaxDto.setMessage("操作成功");
         try {
             Method detail = BlogController.class.getDeclaredMethod("detail", ModelAndView.class, Integer.class, Integer.class);
@@ -174,7 +170,6 @@ public class BlogController extends BaseController{
         }
         return ajaxDto;
     }
-
 
     @RequestMapping(value = {"/category"}, method = {RequestMethod.GET})
     public ModelAndView categoryList(ModelAndView modelAndView) {

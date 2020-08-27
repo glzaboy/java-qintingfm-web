@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 
+/**
+ * @author guliuzhong
+ */
 @RestController
 public class SiteMapController extends BaseController{
     BlogService blogServer;

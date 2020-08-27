@@ -26,6 +26,7 @@ import java.io.OutputStream;
  * for any purpose, however, refer to the Unisys LZW patent for restrictions
  * on use of the associated Encoder class.  Please forward any corrections
  * to questions at fmsware.com.
+ * @author guliuzhong
  */
 public class GifEncoder {
     protected int width; // image size
@@ -146,16 +147,16 @@ public class GifEncoder {
         return ok;
     }
 
-    //added by alvaro
+    /**
+     * added by alvaro
+     */
     public boolean outFlush() {
         boolean ok = true;
         try {
             out.flush();
-            return ok;
         } catch (IOException e) {
             ok = false;
         }
-
         return ok;
     }
 

@@ -16,16 +16,37 @@ import java.util.Random;
  * @date 2018-07-27 上午 10:08
  */
 public abstract class AbstractCaptcha extends Randoms {
-    // 常用颜色
+    /**
+     * 常用颜色
+     */
     public static final int[][] COLOR = {{0, 135, 255}, {51, 153, 51}, {255, 102, 102}, {255, 153, 0}, {153, 102, 0}, {153, 102, 153}, {51, 153, 153}, {102, 102, 255}, {0, 102, 204}, {204, 51, 51}, {0, 153, 204}, {0, 51, 102}};
-    // 验证码文本类型
-    public static final int TYPE_DEFAULT = 1;  // 字母数字混合
-    public static final int TYPE_ONLY_NUMBER = 2;  // 纯数字
-    public static final int TYPE_ONLY_CHAR = 3;  // 纯字母
-    public static final int TYPE_ONLY_UPPER = 4;  // 纯大写字母
-    public static final int TYPE_ONLY_LOWER = 5;  // 纯小写字母
-    public static final int TYPE_NUM_AND_UPPER = 6;  // 数字大写字母
-    // 内置字体
+    /**
+     * 验证码文本类型
+     */
+    /**
+     * 字母数字混合
+     */
+    public static final int TYPE_DEFAULT = 1;
+    /**
+     * 纯数字
+     */
+    public static final int TYPE_ONLY_NUMBER = 2;
+    /**
+     * 纯字母
+     */
+    public static final int TYPE_ONLY_CHAR = 3;
+    /**
+     * 纯大写字母
+     */
+    public static final int TYPE_ONLY_UPPER = 4;
+    /**
+     * 纯小写字母
+     */
+    public static final int TYPE_ONLY_LOWER = 5;
+    /**
+     * 数字大写字母
+     */
+    public static final int TYPE_NUM_AND_UPPER = 6;
     public static final int FONT_1 = 0;
     public static final int FONT_2 = 1;
     public static final int FONT_3 = 2;
@@ -37,12 +58,30 @@ public abstract class AbstractCaptcha extends Randoms {
     public static final int FONT_9 = 8;
     public static final int FONT_10 = 9;
     private static final String[] FONT_NAMES = new String[]{"actionj.ttf", "epilog.ttf", "fresnel.ttf", "headache.ttf", "lexo.ttf", "prefix.ttf", "progbot.ttf", "ransom.ttf", "robot.ttf", "scandal.ttf"};
-    private Font font = null; // 验证码的字体
-    protected int len = 5; // 验证码随机字符长度
-    protected int width = 130; // 验证码显示宽度
-    protected int height = 48; // 验证码显示高度
-    protected int charType = TYPE_DEFAULT;  // 验证码类型
-    protected String chars = null; // 当前验证码
+    /**
+     * 验证码的字体
+     */
+    private Font font = null;
+    /**
+     * 验证码随机字符长度
+     */
+    protected int len = 5;
+    /**
+     * 验证码显示宽度
+     */
+    protected int width = 130;
+    /**
+     * 验证码显示高度
+     */
+    protected int height = 48;
+    /**
+     * 验证码类型
+     */
+    protected int charType = TYPE_DEFAULT;
+    /**
+     * 当前验证码
+     */
+    protected String chars = null;
 
     /**
      * 生成随机验证码
@@ -224,11 +263,17 @@ public abstract class AbstractCaptcha extends Randoms {
                 y1 = y2;
                 y2 = ty;
             }
-            if (num(2) == 0) {  // 二阶贝塞尔曲线
+            if (num(2) == 0) {
+                /**
+                 *二阶贝塞尔曲线
+                 * */
                 QuadCurve2D shape = new QuadCurve2D.Double();
                 shape.setCurve(x1, y1, ctrlx, ctrly, x2, y2);
                 g.draw(shape);
-            } else {  // 三阶贝塞尔曲线
+            } else {
+                /**
+                 *三阶贝塞尔曲线
+                 * */
                 int ctrlx1 = num(width / 4, width / 4 * 3), ctrly1 = num(5, height - 5);
                 CubicCurve2D shape = new CubicCurve2D.Double(x1, y1, ctrlx, ctrly, ctrlx1, ctrly1, x2, y2);
                 g.draw(shape);

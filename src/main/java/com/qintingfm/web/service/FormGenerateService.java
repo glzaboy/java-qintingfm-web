@@ -59,7 +59,6 @@ public class FormGenerateService implements ApplicationContextAware {
             builder1.message(classAnnotation.message()).method(classAnnotation.method());
         }
         while (tmpClass != null) {
-
             Field[] declaredFields = tmpClass.getDeclaredFields();
             for (Field field : declaredFields) {
                 FormItem.FormItemBuilder builder = FormItem.builder();
@@ -75,7 +74,6 @@ public class FormGenerateService implements ApplicationContextAware {
                         builder.htmlEditor(fieldAnnotation.htmlEditor());
                         builder.htmlEditUpload(fieldAnnotation.htmlEditorUpload());
                     }
-
                     if (field.getType().getTypeName().equalsIgnoreCase(String[].class.getTypeName())
                             || field.getType().getTypeName().equalsIgnoreCase(Integer[].class.getTypeName())
                             || field.getType().getTypeName().equalsIgnoreCase(Long[].class.getTypeName())
@@ -91,10 +89,11 @@ public class FormGenerateService implements ApplicationContextAware {
                                  * 使用value初始化列表
                                  */
                                 Set<FormOption> formOptionSet = new HashSet<>();
-                                for (int i = 0; i < strings.length / 2; i++) {
+                                for (int i = 0; i < strings.length; i++) {
                                     FormOption.FormOptionBuilder formOptionBuilder = FormOption.builder();
-                                    formOptionBuilder.id(strings[i * 2]).text(strings[i * 2 + 1]);
+                                    formOptionBuilder.id(strings[i ]).text(strings[i +1]);
                                     formOptionSet.add(formOptionBuilder.build());
+                                    i++;
                                 }
                                 builder.formOption(formOptionSet);
                             } else {
@@ -106,7 +105,7 @@ public class FormGenerateService implements ApplicationContextAware {
                             if (!listBeanName.isEmpty() && !listMethod.isEmpty()) {
                                 Object bean = applicationContext.getBean(listBeanName);
                                 Method method = ReflectionUtils.findMethod(bean.getClass(), listMethod);
-                                if (method.getGenericReturnType().getTypeName().equalsIgnoreCase("java.util.Set<com.qintingfm.web.service.form.FormOption>")) {
+                                if ("java.util.Set<com.qintingfm.web.service.form.FormOption>".equalsIgnoreCase(method.getGenericReturnType().getTypeName())) {
                                     Set<FormOption> formOptions = (Set<FormOption>) ReflectionUtils.invokeMethod(method, bean);
                                     builder.formOption(formOptions);
                                 } else {

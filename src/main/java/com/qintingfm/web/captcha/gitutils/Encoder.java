@@ -32,11 +32,22 @@ public class Encoder {
      * 80% 占用率
      */
     static final int HSIZE = 5003;
-
-    int n_bits; // number of bits/code
-    int maxbits = BITS; // user settable max # bits/code
-    int maxcode; // maximum code, given n_bits
-    int maxmaxcode = 1 << BITS; // should NEVER generate this code
+    /**
+     * number of bits/code
+     */
+    int n_bits;
+    /**
+     * user settable max # bits/code
+     */
+    int maxbits = BITS;
+    /**
+     * maximum code, given n_bits
+     */
+    int maxcode;
+    /**
+     * should NEVER generate this code
+     */
+    int maxmaxcode = 1 << BITS;
 
     int[] htab = new int[HSIZE];
     int[] codetab = new int[HSIZE];
@@ -49,22 +60,25 @@ public class Encoder {
      */
     int freeEnt = 0;
 
-    // block compression parameters -- after all codes are used up,
-    // and compression rate changes, start over.
+    /**
+     *  block compression parameters -- after all codes are used up,
+     *  and compression rate changes, start over.
+     */
     boolean clear_flg = false;
 
-    // Algorithm:  use open addressing double hashing (no chaining) on the
-    // prefix code / next character combination.  We do a variant of Knuth's
-    // algorithm D (vol. 3, sec. 6.4) along with G. Knott's relatively-prime
-    // secondary probe.  Here, the modular division first probe is gives way
-    // to a faster exclusive-or manipulation.  Also do block compression with
-    // an adaptive reset, whereby the code table is cleared when the compression
-    // ratio decreases, but after the table fills.  The variable-length output
-    // codes are re-sized at this point, and a special CLEAR code is generated
-    // for the decompressor.  Late addition:  construct the table according to
-    // file size for noticeable speed improvement on small files.  Please direct
-    // questions about this implementation to ames!jaw.
-
+    /**
+     *  Algorithm:  use open addressing double hashing (no chaining) on the
+     *  prefix code / next character combination.  We do a variant of Knuth's
+     *  algorithm D (vol. 3, sec. 6.4) along with G. Knott's relatively-prime
+     *  secondary probe.  Here, the modular division first probe is gives way
+     *  to a faster exclusive-or manipulation.  Also do block compression with
+     *  an adaptive reset, whereby the code table is cleared when the compression
+     *  ratio decreases, but after the table fills.  The variable-length output
+     *  codes are re-sized at this point, and a special CLEAR code is generated
+     *  for the decompressor.  Late addition:  construct the table according to
+     *  file size for noticeable speed improvement on small files.  Please direct
+     *  questions about this implementation to ames!jaw.
+     */
     int g_init_bits;
 
     int ClearCode;
@@ -108,10 +122,14 @@ public class Encoder {
                     0x7FFF,
                     0xFFFF};
 
-    // Number of characters so far in this 'packet'
+    /**
+     * Number of characters so far in this 'packet'
+     */
     int a_count;
 
-    // Define the storage for the packet accumulator
+    /**
+     * Define the storage for the packet accumulator
+     */
     byte[] accum = new byte[256];
 
     //----------------------------------------------------------------------------
@@ -226,9 +244,10 @@ public class Encoder {
             if (htab[i] == fcode) {
                 ent = codetab[i];
                 continue;
-            } else if (htab[i] >= 0) // non-empty slot
-            {
-                disp = hsize_reg - i; // secondary hash (after G. Knott)
+            } else if (htab[i] >= 0) {
+                // non-empty slot
+                disp = hsize_reg - i;
+                // secondary hash (after G. Knott)
                 if (i == 0) {
                     disp = 1;
                 }

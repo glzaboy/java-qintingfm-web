@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
@@ -73,7 +73,7 @@ public class WxApiController extends BaseController {
     }
     @RequestMapping(value = "/{appID}/getPlant", produces = "application/json;charset=utf-8")
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = {})
     public WxResponse getPlant( @PathVariable("appID") String appId,@RequestParam("id") Long id, @RequestParam("baike_num") Integer baikeNum) {
         WxResponse.WxResponseBuilder builder = WxResponse.builder();
         Optional<WxUpload> byId = wxUploadService.findById(id);

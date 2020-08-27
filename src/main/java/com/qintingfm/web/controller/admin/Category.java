@@ -16,6 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 分类
+ * @author guliuzhong
+ */
 @Controller
 @RequestMapping("/admin/category")
 public class Category extends BaseController {
