@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -14,17 +15,60 @@ import java.util.Set;
 @Data
 @Builder
 public class FormItem implements Serializable, Comparable<FormItem> {
+    /**
+     * 表单标题
+     */
     String title;
+    /**
+     * 字段名称
+     */
     String fieldName;
+    /**
+     * 字段值
+     */
     String value;
+    /**
+     * java类型
+     */
     String className;
+    /**
+     * 表单提示
+     */
     String tip;
+    /**
+     * 表单排序
+     */
     Integer order;
+    /**
+     * 表单元素
+     */
+    String element;
+    /**
+     * 是否隐藏
+     */
     boolean hide;
-    boolean largeText;
-    boolean useHtml;
-    boolean uploadFile;
-    Set<FormSelect> formSelectSet;
+    /**
+     * html编辑器
+     */
+    boolean htmlEditor;
+    /**
+     * html编辑器带上传
+     */
+    boolean htmlEditUpload;
+    /**
+     * select选择器列表
+     */
+    Set<FormOption> formOption;
+    /**
+     * select 选择器值多选
+     */
+    String[] listValue;
+    /**
+     * select 选择器值多选
+     */
+    Collection<String> listKey;
+    boolean multiple;
+
 
     @Override
 

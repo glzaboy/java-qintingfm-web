@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class FormSelect{
-    String key;
-    String value;
+public class FormOption {
+    String id;
+    String text;
 }

@@ -1,6 +1,6 @@
 package com.qintingfm.web.service;
 
-import com.qintingfm.web.service.form.FormSelect;
+import com.qintingfm.web.service.form.FormOption;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -12,12 +12,12 @@ import java.util.Set;
  */
 @Service
 public class WxService extends BaseService{
-    public Set<FormSelect> getSelect(){
-        Set<FormSelect> formSelects=new HashSet<>();
-        formSelects.add(FormSelect.builder().key("1").value("wxService1").build());
-        formSelects.add(FormSelect.builder().key("2").value("wxService2").build());
-        formSelects.add(FormSelect.builder().key("3").value("wxService3").build());
-        formSelects.add(FormSelect.builder().key("4").value("wxService4").build());
-        return formSelects;
+    public Set<FormOption> getSelect(){
+        Set<FormOption> formOptions =new HashSet<>();
+        formOptions.add(FormOption.builder().id("1").text("wxService1").build());
+        formOptions.add(FormOption.builder().id("2").text("wxService2").build());
+        formOptions.add(FormOption.builder().id("3").text("wxService3").build());
+        formOptions.add(FormOption.builder().id("4").text("wxService4").build());
+        return formOptions;
     }
 }

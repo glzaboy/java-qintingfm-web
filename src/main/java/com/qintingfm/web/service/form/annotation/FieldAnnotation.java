@@ -48,10 +48,29 @@ public @interface FieldAnnotation{
      * 使用HTML编辑器
      * @return
      */
-    boolean useHtml() default false;
+    boolean htmlEditor() default false;
     /**
      * 上传文件仅HTML生效
      * @return
      */
-    boolean uploadFile() default false;
+    boolean htmlEditorUpload() default false;
+    /**
+     * list类型数据列表
+     */
+    String[] listData() default "";
+
+    /**
+     * list读取的bean name
+     * @return
+     */
+    String listBeanName() default "";
+    /**
+     * 使用bean 时读取数据方法，要求方法
+     * 需要无参数且返回Set<FormSelect>数据
+     * @return
+     */
+    String listMethod() default "";
+
+    boolean multiple() default false;
+
 }

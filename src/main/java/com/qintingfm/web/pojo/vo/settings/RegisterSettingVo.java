@@ -18,6 +18,6 @@ import java.io.Serializable;
 public class RegisterSettingVo extends SettingDataVo implements Serializable {
     @FieldAnnotation(value = "启用",order = 1)
     Boolean enable;
-    @FieldAnnotation(value = "禁止注册提示",order = 2,largeText = true,useHtml = true)
+    @FieldAnnotation(value = "禁止注册提示",order = 2,largeText = true,htmlEditor = true)
     String disableRegisterTip;
 }

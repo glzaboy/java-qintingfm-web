@@ -8,7 +8,6 @@
             display: none;
         }
     </style>
-    <link href="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 </head>
 <body>
 <ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/post')"></ul>
@@ -66,7 +65,6 @@
 <div layout:fragment="footjs">
     <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
     <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
-    <script src="//static.qintingfm.com/nifty/v2.9/plugins/bootstrap-select/bootstrap-select.min.js"></script>
     <script th:inline="javascript" type="text/javascript">
         /*<![CDATA[*/
         $(document).on('nifty.ready', function () {
