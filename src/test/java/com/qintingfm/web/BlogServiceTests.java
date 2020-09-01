@@ -1,6 +1,5 @@
 package com.qintingfm.web;
 
-import com.qintingfm.web.jpa.entity.Blog;
 import com.qintingfm.web.pojo.request.BlogPojo;
 import com.qintingfm.web.service.BlogService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SpringBootTest

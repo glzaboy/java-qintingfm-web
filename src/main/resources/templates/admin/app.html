@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+      layout:decorate="~{layout/layout-adminlte}">
 <head>
     <title>设置选项</title>
     <meta name="Keywords" content="资讯,博客,时事要闻,qintingfm,microtf">
     <meta name="description" content="资讯,博客,时事要闻">
-    <style>
-        #content-container:before {
-            display: none;
-        }
-    </style>
 
 </head>
 <body>
@@ -19,7 +14,7 @@
     <div class="row fixed-fluid">
         <div class="panel">
             <div class="panel-body">
-                <div th:include="fragments/common::form(${form1},@{/admin/setting/save})" xmlns:th="http://www.w3.org/1999/html">
+                <div th:include="fragments/common-adminlte::form(${form1},@{/admin/setting/save})" xmlns:th="http://www.w3.org/1999/html">
                 </div>
             </div>
         </div>

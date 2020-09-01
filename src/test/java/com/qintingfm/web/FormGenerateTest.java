@@ -1,6 +1,6 @@
 package com.qintingfm.web;
 
-import com.qintingfm.web.pojo.MiniAppVo;
+import com.qintingfm.web.pojo.vo.MiniAppVo;
 import com.qintingfm.web.service.FormGenerateService;
 import com.qintingfm.web.service.form.Form;
 import org.junit.jupiter.api.Test;

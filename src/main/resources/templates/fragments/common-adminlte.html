@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh_CN">
+<ul th:fragment="menu(tpl)">
+    <!--Category name-->
+    <li class="list-header">导航</li>
+
+    <li th:class="${tpl}=='/'?'active-link':''">
+        <a href="#" th:href="@{/}">
+            <i class="demo-pli-home"></i>
+            <span class="menu-title">首页</span>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="demo-pli-file-html"></i>
+            <span class="menu-title">博客</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse">
+            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post/{postId}(postId=0)}">新文章</a>
+            </li>
+            <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#">
+            <i class="demo-pli-file-html"></i>
+            <span class="menu-title">系统设置</span>
+            <i class="arrow"></i>
+        </a>
+        <!--Submenu-->
+        <ul class="collapse">
+            <li th:class="${tpl}=='/admin/category/list'?'active-link':''">
+                <a href="#" th:href="@{/admin/category/list}">分类设置</a>
+            </li>
+            <li th:class="${tpl}=='/admin/setting/baidu'?'active-link':''">
+                <a href="#" th:href="@{/admin/setting/edit/baidu}">百度推送</a>
+            </li>
+            <li th:class="${tpl}=='/admin/setting/baiduyun'?'active-link':''">
+                <a href="#" th:href="@{/admin/setting/edit/baiduyun}">百度云设置</a>
+            </li>
+            <li th:class="${tpl}=='/admin/setting/site'?'active-link':''">
+                <a href="#" th:href="@{/admin/setting/edit/site}">站点设置</a>
+            </li>
+            <li th:class="${tpl}=='/admin/setting/register'?'active-link':''">
+                <a href="#" th:href="@{/admin/setting/edit/register}">注册设置</a>
+            </li>
+            <li th:class="${tpl}=='/admin/setting/sensitiveword'?'active-link':''">
+                <a href="#" th:href="@{/admin/setting/edit/sensitiveword}">敏感关键词</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+<!-- 分页 -->
+<ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
+    <li th:class="${pageIndex==1}?'disabled':''">
+        <a href="#" class="demo-pli-arrow-left" th:href="@{${urlPrefix}(page=${pageTotal})}"></a></li>
+    <th:block th:each="index:${#numbers.sequence(1, pageTotal)}">
+        <li th:class="${pageIndex==index}?'active':''" th:if="${(pageIndex-10/2) le 0 and index le 10} or (${(pageIndex-10/2) gt 0} and ${index ge pageIndex-10/2+1 and index le pageIndex-10/2+10} and ${pageTotal-pageIndex ge 10/2}) or  ${pageTotal-pageIndex lt 10/2 and index gt pageTotal-10}">
+            <a href="#" th:href="@{${urlPrefix}(page=${index})}"th:text="${index}">1</a>
+        </li>
+    </th:block>
+    <li th:class="${pageIndex==pageTotal}?'disabled':''">
+        <a href="#" class="demo-pli-arrow-right" th:href="@{${urlPrefix}(page=${pageTotal})}"></a>
+    </li>
+</ul>
+<div th:fragment="form(form,action)"  xmlns:th="http://www.w3.org/1999/html">
+    <form class="form-horizontal form-padding ajaxform" th:action="${action}" method="get" th:method="${form.method}">
+        <h3 class="panel-title" th:utext="${form.title}" th:if="${form.title}">标题</h3>
+        <div th:each="item:${form.formItems}">
+            <div class="form-group" th:classappend="${item.hide}?'hide':''"  th:if="${item.element eq'input'}">
+                <label class="col-md-2 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
+                <div class="col-md-10">
+                    <input type="text" id="input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}" th:if="${item.fieldName ne 'settingName' && item.className ne 'Boolean'} " />
+                    <input type="checkbox" id="id-state-input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="toggle-switch" value="TRUE"  th:checked="${item.value eq 'TRUE' }" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "/>
+                    <label for="id-state-input" th:for="${item.fieldName}" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "></label>
+                    <p class="form-control-static" th:utext="${item.value}" th:if="${item.fieldName eq 'settingName'}">Text</p>
+                    <input type="hidden" th:name="${item.fieldName}" th:value="${item.value}" value="TRUE"  th:if="${item.fieldName eq 'settingName'} "/>
+                    <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
+                </div>
+            </div>
+
+            <div class="form-group" th:classappend="${item.hide}?'hide':''" th:if="${item.element eq 'select'}">
+                <label class="col-md-2 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
+                <div class="col-md-10">
+                    <select class="selectpicker" th:name="${item.fieldName}" th:id="${item.fieldName}" id="cat-selector" th:multiple="${item.multiple}"  th:title="${item.title}">
+                        <option value="value" th:each="option:${item.formOption}" th:value="${option.id}"
+                                th:text="${option.text}" th:selected="${item.listKey!=null and item.listKey.contains(option.id)}">option
+                        </option>
+                    </select>
+                    <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
+                </div>
+            </div>
+
+            <div class="form-group" th:classappend="${item.hide}?'hide':''"  th:if="${item.element eq 'textarea'}">
+                <label class="col-md-2 control-label" th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
+                <div class="col-md-10">
+                    <textarea th:name="${item.fieldName}" th:id="${item.fieldName}" th:utext="${item.value}" style="width:100%;min-height: 450px;"></textarea>
+                    <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
+                    <script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js" th:if="${item.htmlEditUpload or item.htmlEditor}"></script>
+                    <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js" th:if="${item.htmlEditUpload or item.htmlEditor}"></script>
+                    <script th:inline="javascript" type="text/javascript" th:if="${item.htmlEditor && !item.htmlEditUpload}">
+                        /*<![CDATA[*/
+                        ClassicEditor
+                            .create(document.querySelector(/*[[${'#'+item.fieldName}]]*/'.editor'), {
+                                toolbar: {
+                                    items: [
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strikethrough',
+                                        'fontColor',
+                                        '|',
+                                        'blockQuote',
+                                        '|',
+                                        'removeFormat'
+                                    ]
+                                },
+                                language: 'zh-cn',
+                                licenseKey: '',
+                            })
+                            .then(editor => {
+                                window.editor = editor;
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        /*]]>*/
+                    </script>
+                    <script th:inline="javascript" type="text/javascript" th:if="${item.htmlEditUpload}">
+                        /*<![CDATA[*/
+                        ClassicEditor
+                            .create(document.querySelector(/*[[${'#'+item.fieldName}]]*/'.editor'), {
+                                toolbar: {
+                                    items: [
+                                        'heading',
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strikethrough',
+                                        'fontColor',
+                                        'undo',
+                                        'redo',
+                                        '|',
+                                        'link',
+                                        'imageUpload',
+                                        '|',
+                                        'bulletedList',
+                                        'numberedList',
+                                        'alignment',
+                                        '|',
+                                        'blockQuote',
+                                        'insertTable',
+                                        'removeFormat'
+                                    ]
+                                },
+                                language: 'zh-cn',
+                                image: {
+                                    toolbar: [
+                                        'imageTextAlternative',
+                                        '|',
+                                        'imageStyle:full',
+                                        'imageStyle:side'
+                                    ]
+                                },
+                                table: {
+                                    contentToolbar: [
+                                        'tableColumn',
+                                        'tableRow',
+                                        'mergeTableCells',
+                                        'tableCellProperties',
+                                        'tableProperties'
+                                    ]
+                                },
+                                simpleUpload: {
+                                    uploadUrl: /*[[@{'/blog/uploadImage'}]]*/''
+                                },
+                                licenseKey: '',
+                            })
+                            .then(editor => {
+                                window.editor = editor;
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        /*]]>*/
+                    </script>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group" th:if="!${form.hideSubmit}">
+            <label class="col-md-3 control-label" for="submitbtn"></label>
+            <div class="col-md-9">
+                <button id="submitbtn" class="pull-left btn btn-primary">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</html>
