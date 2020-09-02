@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.ConstraintViolationException;
+
 /**
  * 小程序类功能上传文件管理
  * @author guliuzhong
@@ -42,6 +44,11 @@ public class MiniApp extends BaseController {
         modelAndView.addObject("site", getSiteSetting());
         modelAndView.addObject("name", name);
         modelAndView.setViewName("admin/app");
+        return modelAndView;
+    }
+    @RequestMapping(value = "/saveapp", method = {RequestMethod.POST})
+    public ModelAndView app(MiniAppVo miniAppVo,ModelAndView modelAndView)  throws ConstraintViolationException {
+        this.validatePojoAndThrow(miniAppVo);
         return modelAndView;
     }
 }

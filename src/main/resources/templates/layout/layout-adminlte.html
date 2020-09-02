@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<!--
-这是一个入门模板页面。通过此页面从头开发新的项目。
-该页面删除了所有链接，仅提供所需的标签。
--->
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="zh">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-
-    <title>AdminLTE 3 | 起始页</title>
-
+    <title layout:title-pattern="$CONTENT_TITLE-$LAYOUT_TITLE" th:utext="${site.getTitle()}">标题</title>
+    <link type="application/rsd+xml" rel="EditURI" href="/xmlrpc.php"/>
     <!-- Font Awesome 图标 -->
     <link rel="stylesheet" href="//static.qintingfm.com/adminlte/v3.0.5/plugins/fontawesome-free/css/all.min.css">
     <!-- 主题样式 -->
     <link rel="stylesheet" href="//static.qintingfm.com/adminlte/v3.0.5/dist/css/adminlte.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="//static.qintingfm.com/adminlte/v3.0.5/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="//static.qintingfm.com/adminlte/v3.0.5/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <!-- 离线 Google 字体: Source Sans Pro -->
     <link href="//static.qintingfm.com/adminlte/v3.0.5/dist/css/google.css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
@@ -233,7 +231,7 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div id="page-content" layout:fragment="content"></div>
+                    <div class="col-xs-12 col-sm-12 col-md-12" id="page-content" layout:fragment="content"></div>
                 </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
@@ -270,7 +268,15 @@
 <script src="//static.qintingfm.com/adminlte/v3.0.5/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="//static.qintingfm.com/adminlte/v3.0.5/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jquery-validation -->
+<script src="//static.qintingfm.com/adminlte/v3.0.5/plugins/jquery-validation/jquery.validate.min.js"></script>
+<!-- Select2 -->
+<script src="//static.qintingfm.com/adminlte/v3.0.5/plugins/select2/js/select2.full.min.js"></script>
+<!-- ckeditor -->
+<script src="//static.qintingfm.com/ckeditor5/build/ckeditor.js"></script>
+<script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
 <!-- AdminLTE App -->
 <script src="//static.qintingfm.com/adminlte/v3.0.5/dist/js/adminlte.min.js"></script>
+<div layout:fragment="footjs"></div>
 </body>
 </html>

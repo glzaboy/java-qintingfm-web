@@ -9,16 +9,178 @@
 </head>
 <body>
 <ul id="mainnav-menu" class="list-group" layout:fragment="menu"
-    th:include="fragments/common::menu(${'/admin/setting/'+name})"></ul>
-<div id="page-content" layout:fragment="content">
-    <div class="row fixed-fluid">
-        <div class="panel">
-            <div class="panel-body">
-                <div th:include="fragments/common-adminlte::form(${form1},@{/admin/setting/save})" xmlns:th="http://www.w3.org/1999/html">
-                </div>
-            </div>
-        </div>
+    th:include="fragments/common::menu(${'/admin/miniApp/saveapp'})"></ul>
+    <div layout:fragment="content" th:include="fragments/common-adminlte::form(${form1},@{/admin/miniApp/saveapp})" xmlns:th="http://www.w3.org/1999/html">
     </div>
-</div>
+    <div layout:fragment="footjs">
+        <script th:inline="javascript">
+            $(document).ready(function (){
+                $('.select2bs4').select2({
+                    theme: 'bootstrap4'
+                });
+                $.extend({
+                    'createHtmlEdit':function(){
+                            ClassicEditor
+                                .create(document.querySelector('.htmlEditor'), {
+                                    toolbar: {
+                                        items: [
+                                            'heading',
+                                            'bold',
+                                            'italic',
+                                            'underline',
+                                            'strikethrough',
+                                            'fontColor',
+                                            'undo',
+                                            'redo',
+                                            '|',
+                                            'link',
+                                            'imageUpload',
+                                            '|',
+                                            'bulletedList',
+                                            'numberedList',
+                                            'alignment',
+                                            '|',
+                                            'blockQuote',
+                                            'insertTable',
+                                            'removeFormat'
+                                        ]
+                                    },
+                                    language: 'zh-cn',
+                                    image: {
+                                        toolbar: [
+                                            'imageTextAlternative',
+                                            '|',
+                                            'imageStyle:full',
+                                            'imageStyle:side'
+                                        ]
+                                    },
+                                    table: {
+                                        contentToolbar: [
+                                            'tableColumn',
+                                            'tableRow',
+                                            'mergeTableCells',
+                                            'tableCellProperties',
+                                            'tableProperties'
+                                        ]
+                                    },
+                                    simpleUpload: {
+                                        uploadUrl: /*[[@{'/blog/uploadImage'}]]*/''
+                                    },
+                                    licenseKey: '',
+                                })
+                                .then(editor => {
+                                    window.editor = editor;
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
+                            ClassicEditor
+                                .create(document.querySelector('.htmlEditUpload'), {
+                                    toolbar: {
+                                        items: [
+                                            'bold',
+                                            'italic',
+                                            'underline',
+                                            'strikethrough',
+                                            'fontColor',
+                                            '|',
+                                            'blockQuote',
+                                            '|',
+                                            'removeFormat'
+                                        ]
+                                    },
+                                    language: 'zh-cn',
+                                    licenseKey: '',
+                                })
+                                .then(editor => {
+                                    window.editor = editor;
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
+                    }
+                });
+                $('body').on('submit','form.ajaxform',function(e) {
+                    e.preventDefault();
+                    var jqueryfrom = $(this);
+                    var validateForm = jqueryfrom.validate({
+                        errorElement: 'span',
+                        errorPlacement: function (error, element) {
+                            error.addClass('invalid-feedback');
+                            element.closest('.form-group').append(error);
+                        },
+                        highlight: function (element, errorClass, validClass) {
+                            $(element).addClass('is-invalid');
+                        },
+                        unhighlight: function (element, errorClass, validClass) {
+                            $(element).removeClass('is-invalid');
+                        }
+                    });
+                    if (jqueryfrom.data('submiting')) {
+                        $(document).Toasts('create', {
+                            autohide: true,
+                            delay: 5000,
+                            class: 'bg-warning',
+                            body: '程序已经提交中了，请稍后片刻。'
+                        })
+                        return false;
+                    }
+                    jqueryfrom.data('submiting', 1);
+                    var options = {};
+                    options.url = jqueryfrom.attr('action') ? jqueryfrom.attr('action') : window.location.href;
+                    options.type = jqueryfrom.attr('method') ? jqueryfrom.attr('method') : 'GET';
+                    options.data = jqueryfrom.serializeArray();
+                    options.dataType = 'json';
+                    if (options.type.toUpperCase() == 'GET') {
+                        var queryString = $.param(options.data);
+                        options.url += (options.url.indexOf('?') >= 0 ? '&' : '?') + queryString;
+                        options.data = null;  // data is null for 'get'
+                    }
+                    validateForm.resetForm();
+                    $.ajax(options)
+                        .done(function (data, statusText) {
+                            console.log(data);
+                            if (data.message) {
+                                if (data.link && data.link.length > 0) {
+                                    $(document).Toasts('create', {
+                                        autohide: true,
+                                        delay: 5000,
+                                        class: 'bg-info',
+                                        body: data.message
+                                    });
+                                    //window.location.href = data.link;
+                                }else{
+                                    $(document).Toasts('create', {
+                                        autohide: true,
+                                        delay: 5000,
+                                        class: 'bg-info',
+                                        body: data.message
+                                    });
+                                }
+                            }
+                            if (data.autoJump) {
+                                window.setTimeout(function () {
+                                    window.location.href = data.link ? $.escapeurl(data.link) : window.location.href;
+                                }, data.autoJump * 1000);
+                            }
+                            if (data.error) {
+                                console.log(data.error);
+                                validateForm.showErrors(data.error);
+                            }
+                        }).fail(function (jqXHR, statusText) {
+                        $(document).Toasts('create', {
+                            autohide: true,
+                            delay: 5000,
+                            class: 'bg-success',
+                            body: '提交数据出错，可能是服务器正在维护或是网络问题，请稍后再试。'
+                        })
+                    }).always(function () {
+                        jqueryfrom.data('submiting', 0);
+                        console.log("complete");
+                    });
+                });
+            })
+        </script>
+    </div>
 </body>
 </html>
