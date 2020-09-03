@@ -1,5 +1,6 @@
 package com.qintingfm.web.controller.admin;
 
+import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
 import com.qintingfm.web.pojo.vo.MiniAppVo;
 import com.qintingfm.web.service.FormGenerateService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.ConstraintViolationException;
@@ -47,8 +49,13 @@ public class MiniApp extends BaseController {
         return modelAndView;
     }
     @RequestMapping(value = "/saveapp", method = {RequestMethod.POST})
-    public ModelAndView app(MiniAppVo miniAppVo,ModelAndView modelAndView)  throws ConstraintViolationException {
+    @ResponseBody
+    public AjaxDto app(MiniAppVo miniAppVo, ModelAndView modelAndView)  throws ConstraintViolationException {
         this.validatePojoAndThrow(miniAppVo);
-        return modelAndView;
+        AjaxDto ajaxDto=new AjaxDto();
+        ajaxDto.setAutoJump(0);
+        ajaxDto.setMessage("设置成功");
+        ajaxDto.setLink("http://baidu.com");
+        return ajaxDto;
     }
 }
