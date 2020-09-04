@@ -28,15 +28,12 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index3.html" class="nav-link">主页</a>
-            </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="#" class="nav-link">联系</a>
+                <a href="/" class="nav-link">首页</a>
             </li>
         </ul>
 
         <!-- 搜索表单 -->
-        <form class="form-inline ml-3">
+        <form class="form-inline ml-3 hide" method="post">
             <div class="input-group input-group-sm">
                 <input class="form-control form-control-navbar" type="search" placeholder="搜索" aria-label="Search">
                 <div class="input-group-append">
@@ -49,69 +46,10 @@
 
         <!-- 右侧导航栏链接 -->
         <ul class="navbar-nav ml-auto">
-            <!-- 消息下拉菜单 -->
-            <li class="nav-item dropdown">
-                <a class="nav-link" data-toggle="dropdown" href="#">
-                    <i class="far fa-comments"></i>
-                    <span class="badge badge-danger navbar-badge">3</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                    <a href="#" class="dropdown-item">
-                        <!-- 消息开始 -->
-                        <div class="media">
-                            <img src="dist/img/user1-128x128.jpg" alt="用户头像" class="img-size-50 mr-3 img-circle">
-                            <div class="media-body">
-                                <h3 class="dropdown-item-title">
-                                    Brad Diesel
-                                    <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                </h3>
-                                <p class="text-sm">有空的话就打电话给我...</p>
-                                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 小时前</p>
-                            </div>
-                        </div>
-                        <!-- 消息结束 -->
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <!-- 消息开始 -->
-                        <div class="media">
-                            <img src="dist/img/user8-128x128.jpg" alt="用户头像" class="img-size-50 img-circle mr-3">
-                            <div class="media-body">
-                                <h3 class="dropdown-item-title">
-                                    John Pierce
-                                    <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                </h3>
-                                <p class="text-sm">我收到你的消息了</p>
-                                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 小时前</p>
-                            </div>
-                        </div>
-                        <!-- 消息结束 -->
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <!-- 消息开始 -->
-                        <div class="media">
-                            <img src="dist/img/user3-128x128.jpg" alt="用户头像" class="img-size-50 img-circle mr-3">
-                            <div class="media-body">
-                                <h3 class="dropdown-item-title">
-                                    Nora Silvester
-                                    <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                                </h3>
-                                <p class="text-sm">主题在这里</p>
-                                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 小时前</p>
-                            </div>
-                        </div>
-                        <!-- 消息结束 -->
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">查看所有消息</a>
-                </div>
-            </li>
             <!-- 通知下拉菜单 -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                    <i class="far fa-bell"></i>
-                    <span class="badge badge-warning navbar-badge">15</span>
+                    <i class="far fa-settings"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <span class="dropdown-header">15 条通知</span>
@@ -131,7 +69,6 @@
                         <span class="float-right text-muted text-sm">2 天前</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">查看所有通知</a>
                 </div>
             </li>
             <li class="nav-item">
@@ -165,42 +102,7 @@
 
             <!-- 侧边栏菜单 -->
             <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- 使用 .nav-icon 类添加图标，
-                         或使用 font-awesome 或其他任何图标字体库 -->
-                    <li class="nav-item has-treeview menu-open">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-tachometer-alt"></i>
-                            <p>
-                                起始页
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link active">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>当前页</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>非活动页</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                简单的链接
-                                <span class="right badge badge-danger">新</span>
-                            </p>
-                        </a>
-                    </li>
-                </ul>
+                <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false" layout:fragment="menu"></ul>
             </nav>
             <!-- /.sidebar-menu -->
         </div>
@@ -265,6 +167,9 @@
 <!-- 载入脚本 -->
 
 <!-- jQuery -->
+<script th:inline="javascript">
+    uploadFilePath=/*[[@{'/blog/uploadImage'}]]*/'';
+</script>
 <script src="//static.qintingfm.com/adminlte/v3.0.5/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="//static.qintingfm.com/adminlte/v3.0.5/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -277,6 +182,8 @@
 <script src="//static.qintingfm.com/ckeditor5/build/translations/zh-cn.js"></script>
 <!-- AdminLTE App -->
 <script src="//static.qintingfm.com/adminlte/v3.0.5/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE customer init js -->
+<script src="//static.qintingfm.com/adminlte/v3.0.5/customer/adminlte.customer.min.js"></script>
 <div layout:fragment="footjs"></div>
 </body>
 </html>

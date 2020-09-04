@@ -10,15 +10,14 @@ import javax.persistence.SequenceGenerator;
 import java.util.Date;
 
 /**
- * 各类小程序配置
  * @author guliuzhong
  */
-@Data
 @Entity
-public class MiniProgram {
+@Data
+public class MiniApp {
     @Id
-    @SequenceGenerator(sequenceName = "MiniProgram_id_seq", name = "genMiniProgramId", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genMiniProgramId")
+    @SequenceGenerator(sequenceName = "MiniApp_id_seq", name = "genMiniAppId", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genMiniAppId")
     Integer id;
     String name;
     String type;

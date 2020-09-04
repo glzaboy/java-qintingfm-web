@@ -4,6 +4,7 @@ import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
 import com.qintingfm.web.pojo.vo.MiniAppVo;
 import com.qintingfm.web.service.FormGenerateService;
+import com.qintingfm.web.service.MiniAppService;
 import com.qintingfm.web.service.WxUploadService;
 import com.qintingfm.web.service.form.Form;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,11 @@ import javax.validation.ConstraintViolationException;
  */
 @Controller
 @RequestMapping("/admin/miniApp")
-public class MiniApp extends BaseController {
+public class MiniAppController extends BaseController {
     FormGenerateService formGenerateService;
     WxUploadService wxUploadService;
+
+    MiniAppService miniAppService;
 
     @Autowired
     public void setFormGenerateService(FormGenerateService formGenerateService) {
@@ -36,10 +39,21 @@ public class MiniApp extends BaseController {
         this.wxUploadService = wxUploadService;
     }
 
+    @Autowired
+    public void setMiniAppService(MiniAppService miniAppService) {
+        this.miniAppService = miniAppService;
+    }
+
+    @RequestMapping(value = "/list/{page}", method = {RequestMethod.GET})
+    public ModelAndView list(ModelAndView modelAndView, @PathVariable(value = "page",required = false) Integer page) {
+        modelAndView.setViewName("admin/miniapp/list");
+        modelAndView.addObject("site", getSiteSetting());
+        return modelAndView;
+    }
     @RequestMapping(value = "/app/{appId}", method = {RequestMethod.GET})
-    public ModelAndView app(ModelAndView modelAndView, @PathVariable(value = "appId") String name) {
+    public ModelAndView app(ModelAndView modelAndView, @PathVariable(value = "appId",required = false) String name) {
         MiniAppVo miniAppVo=new MiniAppVo();
-        miniAppVo.setAppId(Integer.valueOf("134"));
+//        miniAppVo.setAppId(Integer.valueOf("134"));
         miniAppVo.setType(new String[]{"1","2","3"});
         Form formBySettingName = formGenerateService.generalFormData(miniAppVo);
         modelAndView.addObject("form1", formBySettingName);

@@ -18,17 +18,14 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 public class MiniAppVo extends BaseVo {
     @FieldAnnotation(title = "appId",tip = "",order = 1,hide = false)
-    @NotNull(message = "testasdfs")
-    Integer appId;
+    @NotNull(message = "appId,不能为空")
+    Integer id;
     @FieldAnnotation(title = "程序类型",tip = "",order = 2,listData ={"weChat","微信小程序"})
     String[] type;
-    @FieldAnnotation(title = "程序类型",tip = "",order = 2,largeText = true)
-    String appKey;
-    @FieldAnnotation(title = "程序类型",tip = "",order = 2,largeText = true,htmlEditorUpload = true)
-    @NotBlank(message = "程序类型，不能为空")
-    String appSec;
-    @FieldAnnotation(title = "程序类型",tip = "",order = 2,largeText = true,htmlEditor = true)
-    String appSec2;
-    @FieldAnnotation(title = "程序类型",tip = "",order = 2,largeText = true)
-    String appSec3;
+    @FieldAnnotation(title = "应用平台Id",tip = "",order = 3)
+    @NotBlank(message = "应用平台Id，不能为空")
+    String appId;
+    @FieldAnnotation(title = "应用平台密钥",tip = "",order = 4)
+    @NotBlank(message = "应用平台密钥，不能为空")
+    String AppSecret;
 }

@@ -1,53 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh_CN">
-<ul th:fragment="menu(tpl)">
-    <!--Category name-->
-    <li class="list-header">导航</li>
+<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false" th:fragment="menu(tpl)">
+    <!-- 使用 .nav-icon 类添加图标，
+         或使用 font-awesome 或其他任何图标字体库 -->
+    <li class="nav-item has-treeview">
+        <a href="#" class="nav-link" th:href="@{/}" th:cellpadding="${tpl}=='/'?'active':''">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+                首页
+            </p>
+        </a>
 
-    <li th:class="${tpl}=='/'?'active-link':''">
-        <a href="#" th:href="@{/}">
-            <i class="demo-pli-home"></i>
-            <span class="menu-title">首页</span>
-        </a>
     </li>
-    <li>
-        <a href="#">
-            <i class="demo-pli-file-html"></i>
-            <span class="menu-title">博客</span>
-            <i class="arrow"></i>
+    <li class="nav-item has-treeview">
+        <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+                微信
+                <i class="right fas fa-angle-left"></i>
+            </p>
         </a>
-        <!--Submenu-->
-        <ul class="collapse">
-            <li th:class="${tpl}=='/blog/post/0'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/post/{postId}(postId=0)}">新文章</a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="#" class="nav-link"  th:href="@{'/admin/miniApp/app'}" th:classappend="${tpl}=='/admin/miniApp/app'?'active':''">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>小程序设置</p>
+                </a>
             </li>
-            <li th:class="${tpl}=='/blog/category'?'active-link':''"><a href="pages-blank.html" th:href="@{/blog/category}">分类</a></li>
-        </ul>
-    </li>
-    <li>
-        <a href="#">
-            <i class="demo-pli-file-html"></i>
-            <span class="menu-title">系统设置</span>
-            <i class="arrow"></i>
-        </a>
-        <!--Submenu-->
-        <ul class="collapse">
-            <li th:class="${tpl}=='/admin/category/list'?'active-link':''">
-                <a href="#" th:href="@{/admin/category/list}">分类设置</a>
-            </li>
-            <li th:class="${tpl}=='/admin/setting/baidu'?'active-link':''">
-                <a href="#" th:href="@{/admin/setting/edit/baidu}">百度推送</a>
-            </li>
-            <li th:class="${tpl}=='/admin/setting/baiduyun'?'active-link':''">
-                <a href="#" th:href="@{/admin/setting/edit/baiduyun}">百度云设置</a>
-            </li>
-            <li th:class="${tpl}=='/admin/setting/site'?'active-link':''">
-                <a href="#" th:href="@{/admin/setting/edit/site}">站点设置</a>
-            </li>
-            <li th:class="${tpl}=='/admin/setting/register'?'active-link':''">
-                <a href="#" th:href="@{/admin/setting/edit/register}">注册设置</a>
-            </li>
-            <li th:class="${tpl}=='/admin/setting/sensitiveword'?'active-link':''">
-                <a href="#" th:href="@{/admin/setting/edit/sensitiveword}">敏感关键词</a>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p th:utext="${tpl}">非活动页</p>
+                </a>
             </li>
         </ul>
     </li>
@@ -85,15 +69,13 @@
 
                 <div class="form-group" th:classappend="${item.hide}?'hide':''" th:if="${item.element eq 'select'}">
                     <label  th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
-
-                    <select class="form-control select2bs4" th:name="${item.fieldName}" th:id="${item.fieldName}" id="cat-selector" th:multiple="${item.multiple}"  th:title="${item.title}">
+                    <select class="form-control select2bs4" th:name="${item.fieldName}" th:id="${item.fieldName}" id="cat-selector" th:multiple="${item.multiple}"  th:title="${item.title}" style="width: 100%">
                         <option value="value" th:each="option:${item.formOption}" th:value="${option.id}"
                                 th:text="${option.text}" th:selected="${item.listKey!=null and item.listKey.contains(option.id)}">option
                         </option>
                     </select>
                     <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
                 </div>
-
                 <div class="form-group" th:classappend="${item.hide}?'hide':''"  th:if="${item.element eq 'textarea'}">
                     <label th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
                     <textarea th:name="${item.fieldName}" th:id="${item.fieldName}" th:utext="${item.value}" style="width:100%;min-height: 450px;" th:class="${item.htmlEditor && !item.htmlEditUpload} ?'htmlEditor': ${item.htmlEditUpload?'htmlEditUpload':''}"></textarea>
