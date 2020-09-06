@@ -2,12 +2,15 @@ package com.qintingfm.web.controller.admin;
 
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
+import com.qintingfm.web.jpa.entity.Category;
+import com.qintingfm.web.jpa.entity.MiniApp;
 import com.qintingfm.web.pojo.vo.MiniAppVo;
 import com.qintingfm.web.service.FormGenerateService;
 import com.qintingfm.web.service.MiniAppService;
 import com.qintingfm.web.service.WxUploadService;
 import com.qintingfm.web.service.form.Form;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 小程序类功能上传文件管理
@@ -46,23 +51,27 @@ public class MiniAppController extends BaseController {
 
     @RequestMapping(value = "/list/{page}", method = {RequestMethod.GET})
     public ModelAndView list(ModelAndView modelAndView, @PathVariable(value = "page",required = false) Integer page) {
+        Page<MiniApp> list = miniAppService.getList(page, null, 10);
+        modelAndView.addObject("items", list.toList());
+        modelAndView.addObject("pageIndex", list.getPageable().getPageNumber() + 1);
+        modelAndView.addObject("totalPages", list.getTotalPages());
+        modelAndView.addObject("total", list.getTotalElements());
         modelAndView.setViewName("admin/miniapp/list");
         modelAndView.addObject("site", getSiteSetting());
         return modelAndView;
     }
-    @RequestMapping(value = "/app/{appId}", method = {RequestMethod.GET})
-    public ModelAndView app(ModelAndView modelAndView, @PathVariable(value = "appId",required = false) String name) {
-        MiniAppVo miniAppVo=new MiniAppVo();
-//        miniAppVo.setAppId(Integer.valueOf("134"));
-        miniAppVo.setType(new String[]{"1","2","3"});
+    @RequestMapping(value = "/edit/{appId}", method = {RequestMethod.GET})
+    public ModelAndView app(ModelAndView modelAndView, @PathVariable(value = "appId",required = false) Integer appId) {
+        Optional<MiniApp> miniAppOptional = miniAppService.getMiniApp(appId);
+        MiniApp miniApp = miniAppOptional.orElse(new MiniApp());
+        MiniAppVo miniAppVo = miniAppService.toVo(miniApp);
         Form formBySettingName = formGenerateService.generalFormData(miniAppVo);
         modelAndView.addObject("form1", formBySettingName);
         modelAndView.addObject("site", getSiteSetting());
-        modelAndView.addObject("name", name);
-        modelAndView.setViewName("admin/app");
+        modelAndView.setViewName("admin/miniapp/app");
         return modelAndView;
     }
-    @RequestMapping(value = "/saveapp", method = {RequestMethod.POST})
+    @RequestMapping(value = "/save", method = {RequestMethod.POST})
     @ResponseBody
     public AjaxDto app(MiniAppVo miniAppVo, ModelAndView modelAndView)  throws ConstraintViolationException {
         this.validatePojoAndThrow(miniAppVo);

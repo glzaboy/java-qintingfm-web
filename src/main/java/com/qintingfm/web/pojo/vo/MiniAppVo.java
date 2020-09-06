@@ -1,13 +1,16 @@
 package com.qintingfm.web.pojo.vo;
 
-import com.qintingfm.web.pojo.vo.BaseVo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qintingfm.web.service.form.annotation.FieldAnnotation;
 import com.qintingfm.web.service.form.annotation.FormAnnotation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * 类别
@@ -27,5 +30,11 @@ public class MiniAppVo extends BaseVo {
     String appId;
     @FieldAnnotation(title = "应用平台密钥",tip = "",order = 4)
     @NotBlank(message = "应用平台密钥，不能为空")
-    String AppSecret;
+    String appSecret;
+    @FieldAnnotation(title = "启用",tip = "",order = 5)
+    Boolean enable=false;
+    @FieldAnnotation(title = "创建日期",tip = "",order = 5)
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    Date createDate;
 }

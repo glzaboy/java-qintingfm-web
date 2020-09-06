@@ -2,17 +2,23 @@ package com.qintingfm.web.service;
 
 import com.qintingfm.web.common.exception.Business;
 import com.qintingfm.web.common.exception.BusinessException;
+import com.qintingfm.web.pojo.vo.BaseVo;
+import com.qintingfm.web.pojo.vo.MiniAppVo;
 import com.qintingfm.web.pojo.vo.settings.SiteSettingVo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,6 +27,7 @@ import java.util.stream.Stream;
  *
  * @author guliuzhong
  */
+@Slf4j
 public class BaseService {
     private Validator validator;
     public SettingService settingService;
@@ -85,5 +92,31 @@ public class BaseService {
         Optional<SiteSettingVo> site = settingService.getSettingBean("site", SiteSettingVo.class);
         SiteSettingVo siteSetting=new SiteSettingVo();
         return site.orElse(siteSetting);
+    }
+    public <T extends Object,R extends Object> R copyFunction(T t,Function<T,R> function){
+        return function.apply(t);
+    }
+    public <T extends Object,R extends Object> R copyFunction(T t,Class<R> rxClass){
+        Function<T,R> function=(item)->{
+            R r = null;
+            try {
+                r = rxClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException e) {
+                log.error("create object fail {}",e.getMessage());
+//                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                log.error("create object fail {}",e.getMessage());
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                log.error("create object fail {}",e.getMessage());
+//                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                log.error("create object fail {}",e.getMessage());
+//                e.printStackTrace();
+            }
+            BeanUtils.copyProperties(item,r);
+            return r;
+        };
+        return copyFunction(t,function);
     }
 }

@@ -19,10 +19,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="category:${categories}">
-                <td class="text-center" th:utext="${category.catId}">1</td>
-                <td><a href="#" class="btn-link" target="_blank"  th:href="@{'/blog/category/{catName}/'(catName=${category.title})}" th:utext="${category.title}">title</a></td>
-                <td><a href="#" class="btn-link ajaxdialog" th:href="@{'/admin/category/edit/{catId}'(catId=${category.catId})}" title="编辑类目">编辑</a>&nbsp;<a href="" class="btn-link ajaxask" >禁用</a> </td>
+            <tr th:each="item:${items}">
+                <td class="text-center" th:utext="${item.id}">1</td>
+                <td class="text-center" th:utext="${item.name}">1</td>
+                <td><a href="#" class="btn-link ajaxdialog" th:href="@{'/admin/miniApp/edit/{id}'(catId=${item.id})}" title="编辑类目">编辑</a>&nbsp;<a href="" class="btn-link ajaxask" >禁用</a> </td>
             </tr>
             </tbody>
         </table>

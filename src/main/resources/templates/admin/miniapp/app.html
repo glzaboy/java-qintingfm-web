@@ -9,7 +9,7 @@
 <body>
     <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false"
     th:include="fragments/common-adminlte::menu(${'/admin/miniApp/app'})" layout:fragment="menu"></ul>
-    <div layout:fragment="content" th:include="fragments/common-adminlte::form(${form1},@{/admin/miniApp/saveapp})" xmlns:th="http://www.w3.org/1999/html">
+    <div layout:fragment="content" th:include="fragments/common-adminlte::form(${form1},@{/admin/miniApp/save})" xmlns:th="http://www.w3.org/1999/html">
     </div>
     <div layout:fragment="footjs">
     </div>

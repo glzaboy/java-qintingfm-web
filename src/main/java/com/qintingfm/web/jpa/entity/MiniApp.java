@@ -22,7 +22,7 @@ public class MiniApp {
     String name;
     String type;
     String appId;
-    String appKey;
+    String appSecret;
     Boolean enable;
     Date createDate;
 }
