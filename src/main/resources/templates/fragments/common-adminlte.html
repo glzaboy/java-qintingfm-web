@@ -16,6 +16,29 @@
         <a href="#" class="nav-link">
             <i class="nav-icon fas fa-th"></i>
             <p>
+                内容
+                <i class="right fas fa-angle-left"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="#" class="nav-link"  th:href="@{'/admin/blog/list'}" th:classappend="${tpl}=='/admin/blog/list'?'active':''">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>文章</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p th:utext="附件">附件</p>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-item has-treeview">
+        <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
                 微信
                 <i class="right fas fa-angle-left"></i>
             </p>
@@ -57,7 +80,7 @@
     <form class="form-horizontal form-padding ajaxform" th:action="${action}" method="get" th:method="${form.method}">
         <div class="card-body">
             <div th:each="item:${form.formItems}">
-                <div class="form-group" th:classappend="${item.hide}?'hide':''"  th:if="${item.element eq'input'}">
+                <div class="form-group" th:classappend="${item.hide}?'d-none':''"  th:if="${item.element eq'input'}">
                     <label  th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="input">Field Name</label>
                     <input type="text" id="input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}" th:if="${item.fieldName ne 'settingName' && item.className ne 'Boolean'} " />
                     <input type="checkbox" id="id-state-input" th:name="${item.fieldName}" th:id="${item.fieldName}" class="toggle-switch" value="TRUE"  th:checked="${item.value eq 'TRUE' }" th:if="${item.fieldName ne 'settingName' && item.className eq'Boolean'} "/>

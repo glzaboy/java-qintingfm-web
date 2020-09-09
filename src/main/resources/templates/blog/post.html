@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+      layout:decorate="~{layout/layout-adminlte}">
 <head>
     <title th:text="|文章编辑|">文章编辑</title>
-    <style>
-        #content-container:before {
-            display: none;
-        }
-    </style>
 </head>
 <body>
-<ul id="mainnav-menu" class="list-group" layout:fragment="menu" th:include="fragments/common::menu('/blog/post')"></ul>
-<div id="page-content" layout:fragment="content">
-    <div th:include="fragments/common::form(${form},@{'/blog/post'})" xmlns:th="http://www.w3.org/1999/html">
-    </div>
+<ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-compact nav-child-indent" data-widget="treeview" role="menu" data-accordion="false"
+    th:include="fragments/common-adminlte::menu('/blog/post')" layout:fragment="menu"></ul>
+<div layout:fragment="content" th:include="fragments/common-adminlte::form(${form},@{/blog/post})" xmlns:th="http://www.w3.org/1999/html">
 </div>
 <div layout:fragment="footjs">
 </div>
