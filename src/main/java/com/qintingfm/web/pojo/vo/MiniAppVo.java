@@ -34,7 +34,6 @@ public class MiniAppVo extends BaseVo {
     @FieldAnnotation(title = "启用",tip = "",order = 5)
     Boolean enable=false;
     @FieldAnnotation(title = "创建日期",tip = "",order = 5)
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss.sss")
     Date createDate;
 }

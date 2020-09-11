@@ -28,6 +28,10 @@ public class FormItem implements Serializable, Comparable<FormItem> {
      */
     String value;
     /**
+     * 数据格式
+     */
+    String format;
+    /**
      * java类型
      */
     String className;

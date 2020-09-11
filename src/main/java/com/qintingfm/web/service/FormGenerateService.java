@@ -12,13 +12,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -143,6 +147,21 @@ public class FormGenerateService implements ApplicationContextAware {
                                 builder.value(String.valueOf(field.get(classDate)));
                             } else if (field.getType() == Character.class) {
                                 builder.value(String.valueOf(field.get(classDate)));
+                            } else if (field.getType() == Date.class) {
+                                builder.element("date");
+                                Date date = (Date) field.get(classDate);
+                                if(date!=null){
+                                    DateTimeFormat dateTimeFormatAnnotation = AnnotationUtils.getAnnotation(field, DateTimeFormat.class);
+                                    if (dateTimeFormatAnnotation.pattern()!=null){
+                                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat(dateTimeFormatAnnotation.pattern());
+                                        builder.value(simpleDateFormat.format(date));
+                                        builder.format(dateTimeFormatAnnotation.pattern());
+                                    }else{
+                                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        builder.value(simpleDateFormat.format(date));
+                                        builder.format("yyyy-MM-dd HH:mm:ss");
+                                    }
+                                }
                             } else if (field.getType().getTypeName().equalsIgnoreCase(String[].class.getTypeName())) {
                                 String[] strings = (String[]) field.get(classDate);
                                 List<String> collect = Stream.of(strings).collect(Collectors.toList());
