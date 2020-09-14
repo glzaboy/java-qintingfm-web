@@ -94,7 +94,7 @@ public class MiniAppController extends BaseController {
         ajaxDto.setAutoJump(0);
         Method loginPage = null;
         try {
-            loginPage = UserController.class.getMethod("list", ModelAndView.class,Integer.class);
+            loginPage = MiniAppController.class.getMethod("list", ModelAndView.class,Integer.class);
             ajaxDto.setLink(MvcUriComponentsBuilder.fromMethod(MiniAppController.class, loginPage, modelAndView,Integer.valueOf(1)).build().toUriString());
         } catch (NoSuchMethodException e) {
             log.error(e.getMessage());
