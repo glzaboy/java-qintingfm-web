@@ -20,8 +20,10 @@ public class MiniApp {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genMiniAppId")
     Integer id;
     String type;
+    String name;
     String appId;
     String appSecret;
     Boolean enable;
     Date createDate;
+    Date updateDate;
 }

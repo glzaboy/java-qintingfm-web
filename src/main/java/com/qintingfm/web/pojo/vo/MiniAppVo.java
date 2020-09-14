@@ -24,15 +24,21 @@ public class MiniAppVo extends BaseVo {
     Integer id;
     @FieldAnnotation(title = "程序类型",tip = "",order = 2,listData ={"weChat","微信小程序"})
     String[] type;
-    @FieldAnnotation(title = "应用平台Id",tip = "",order = 3)
+    @FieldAnnotation(title = "应用名称",tip = "作为备注使用方便识别",order = 3)
+    @NotBlank(message = "应用名称")
+    String name;
+    @FieldAnnotation(title = "应用平台Id",tip = "",order = 4)
     @NotBlank(message = "应用平台Id，不能为空")
     String appId;
-    @FieldAnnotation(title = "应用平台密钥",tip = "",order = 4)
+    @FieldAnnotation(title = "应用平台密钥",tip = "",order = 5)
     @NotBlank(message = "应用平台密钥，不能为空")
     String appSecret;
-    @FieldAnnotation(title = "启用",tip = "",order = 5)
+    @FieldAnnotation(title = "启用",tip = "",order = 6)
     Boolean enable=false;
-    @FieldAnnotation(title = "创建日期",tip = "",order = 5)
+    @FieldAnnotation(title = "创建日期",tip = "",order = 7)
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     Date createDate;
+    @FieldAnnotation(title = "更新日期",tip = "",order = 7)
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    Date updateDate;
 }

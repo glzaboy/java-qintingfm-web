@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
@@ -51,6 +53,7 @@ public class MiniAppService extends BaseService{
             if(miniAppVo.getType()!=null){
                 miniApp.setType(miniAppVo.getType()[0]);
             }
+            miniApp.setUpdateDate(new Date());
             return miniApp;
         });
     }
