@@ -91,7 +91,7 @@
                 </div>
                 <div class="form-group" th:classappend="${item.hide}?'d-none':''"  th:if="${item.element eq'date'}">
                     <label  th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="inputDate">Field Name</label>
-                    <input type="text" id="inputDate" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control datetimepicker-input" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}" data-target="#timepicker" th:data-target="|#timeselect${item.fieldName}|" th:data-useformat="${item.format}"/>
+                    <input type="text" id="inputDate" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control datetimepicker-input" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}"  th:data-useformat="${item.format}"/>
                     <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
                 </div>
 

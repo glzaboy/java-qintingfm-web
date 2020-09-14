@@ -69,6 +69,8 @@ public class FormGenerateService implements ApplicationContextAware {
                 builder.fieldName(field.getName());
                 builder.className(field.getType().getSimpleName());
                 FieldAnnotation fieldAnnotation = AnnotationUtils.getAnnotation(field, FieldAnnotation.class);
+                DateTimeFormat dateTimeFormatAnnotation = AnnotationUtils.getAnnotation(field, DateTimeFormat.class);
+
                 if (fieldAnnotation != null) {
                     builder.title(fieldAnnotation.title()).tip(fieldAnnotation.tip());
                     builder.order(fieldAnnotation.order()).hide(fieldAnnotation.hide());
@@ -119,6 +121,20 @@ public class FormGenerateService implements ApplicationContextAware {
                         }
                     }
                 }
+                if(dateTimeFormatAnnotation!=null){
+                    builder.element("date");
+                    if (dateTimeFormatAnnotation.pattern()!=null){
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat(dateTimeFormatAnnotation.pattern());
+                        if(dateTimeFormatAnnotation.pattern().contains("HH:mm:ss")){
+                            builder.format("ymdTime");
+                        }else{
+                            builder.format("ymd");
+                        }
+                    }else{
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        builder.format("ymdTime");
+                    }
+                }
                 try {
                     if (classDate != null) {
                         @SuppressWarnings("deprecation")
@@ -148,22 +164,14 @@ public class FormGenerateService implements ApplicationContextAware {
                             } else if (field.getType() == Character.class) {
                                 builder.value(String.valueOf(field.get(classDate)));
                             } else if (field.getType() == Date.class) {
-                                builder.element("date");
                                 Date date = (Date) field.get(classDate);
                                 if(date!=null){
-                                    DateTimeFormat dateTimeFormatAnnotation = AnnotationUtils.getAnnotation(field, DateTimeFormat.class);
-                                    if (dateTimeFormatAnnotation.pattern()!=null){
+                                    if(dateTimeFormatAnnotation!=null && dateTimeFormatAnnotation.pattern()!=null){
                                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat(dateTimeFormatAnnotation.pattern());
                                         builder.value(simpleDateFormat.format(date));
-                                        if(dateTimeFormatAnnotation.pattern().contains("HH:mm:ss")){
-                                            builder.format("ymdTime");
-                                        }else{
-                                            builder.format("ymd");
-                                        }
-                                    }else{
+                                    } else{
                                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                         builder.value(simpleDateFormat.format(date));
-                                        builder.format("ymdTime");
                                     }
                                 }
                             } else if (field.getType().getTypeName().equalsIgnoreCase(String[].class.getTypeName())) {

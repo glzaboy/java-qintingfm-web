@@ -53,6 +53,9 @@ public class MiniAppService extends BaseService{
             if(miniAppVo.getType()!=null){
                 miniApp.setType(miniAppVo.getType()[0]);
             }
+            if(miniApp.getCreateDate()==null){
+                miniApp.setCreateDate(new Date());
+            }
             miniApp.setUpdateDate(new Date());
             return miniApp;
         });
