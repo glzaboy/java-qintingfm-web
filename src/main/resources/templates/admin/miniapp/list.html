@@ -31,10 +31,10 @@
             </tbody>
         </table>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-lg-6 d-none d-md-inline">
                 <div th:text="|展现${pageIndex}页 ,共计${totalPages}页,合计${total}条|"></div>
             </div>
-            <div class="col-sm-6 col-xs-12 text-right">
+            <div class="col-sm-12 col-xs-12 text-right">
                 <ul class="pagination" th:replace="fragments/common-adminlte::pager(${pageIndex},${totalPages},'/admin/miniApp/list/1{page}')"/>
             </div>
         </div>

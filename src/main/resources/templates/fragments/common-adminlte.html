@@ -60,16 +60,23 @@
     </li>
 </ul>
 <!-- 分页 -->
-<ul class="pagination" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
-    <li th:class="${pageIndex==1}?'disabled':''">
-        <a href="#" class="demo-pli-arrow-left" th:href="@{${urlPrefix}(page=${pageTotal})}"></a></li>
+<ul class="pagination pagination-sm m-0 float-right">
+    <li class="page-item"><a class="page-link" href="#">«</a></li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">»</a></li>
+</ul>
+<ul class="pagination pagination-sm m-0 float-right" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
+    <li class="page-item" th:classappend="${pageIndex==1}?'disabled':''">
+        <a href="#" class="page-link" th:href="@{${urlPrefix}(page=${pageTotal})}">«</a></li>
     <th:block th:each="index:${#numbers.sequence(1, pageTotal)}">
-        <li th:class="${pageIndex==index}?'active':''" th:if="${(pageIndex-10/2) le 0 and index le 10} or (${(pageIndex-10/2) gt 0} and ${index ge pageIndex-10/2+1 and index le pageIndex-10/2+10} and ${pageTotal-pageIndex ge 10/2}) or  ${pageTotal-pageIndex lt 10/2 and index gt pageTotal-10}">
-            <a href="#" th:href="@{${urlPrefix}(page=${index})}"th:text="${index}">1</a>
+        <li class="page-item" th:classappend="${pageIndex==index}?'active':''" th:if="${(pageIndex-10/2) le 0 and index le 10} or (${(pageIndex-10/2) gt 0} and ${index ge pageIndex-10/2+1 and index le pageIndex-10/2+10} and ${pageTotal-pageIndex ge 10/2}) or  ${pageTotal-pageIndex lt 10/2 and index gt pageTotal-10}">
+            <a href="#" class="page-link" th:href="@{${urlPrefix}(page=${index})}"th:text="${index}">1</a>
         </li>
     </th:block>
-    <li th:class="${pageIndex==pageTotal}?'disabled':''">
-        <a href="#" class="demo-pli-arrow-right" th:href="@{${urlPrefix}(page=${pageTotal})}"></a>
+    <li class="page-item" th:classappend="${pageIndex==pageTotal}?'disabled':''">
+        <a href="#" class="page-link"  th:href="@{${urlPrefix}(page=${pageTotal})}">»</a>
     </li>
 </ul>
 <div  th:fragment="form(form,action)"  xmlns:th="http://www.w3.org/1999/html">
