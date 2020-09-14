@@ -155,11 +155,15 @@ public class FormGenerateService implements ApplicationContextAware {
                                     if (dateTimeFormatAnnotation.pattern()!=null){
                                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat(dateTimeFormatAnnotation.pattern());
                                         builder.value(simpleDateFormat.format(date));
-                                        builder.format(dateTimeFormatAnnotation.pattern());
+                                        if(dateTimeFormatAnnotation.pattern().contains("HH:mm:ss")){
+                                            builder.format("ymdTime");
+                                        }else{
+                                            builder.format("ymd");
+                                        }
                                     }else{
                                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                         builder.value(simpleDateFormat.format(date));
-                                        builder.format("yyyy-MM-dd HH:mm:ss");
+                                        builder.format("ymdTime");
                                     }
                                 }
                             } else if (field.getType().getTypeName().equalsIgnoreCase(String[].class.getTypeName())) {

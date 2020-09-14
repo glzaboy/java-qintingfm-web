@@ -38,6 +38,9 @@ public class MiniAppService extends BaseService{
         TimeZone.getDefault().toString();
         return miniAppJpa.findById(id);
     }
+    public MiniApp save(MiniApp miniApp){
+        return miniAppJpa.save(miniApp);
+    }
 
     public MiniAppVo toVo(MiniApp miniApp) {
         return copyFunction(miniApp,MiniAppVo.class);
@@ -45,6 +48,9 @@ public class MiniAppService extends BaseService{
     public MiniApp toJpa(MiniAppVo miniAppVo,MiniApp miniApp) {
         return copyFunction(miniAppVo,(item)->{
             BeanUtils.copyProperties(item,miniApp,"id");
+            if(miniAppVo.getType()!=null){
+                miniApp.setType(miniAppVo.getType()[0]);
+            }
             return miniApp;
         });
     }

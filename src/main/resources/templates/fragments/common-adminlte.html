@@ -30,6 +30,12 @@
             <li class="nav-item">
                 <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
+                    <p th:utext="类别">类别</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
                     <p th:utext="附件">附件</p>
                 </a>
             </li>
@@ -39,21 +45,15 @@
         <a href="#" class="nav-link">
             <i class="nav-icon fas fa-th"></i>
             <p>
-                微信
+                小程序
                 <i class="right fas fa-angle-left"></i>
             </p>
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="#" class="nav-link"  th:href="@{'/admin/miniApp/app'}" th:classappend="${tpl}=='/admin/miniApp/app'?'active':''">
+                <a href="#" class="nav-link"  th:href="@{'/admin/miniApp/list/1'}" th:classappend="${tpl}=='/admin/miniApp/app'?'active':''">
                     <i class="far fa-circle nav-icon"></i>
                     <p>小程序设置</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p th:utext="${tpl}">非活动页</p>
                 </a>
             </li>
         </ul>
@@ -91,12 +91,7 @@
                 </div>
                 <div class="form-group" th:classappend="${item.hide}?'d-none':''"  th:if="${item.element eq'date'}">
                     <label  th:utext="${item.getTitle()}" th:for="${item.fieldName}" for="inputDate">Field Name</label>
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input type="text" id="inputDate" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control datetimepicker-input" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}" data-target="#timepicker" th:data-target="|#timeselect+${item.fieldName}|" th:data-format="${item.format}"/>
-                        <div class="input-group-append" th:data-target="|#timeselect+${item.fieldName}|" data-toggle="datetimepicker" th:data-toggle="|timeselect+${item.fieldName}|">
-                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                        </div>
-                    </div>
+                    <input type="text" id="inputDate" th:name="${item.fieldName}" th:id="${item.fieldName}" class="form-control datetimepicker-input" th:placeholder="${item.fieldName}" th:value="${(item.value==null or item.value=='null')?'':item.value}" data-target="#timepicker" th:data-target="|#timeselect${item.fieldName}|" th:data-useformat="${item.format}"/>
                     <small class="help-block" th:utext="${item.tip}" th:if="${item.tip}">This is tip</small>
                 </div>
 

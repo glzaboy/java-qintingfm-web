@@ -20,8 +20,7 @@ import java.util.TimeZone;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MiniAppVo extends BaseVo {
-    @FieldAnnotation(title = "appId",tip = "",order = 1,hide = false)
-    @NotNull(message = "appId,不能为空")
+    @FieldAnnotation(title = "appId",tip = "",order = 1,hide = true)
     Integer id;
     @FieldAnnotation(title = "程序类型",tip = "",order = 2,listData ={"weChat","微信小程序"})
     String[] type;
@@ -34,6 +33,6 @@ public class MiniAppVo extends BaseVo {
     @FieldAnnotation(title = "启用",tip = "",order = 5)
     Boolean enable=false;
     @FieldAnnotation(title = "创建日期",tip = "",order = 5)
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss.sss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     Date createDate;
 }

@@ -2,6 +2,7 @@ package com.qintingfm.web.controller.admin;
 
 import com.qintingfm.web.common.AjaxDto;
 import com.qintingfm.web.controller.BaseController;
+import com.qintingfm.web.controller.UserController;
 import com.qintingfm.web.jpa.entity.Category;
 import com.qintingfm.web.jpa.entity.MiniApp;
 import com.qintingfm.web.pojo.vo.MiniAppVo;
@@ -9,6 +10,7 @@ import com.qintingfm.web.service.FormGenerateService;
 import com.qintingfm.web.service.MiniAppService;
 import com.qintingfm.web.service.WxUploadService;
 import com.qintingfm.web.service.form.Form;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -17,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +32,7 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/admin/miniApp")
+@Slf4j
 public class MiniAppController extends BaseController {
     FormGenerateService formGenerateService;
     WxUploadService wxUploadService;
@@ -75,10 +80,26 @@ public class MiniAppController extends BaseController {
     @ResponseBody
     public AjaxDto app(MiniAppVo miniAppVo, ModelAndView modelAndView)  throws ConstraintViolationException {
         this.validatePojoAndThrow(miniAppVo);
+        MiniApp miniApp1;
+        if(miniAppVo.getId()!=null){
+            Optional<MiniApp> miniApp = miniAppService.getMiniApp(miniAppVo.getId());
+            miniApp1 = miniApp.orElse(new MiniApp());
+        }else{
+            miniApp1=new MiniApp();
+        }
+
+        MiniApp miniApp = miniAppService.toJpa(miniAppVo, miniApp1);
+        MiniApp save = miniAppService.save(miniApp);
         AjaxDto ajaxDto=new AjaxDto();
         ajaxDto.setAutoJump(0);
-        ajaxDto.setMessage("设置成功");
-        ajaxDto.setLink("http://baidu.com");
+        Method loginPage = null;
+        try {
+            loginPage = UserController.class.getMethod("list", ModelAndView.class,Integer.class);
+            ajaxDto.setLink(MvcUriComponentsBuilder.fromMethod(MiniAppController.class, loginPage, modelAndView,Integer.valueOf(1)).build().toUriString());
+        } catch (NoSuchMethodException e) {
+            log.error(e.getMessage());
+        }
+        ajaxDto.setMessage("设置成功"+save.getAppId());
         return ajaxDto;
     }
 }

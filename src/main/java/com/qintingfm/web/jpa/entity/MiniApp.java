@@ -19,7 +19,6 @@ public class MiniApp {
     @SequenceGenerator(sequenceName = "MiniApp_id_seq", name = "genMiniAppId", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genMiniAppId")
     Integer id;
-    String name;
     String type;
     String appId;
     String appSecret;

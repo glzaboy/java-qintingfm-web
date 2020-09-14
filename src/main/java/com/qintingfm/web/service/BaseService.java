@@ -103,16 +103,12 @@ public class BaseService {
                 r = rxClass.getDeclaredConstructor().newInstance();
             } catch (InstantiationException e) {
                 log.error("create object fail {}",e.getMessage());
-//                e.printStackTrace();
             } catch (IllegalAccessException e) {
                 log.error("create object fail {}",e.getMessage());
-                e.printStackTrace();
             } catch (InvocationTargetException e) {
                 log.error("create object fail {}",e.getMessage());
-//                e.printStackTrace();
             } catch (NoSuchMethodException e) {
                 log.error("create object fail {}",e.getMessage());
-//                e.printStackTrace();
             }
             BeanUtils.copyProperties(item,r);
             return r;

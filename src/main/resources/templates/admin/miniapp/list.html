@@ -13,16 +13,18 @@
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th class="text-center">ID</th>
-                <th>名称</th>
-                <th>操作</th>
+                <th class="text-center">id</th>
+                <th>type</th>
+                <th>第三方平台appId</th>
+                <th>操作 <a href="#" th:href="@{'/admin/miniApp/edit/{id}'(id=0)}">新建</a></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="item:${items}">
                 <td class="text-center" th:utext="${item.id}">1</td>
-                <td class="text-center" th:utext="${item.name}">1</td>
-                <td><a href="#" class="btn-link ajaxdialog" th:href="@{'/admin/miniApp/edit/{id}'(catId=${item.id})}" title="编辑类目">编辑</a>&nbsp;<a href="" class="btn-link ajaxask" >禁用</a> </td>
+                <td class="text-center" th:utext="${item.type}">1</td>
+                <td class="text-center" th:utext="${item.appId}">1</td>
+                <td><a href="#"  th:href="@{'/admin/miniApp/edit/{id}'(id=${item.id})}" >编辑</a>&nbsp;<a href="" class="btn-link ajaxask" >禁用</a> </td>
             </tr>
             </tbody>
         </table>
@@ -31,7 +33,7 @@
                 <div th:text="|展现${pageIndex}页 ,共计${totalPages}页,合计${total}条|"></div>
             </div>
             <div class="col-sm-6 col-xs-12 text-right">
-                <ul class="pagination" th:replace="fragments/common-adminlte::pager(${pageIndex},${totalPages},'/admin/miniapp/list/{page}')"/>
+                <ul class="pagination" th:replace="fragments/common-adminlte::pager(${pageIndex},${totalPages},'/admin/miniApp/list/1{page}')"/>
             </div>
         </div>
     </div>
