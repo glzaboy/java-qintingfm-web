@@ -28,9 +28,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" th:href="@{'/admin/category/list'}" class="nav-link" th:classappend="${tpl}=='/admin/category/list'?'active':''">
                     <i class="far fa-circle nav-icon"></i>
-                    <p th:utext="类别">类别</p>
+                    <p th:utext="类别">分类设置</p>
                 </a>
             </li>
             <li class="nav-item">
@@ -52,21 +52,55 @@
         <ul class="nav nav-treeview">
             <li class="nav-item">
                 <a href="#" class="nav-link"  th:href="@{'/admin/miniApp/list/1'}" th:classappend="${tpl}=='/admin/miniApp/app'?'active':''">
-                    <i class="far fa-circle nav-icon"></i>
+                    <i class="fab fa-medapps nav-icon"></i>
                     <p>小程序设置</p>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="nav-item has-treeview">
+        <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-sim-card"></i>
+            <p>
+                系统设置
+                <i class="right fas fa-angle-left"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="#" th:href="@{/admin/setting/edit/baidu}" class="nav-link"  th:classappend="${tpl}=='/admin/setting/baidu'?'active':''">
+                    <i class="fab fa-medapps nav-icon"></i>
+                    <p>百度推送</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" th:href="@{/admin/setting/edit/baiduyun}" class="nav-link"  th:classappend="${tpl}=='/admin/setting/baiduyun'?'active':''">
+                    <i class="fab fa-medapps nav-icon"></i>
+                    <p>百度云设置</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" th:href="@{/admin/setting/edit/site}" class="nav-link"  th:classappend="${tpl}=='/admin/setting/site'?'active':''">
+                    <i class="fab fa-medapps nav-icon"></i>
+                    <p>站点设置</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" th:href="@{/admin/setting/edit/register}" class="nav-link"  th:classappend="${tpl}=='/admin/setting/register'?'active':''">
+                    <i class="fab fa-medapps nav-icon"></i>
+                    <p>注册设置</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" th:href="@{/admin/setting/edit/sensitiveword}" class="nav-link"  th:classappend="${tpl}=='/admin/setting/sensitiveword'?'active':''">
+                    <i class="fab fa-medapps nav-icon"></i>
+                    <p>敏感关键词</p>
                 </a>
             </li>
         </ul>
     </li>
 </ul>
 <!-- 分页 -->
-<ul class="pagination pagination-sm m-0 float-right">
-    <li class="page-item"><a class="page-link" href="#">«</a></li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">»</a></li>
-</ul>
 <ul class="pagination pagination-sm m-0 float-right" th:fragment="pager( pageIndex,pageTotal,urlPrefix )" th:if="${pageTotal gt 0}">
     <li class="page-item" th:classappend="${pageIndex==1}?'disabled':''">
         <a href="#" class="page-link" th:href="@{${urlPrefix}(page=${pageTotal})}">«</a></li>
